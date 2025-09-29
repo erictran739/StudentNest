@@ -24,8 +24,33 @@ src/main/java/edu/csulb/cecs491b/studentnest
 Run the code(application)
 right click on your StudentNestApplication.java
 Run as --> Spring Boot App
+After sucessfully run the code next step:
+ 
+Inside a Postman
+1.Method:  Post: http://localhost:8080/auth/register
+    got to the Body --> raw -->JSON : and paste  : 
+     {
+    "email": "testuser@example.com",
+    "username": "tester",
+    "password": "Password123!"
+  }
+    click "SEND"
+    after send you will get response if there issue please check again and do it
+2. click on "+" New Method : Post: http://localhost:8080/api/auth/login
+    same step Body --> raw --> --> JSON
+    {
+  "email": "testuser@example.com",
+  "password": "Password123!"
+    }
+    Click : "SEND"
+  You will get respons after sending 
+  then open your browser and verify 
 
 
-How i checked: 
-inside Postman: 
-post ..........
+
+
+
+
+
+
+
