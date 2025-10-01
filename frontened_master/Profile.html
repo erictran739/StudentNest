@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Nest - Student Profile</title>
+  <!-- Link to external stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Student Profile</h2>
+
+    <!-- Profile card (populated from "database") -->
+    <div id="profileCard" class="profile">
+      <div class="field">
+        <span class="label">Student ID</span>
+        <span id="studentId" class="value"></span>
+      </div>
+      <div class="field">
+        <span class="label">Name</span>
+        <span id="name" class="value"></span>
+      </div>
+      <div class="field">
+        <span class="label">Email</span>
+        <span id="email" class="value"></span>
+      </div>
+      <div class="field">
+        <span class="label">Major</span>
+        <span id="major" class="value"></span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button type="button" class="btn-primary" onclick="refreshStudent()">Refresh</button>
+      <button type="button" class="btn-neutral" onclick="console.log('Edit not implemented')">Edit (N/A)</button>
+      <button type="button" class="btn-danger" onclick="deleteStudent()">Delete Student</button>
+    </div>
+
+    <div id="status" class="note"></div>
+  </div>
+
+  <script>
+    // --- Mock "database" record (replace with real fetch in your app) ---
+    const mockStudentFromDb = {
+      studentId: "026090010",
+      name: "Simon Tran",
+      email: "simon.tran02@student.csulb.edu",
+      major: "Computer Science",
+    };
+
+    function renderStudent(student) {
+      document.getElementById('studentId').textContent = student.studentId;
+      document.getElementById('name').textContent = student.name;
+      document.getElementById('email').textContent = student.email;
+      document.getElementById('major').textContent = student.major;
+      document.getElementById('year').textContent = student.year;
+    }
+
+    function refreshStudent() {
+      // Simulate reloading from DB
+      renderStudent(mockStudentFromDb);
+      setStatus("Student data refreshed.");
+      document.getElementById('profileCard').classList.remove('hidden');
+    }
+
+    function deleteStudent() {
+      const ok = confirm("Are you sure you want to delete this student?");
+      if (!ok) return;
+
+      // Simulate delete (hide the card + show status)
+      document.getElementById('profileCard').classList.add('hidden');
+      setStatus("Student record deleted (simulation).");
+
+      // Example for real backend:
+      // fetch(`/api/students/${mockStudentFromDb.studentId}`, {
+      //   method: 'DELETE',
+      //   headers: { 'Content-Type': 'application/json' }
+      // }).then(r => r.json()).then(() => setStatus("Student deleted."));
+    }
+
+    function setStatus(msg) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+    }
+
+    // Initial render
+    renderStudent(mockStudentFromDb);
+  </script>
+</body>
+</html>
