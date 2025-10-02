@@ -1,6 +1,8 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
 import java.util.Map;
+
+import edu.csulb.cecs491b.studentnest.entity.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import edu.csulb.cecs491b.studentnest.controller.dto.LoginRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.RegisterRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.AuthResponse;
-import edu.csulb.cecs491b.studentnest.entity.User;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -27,7 +28,7 @@ public class AuthController {
         if (userRepository.existsByEmail(req.getEmail())) {
             return ResponseEntity.badRequest().body(Map.of("error", "Email already exists"));
         }
-        User u = new User();
+        Student u = new Student();
         u.setEmail(req.getEmail());
         u.setUsername(req.getUsername());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
