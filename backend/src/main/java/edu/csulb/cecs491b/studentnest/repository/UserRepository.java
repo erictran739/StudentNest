@@ -1,9 +1,10 @@
 package edu.csulb.cecs491b.studentnest.repository;
 
-import edu.csulb.cecs491b.studentnest.entity.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import edu.csulb.cecs491b.studentnest.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
