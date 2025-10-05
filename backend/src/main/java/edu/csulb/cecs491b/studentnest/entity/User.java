@@ -6,8 +6,19 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@MappedSuperclass
 public abstract class User {
+
+    public User(){}
+    public User(String firstName, String lastName, String email, String password){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long ID;
 
     @Column(nullable = false)
     private String firstName;
@@ -19,9 +30,5 @@ public abstract class User {
     private String email;
 
     @Column(nullable = false)
-    private String username;
-
-    @Column(nullable = false)
     private String password;
-
 }
