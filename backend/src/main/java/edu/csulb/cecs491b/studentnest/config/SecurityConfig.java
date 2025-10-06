@@ -24,11 +24,11 @@ public class SecurityConfig {
     http.csrf(csrf -> csrf.disable());
     http.cors(Customizer.withDefaults());
     http.authorizeHttpRequests(auth -> auth
-          .requestMatchers("/api/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
+          .requestMatchers("/auth/**","/api/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
           .anyRequest().authenticated()
       )
-      .httpBasic(b -> b.disable())
-      .formLogin(f -> f.disable());
+      .httpBasic(b -> b.disable());
+//      .formLogin(f -> f.disable());
     return http.build();
   }
   @Bean
