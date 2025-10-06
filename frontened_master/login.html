@@ -30,7 +30,7 @@
           const res = await fetch(`${window.API}/api/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: username, password }) // username holds email
+            body: JSON.stringify({ email: username, password: password }) // username holds email
           });
           const data = await res.json().catch(() => ({}));
 
