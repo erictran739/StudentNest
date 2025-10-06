@@ -23,12 +23,33 @@
       const [password, setPassword] = useState("");
       const [remember, setRemember] = useState(false);
       const [status, setStatus] = useState("");
+      const onSubmit = async (e) => {
+        e.preventDefault();
+        setStatus("Submitting...");
+        try {
+          const res = await fetch(`${window.API}/api/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: username, password }) // username holds email
+          });
+          const data = await res.json().catch(() => ({}));
 
-      const onSubmit = (e) => {
+          if (res.ok) {
+            setStatus("Login successful");
+            window.location.href = "Profile.html";
+          } else {
+            setStatus(data?.message || data?.error || `Login failed (${res.status})`);
+          }
+        } catch (err) {
+          setStatus(String(err));
+        }
+      };
+  
+/*       const onSubmit = (e) => {
         e.preventDefault();
         setStatus("Submitting...");
         setTimeout(() => setStatus(`Demo: form submitted (Remember Me = ${remember})`), 600);
-      };
+      }; */
 
       return (
         <>
