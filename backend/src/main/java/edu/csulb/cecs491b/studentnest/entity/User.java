@@ -23,7 +23,7 @@ public class User {
     
     @Column(nullable = false, length = 255)   // helps DB enforce not null + reasonable length 
     private String email;        // user's email
-    
+    //this is 
     @Column(nullable = false)
     private String password;     // user's password (plain for now — will hash later)
     

@@ -16,7 +16,7 @@ import edu.csulb.cecs491b.studentnest.controller.dto.LoginRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.RegisterRequest;
 import edu.csulb.cecs491b.studentnest.entity.User;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
-
+//this is 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
