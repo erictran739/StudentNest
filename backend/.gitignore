@@ -1,0 +1,12 @@
+# Maven/Java
+/target/
+backend/target/
+
+# Eclipse metadata
+.project
+.classpath
+.settings/
+
+# OS junk
+.DS_Store
+Thumbs.db

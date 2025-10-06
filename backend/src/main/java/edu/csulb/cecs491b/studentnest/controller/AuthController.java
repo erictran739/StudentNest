@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Map;
-
+//this is
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -55,6 +55,7 @@ public class AuthController {
 
         Professor u = new Professor();
         u.setEmail(req.getEmail());
+        u.setUsername(req.getUsername());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
 
         professorRepository.save(u);
