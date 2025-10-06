@@ -37,9 +37,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse("error", "Email already exists"));
         }
         User u = new User();
+        u.setFirstName(req.getFirstName());
+        u.setLastName(req.getLastName());
         u.setEmail(req.getEmail());
-        u.setUsername(req.getUsername());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
+        u.setStatus("active");
         users.save(u);
         return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse("registered", req.getEmail()));
     }

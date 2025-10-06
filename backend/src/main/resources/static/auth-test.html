@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Auth/User API Test</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width: 760px; margin: 24px auto; }
+    input, button { padding: 8px; margin: 4px 0; width: 100%; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    pre { background:#111; color:#0f0; padding:12px; overflow:auto; }
+    section { border:1px solid #ddd; padding:16px; border-radius:8px; margin:16px 0; }
+  </style>
+</head>
+<body>
+  <h1>StudentNest API — Browser Tester</h1>
+
+  <section>
+    <h2>Register</h2>
+    <div class="row">
+      <div><label>First name</label><input id="fn" value="Tony"></div>
+      <div><label>Last name</label><input id="ln" value="Adhikari"></div>
+    </div>
+    <label>Email</label><input id="em" value="tony@example.com">
+    <label>Password</label><input id="pw" type="password" value="secret123">
+    <button onclick="register()">Register</button>
+  </section>
+
+  <section>
+    <h2>Login</h2>
+    <label>Email</label><input id="lem" value="tony@example.com">
+    <label>Password</label><input id="lpw" type="password" value="secret123">
+    <button onclick="login()">Login</button>
+  </section>
+
+  <section>
+    <h2>Users (GET /api/users)</h2>
+    <button onclick="listUsers()">Load Users</button>
+  </section>
+
+  <h2>Response</h2>
+  <pre id="out">Waiting…</pre>
+
+<script>
+const OUT = document.getElementById('out');
+
+function show(res) {
+  OUT.textContent = typeof res === 'string' ? res : JSON.stringify(res, null, 2);
+}
+
+async function register() {
+  const body = {
+    firstName: document.getElementById('fn').value,
+    lastName:  document.getElementById('ln').value,
+    email:     document.getElementById('em').value,
+    password:  document.getElementById('pw').value
+  };
+  try {
+    const r = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await r.json().catch(()=> ({}));
+    show({status:r.status, data});
+  } catch (e) { show(String(e)); }
+}
+
+async function login() {
+  const body = {
+    email:    document.getElementById('lem').value,
+    password: document.getElementById('lpw').value
+  };
+  try {
+    const r = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await r.json().catch(()=> ({}));
+    show({status:r.status, data});
+  } catch (e) { show(String(e)); }
+}
+
+async function listUsers() {
+  try {
+    const r = await fetch('/api/users');
+    const data = await r.json();
+    show({status:r.status, data});
+  } catch (e) { show(String(e)); }
+}
+</script>
+</body>
+</html>

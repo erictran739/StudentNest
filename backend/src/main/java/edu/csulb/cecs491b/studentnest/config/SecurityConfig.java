@@ -24,8 +24,10 @@ public class SecurityConfig {
     http.csrf(csrf -> csrf.disable());
     http.cors(Customizer.withDefaults());
     http.authorizeHttpRequests(auth -> auth
-          .requestMatchers("/api/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
+          .requestMatchers("/api/auth/**","/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
+          .requestMatchers("/api/users/**").authenticated()
           .anyRequest().authenticated()
+          
       )
       .httpBasic(b -> b.disable())
       .formLogin(f -> f.disable());
@@ -40,7 +42,7 @@ public class SecurityConfig {
   CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration cfg = new CorsConfiguration();
       //this is for local (React on 3000, Vite on 5173)
-      cfg.setAllowedOriginPatterns(List.of("http://localhost:*", "http:/127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
+      cfg.setAllowedOriginPatterns(List.of("http://localhost:*", "https://*.ngrok-free.app","https://*.ngrok.app", "http:/127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
       cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
       cfg.setAllowedHeaders(List.of("*"));
       cfg.setAllowCredentials(true);
