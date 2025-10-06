@@ -1,15 +1,12 @@
-# Maven
+# Maven/Java
 /target/
+backend/target/
 
-# Eclipse
+# Eclipse metadata
 .project
 .classpath
 .settings/
 
-# IntelliJ (if anyone uses it)
-.idea/
-*.iml
-
-# OS
+# OS junk
 .DS_Store
 Thumbs.db
