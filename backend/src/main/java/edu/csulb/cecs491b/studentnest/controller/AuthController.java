@@ -55,7 +55,6 @@ public class AuthController {
 
         Professor u = new Professor();
         u.setEmail(req.getEmail());
-        u.setUsername(req.getUsername());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
 
         professorRepository.save(u);

@@ -1,9 +1,8 @@
 package edu.csulb.cecs491b.studentnest.service;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.CreateUserRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.StudentResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.UpdateUserRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.UserResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.CreateStudentRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.StudentResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.UpdateStudentRequest;
 import edu.csulb.cecs491b.studentnest.entity.Student;
 import edu.csulb.cecs491b.studentnest.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 @Service
 @Transactional
@@ -25,13 +23,13 @@ public class StudentService {
         return repo.findAll().stream().map(this::toResponse).toList();
     }
 
-    public StudentResponse get(long id) {
-        Optional<Student> optionalStudent = repo.findById(id);
+    public StudentResponse get(int id) {
+        Optional<Student> optionalStudent = repo.findByUserID(id);
         return optionalStudent.map(this::toResponse)
                 .orElseThrow(() -> new IllegalArgumentException("Student not found: " + id));
     }
 
-    public StudentResponse create(CreateUserRequest r) {
+    public StudentResponse create(CreateStudentRequest r) {
         if (repo.existsByEmail(r.email()))
             throw new IllegalArgumentException("Email already in use");
 
@@ -43,8 +41,8 @@ public class StudentService {
         return toResponse(repo.save(u));
     }
 
-    public StudentResponse update(int id, UpdateUserRequest r) {
-        Student u = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+    public StudentResponse update(int id, UpdateStudentRequest r) {
+        Student u = repo.findByUserID(id).orElseThrow(() -> new IllegalArgumentException("Student not found: " + id));
         u.setFirstName(r.firstName());
         u.setLastName(r.lastName());
         u.setEmail(r.email());
@@ -53,7 +51,7 @@ public class StudentService {
     }
 
     public void delete(long id) {
-        if (!repo.existsById(id)) throw new IllegalArgumentException("User not found: " + id);
+        if (!repo.existsById(id)) throw new IllegalArgumentException("Student not found: " + id);
         repo.deleteById(id);
     }
 

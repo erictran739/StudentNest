@@ -1,6 +1,5 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.StudentResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 @Entity
 @Table(name = "student")
 public class Student extends User {
-    public Student (){ }
-    public Student(String firstName, String lastName, String email, String password){
-        super(firstName, lastName, email, password);
-    }
 //    @Column(nullable = false)
 //    private String major;
 
@@ -28,4 +23,11 @@ public class Student extends User {
 
 //    @Column(nullable = false)
 //    private String enrollmentStatus;
+
+    public Student() {
+    }
+
+    public Student(String firstName, String lastName, String email, String password) {
+        super(firstName, lastName, email, password);
+    }
 }

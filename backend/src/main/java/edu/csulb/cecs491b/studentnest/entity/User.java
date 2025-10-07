@@ -6,10 +6,8 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Entity
 @MappedSuperclass
 public abstract class User {
-    // Getters and setters
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")		// this is help hibernate use exact name it expects
     private int userID;          // unique identifier for the user
@@ -30,6 +28,7 @@ public abstract class User {
     private String status;       // active/inactive/locked
     
     public User() {}
+
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
