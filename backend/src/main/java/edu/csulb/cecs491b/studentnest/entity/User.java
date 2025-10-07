@@ -1,11 +1,13 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 @MappedSuperclass
 public abstract class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +29,6 @@ public abstract class User {
     @Column(nullable = false)    
     private String status;       // active/inactive/locked
     
-    public User() {}
 
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;

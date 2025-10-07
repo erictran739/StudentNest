@@ -38,6 +38,7 @@ public class AuthController {
         student.setLastName(req.getLastName());
         student.setEmail(req.getEmail());
         student.setPassword(passwordEncoder.encode(req.getPassword()));
+        student.setStatus("Enrolled");
 
         // Save new student object/entity
         studentRepository.save(student);
@@ -68,7 +69,7 @@ public class AuthController {
         String reqPassword = req.getPassword();
 
         if (!studentRepository.existsByEmail(reqEmail)) {
-            return ResponseEntity.status(401).body(Map.of("error", "invalid credentials"));
+            return ResponseEntity.status(401).body(Map.of("error", "Email not in use"));
         }
         Student student = studentRepository.findByEmail(reqEmail);
 
