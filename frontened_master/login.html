@@ -27,10 +27,10 @@
         e.preventDefault();
         setStatus("Submitting...");
         try {
-          const res = await fetch(`${window.API}/api/auth/login`, {
+          const res = await fetch(`localhost:8080/auth/login/student`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: username, password: password }) // username holds email
+            body: JSON.stringify({ email: email123, password: password123 }) // username holds email and password
           });
           const data = await res.json().catch(() => ({}));
 

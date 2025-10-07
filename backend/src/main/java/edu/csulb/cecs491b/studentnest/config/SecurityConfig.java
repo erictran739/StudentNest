@@ -41,7 +41,17 @@ public class SecurityConfig {
   CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration cfg = new CorsConfiguration();
       //this is for local (React on 3000, Vite on 5173)
-      cfg.setAllowedOriginPatterns(List.of("http://localhost:*", "http:/127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
+      cfg.setAllowedOriginPatterns(List.of(
+//              "http://localhost:[*]",
+//              "https://localhost:[*]",
+              "http://127.0.0.1:[*]" // This is all I needed to test locally
+//              "https://127.0.0.1:[*]"
+//              "http://[::1]:[*]",
+//              "https://[::1]:[*]",
+//              "http://192.168.*.*:[*]",
+//              "https://192.168.*.*:[*]"
+      )); // allow device in local network
+//      cfg.setAllowedOriginPatterns(List.of("*"));
       cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
       cfg.setAllowedHeaders(List.of("*"));
       cfg.setAllowCredentials(true);
