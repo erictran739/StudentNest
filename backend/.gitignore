@@ -10,3 +10,9 @@ backend/target/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# Idea Stuff
+../.idea
+
+# Credentials (until they're offloaded to environment variables)
+./src/main/resources/application.yml

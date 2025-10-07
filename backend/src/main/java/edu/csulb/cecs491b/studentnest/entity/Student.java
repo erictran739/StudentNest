@@ -1,5 +1,6 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.StudentResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Student extends User {
     @Column(nullable = false)
     @Value("${GPA: 0.0}")
     private float GPA = 0.0f;
+
 
 //    @Column(nullable = false)
 //    private int enrollmentYear;
