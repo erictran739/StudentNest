@@ -1,28 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/student_nest?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root          
-    password: 123456789        
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate.format_sql: true
-
-server:
-  port: 8080
-
-# Isaac File
----
-spring:
-  config:
-    activate:
-      on-profile: isaac
-  datasource:
     url: jdbc:mysql://puggu.dev:3306/student_nest?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: Developer
-    password: 2025_StudentNest
+    username: ${STUDENT_NEST_DB_USERNAME}
+    password: ${STUDENT_NEST_DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
