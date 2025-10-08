@@ -1,28 +1,48 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Entity
-@Table(name = "users")
-public class User {
+@Setter
+@Getter
+@NoArgsConstructor
+@MappedSuperclass
+public abstract class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")		// this is help hibernate use exact name it expects
+    private int userID;          // unique identifier for the user
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    @Column(nullable = false)
+    private String firstName;    // user's first name
+    
+    @Column(nullable = false)
+    private String lastName;     // user's last name
+    
+    @Column(nullable = false, length = 255)   // helps DB enforce not null + reasonable length 
+    private String email;        // user's email
 
-    private String username;
+    @Column(nullable = false)
+    private String password;     // user's password (plain for now — will hash later)
+    
+    @Column(nullable = false)    
+    private String status;       // active/inactive/locked
+    
 
-    private String password;
+    public User(String firstName, String lastName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
 
-    public Long getId() { return id; }
+    public User(String firstName, String lastName, String email, String password, String status) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.status = status;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
 }

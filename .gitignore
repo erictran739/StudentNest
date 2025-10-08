@@ -1,0 +1,6 @@
+/backend/target/
+/backend/src/main/resources/application.yml
+/backend/.factorypath
+/backend/.settings
+
+.idea
