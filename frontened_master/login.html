@@ -27,10 +27,10 @@
         e.preventDefault();
         setStatus("Submitting...");
         try {
-          const res = await fetch("/api/auth/login", {
+          const res = await fetch("http://localhost:8080/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ email: username, password: password })
           });
           const data = await res.json();
           if (!res.ok || !data.ok) { setStatus(data.message || "Login failed"); return; }
