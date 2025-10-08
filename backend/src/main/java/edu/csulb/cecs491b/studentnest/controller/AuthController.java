@@ -6,43 +6,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.AuthResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.LoginRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.RegisterRequest;
-import edu.csulb.cecs491b.studentnest.entity.User;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import edu.csulb.cecs491b.studentnest.entity.Student;
+import edu.csulb.cecs491b.studentnest.entity.UserStatus;
+
 //this is 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 	
 	private final UserRepository users;
 	private final PasswordEncoder passwordEncoder;
 	
 	
-	public AuthController(UserRepository users, PasswordEncoder passwordEncoder) {
-        this.users = users;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
         if (users.findByEmail(req.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse("error", "Email already exists"));
         }
-        User u = new User();
-        u.setFirstName(req.getFirstName());
-        u.setLastName(req.getLastName());
-        u.setEmail(req.getEmail());
-        u.setPassword(passwordEncoder.encode(req.getPassword()));
-        u.setStatus("active");
-        users.save(u);
+        //create a student as the concrete subtype
+        Student s = new Student();
+        s.setFirstName(req.getFirstName());
+        s.setLastName(req.getLastName());
+        s.setEmail(req.getEmail());
+        s.setPassword(passwordEncoder.encode(req.getPassword()));
+        s.setStatus(UserStatus.ACTIVE);
+        
+        //this line we will add after 
+        //s.setMajor(Major.UNDECLARED);
+        //s.setEnrollmentYear(2025);
+        users.save(s);
         return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse("registered", req.getEmail()));
     }
 

@@ -1,5 +1,7 @@
 package edu.csulb.cecs491b.studentnest.controller.dto;
+import lombok.Data;
 
+@Data
 public class RegisterRequest {
     private String email;
     private String firstName;
@@ -19,4 +21,7 @@ public class RegisterRequest {
 
     public String getPassword() { return password; }
     public void   setPassword(String password) { this.password = password; }
+    
+//    private String major;
+//    private int enrollmentYear;
 }
