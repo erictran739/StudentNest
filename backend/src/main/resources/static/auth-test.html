@@ -15,7 +15,7 @@
   <h1>StudentNest API — Browser Tester</h1>
 
   <section>
-    <h2>Register</h2>
+    <h2>Register (POST /auth/register)</h2>
     <div class="row">
       <div><label>First name</label><input id="fn" value="Tony"></div>
       <div><label>Last name</label><input id="ln" value="Adhikari"></div>
@@ -26,7 +26,7 @@
   </section>
 
   <section>
-    <h2>Login</h2>
+    <h2>Login (POST /auth/login)</h2>
     <label>Email</label><input id="lem" value="tony@example.com">
     <label>Password</label><input id="lpw" type="password" value="secret123">
     <button onclick="login()">Login</button>
@@ -42,6 +42,7 @@
 
 <script>
 const OUT = document.getElementById('out');
+const URL_BASE = 'http://127.0.0.1:8080'
 
 function show(res) {
   OUT.textContent = typeof res === 'string' ? res : JSON.stringify(res, null, 2);
@@ -55,7 +56,7 @@ async function register() {
     password:  document.getElementById('pw').value
   };
   try {
-    const r = await fetch('http://127.0.0.1:8080/auth/register', {
+    const r = await fetch(URL_BASE + '/auth/register', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(body)
@@ -71,7 +72,7 @@ async function login() {
     password: document.getElementById('lpw').value
   }
   try {
-    const r = await fetch('/api/auth/login', {
+    const r = await fetch(URL_BASE + '/auth/login', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(body)
