@@ -2,32 +2,30 @@ package edu.csulb.cecs491b.studentnest.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 
-@Setter
-@Getter
 @Entity
-@Table(name = "student")
+@Table(name = "students")
+@DiscriminatorValue("STUDENT")
+@Getter @Setter
+@NoArgsConstructor
 public class Student extends User {
-//    @Column(nullable = false)
-//    private String major;
 
-    @Column(nullable = false)
-    @Value("${GPA: 0.0}")
-    private float GPA = 0.0f;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 64)
+    private Major major = Major.UNDECLARED;
 
+    @Column(nullable = false, length = 32)
+    private String enrollmentStatus = "active"; // can be enum later
 
-//    @Column(nullable = false)
-//    private int enrollmentYear;
+    // We'll add List<Enrollment> when you implement Enrollment entity (#7).
+    // @OneToMany(mappedBy = "student")
+    // private List<Enrollment> enrollments;
 
-//    @Column(nullable = false)
-//    private String enrollmentStatus;
+    @Column
+    private float gpa = 0.0f;
 
-    public Student() {
-    }
-
-    public Student(String firstName, String lastName, String email, String password) {
-        super(firstName, lastName, email, password);
-    }
+    @Column
+    private int enrollmentYear; // e.g., 2025
 }

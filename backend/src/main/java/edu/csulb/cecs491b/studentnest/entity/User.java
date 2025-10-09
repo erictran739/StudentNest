@@ -1,17 +1,24 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity
+@Getter 
 @Setter
-@Getter
-@NoArgsConstructor
-@MappedSuperclass
+@NoArgsConstructor 
+
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+	indexes = @Index(name = "idx_users_email", columnList = "email"))
+
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "user_type", length = 32)
+
 public abstract class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")		// this is help hibernate use exact name it expects
+    @Column(name = "usrid")		// this is help hibernate use exact name it expects
     private int userID;          // unique identifier for the user
 
     @Column(nullable = false)
@@ -22,27 +29,13 @@ public abstract class User {
     
     @Column(nullable = false, length = 255)   // helps DB enforce not null + reasonable length 
     private String email;        // user's email
-
+    
     @Column(nullable = false)
     private String password;     // user's password (plain for now — will hash later)
     
-    @Column(nullable = false)    
-    private String status;       // active/inactive/locked
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length =16)    
+    private UserStatus status = UserStatus.ACTIVE;       // active/inactive/locked
     
-
-    public User(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-    }
-
-    public User(String firstName, String lastName, String email, String password, String status) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.status = status;
-    }
-
+     
 }
