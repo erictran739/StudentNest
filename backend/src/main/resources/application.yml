@@ -3,7 +3,8 @@ spring:
     url: jdbc:mysql://puggu.dev:3306/student_nest
       ?useSSL=false
       &allowPublicKeyRetrieval=true
-      &serverTimezone=UTC&createDatabaseIfNotExist=true
+      &serverTimezone=UTC
+      &createDatabaseIfNotExist=true
     username: ${STUDENT_NEST_DB_USERNAME}
     password: ${STUDENT_NEST_DB_PASSWORD}
   jpa:

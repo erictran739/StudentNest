@@ -1,9 +1,9 @@
-package edu.csulb.cecs491b.studentnest.controller.dto.student;
+package edu.csulb.cecs491b.studentnest.controller.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record CreateStudentRequest(
+public record CreateUserRequest (
 		
 		@NotBlank String firstName,
         @NotBlank String lastName,
