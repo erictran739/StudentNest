@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Nest - Create Account</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Animated ring container to match login aesthetic -->
+  <div class="ring" style="--clr:#81d4fa">
+    <i></i>
+    <i></i>
+    <i></i>
+
+    <div class="login">
+      <div class="login-box" id="root"></div>
+    </div>
+  </div>
+
+  <!-- React (CDN) + JSX runtime -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState } = React;
+    const API_PREFIX = "/api";          // align with your baseline
+    const TOKEN_KEY   = "authToken";    // same storage key as login
+
+    function SaveTokenAndGo(token) {
+      if (token) localStorage.setItem(TOKEN_KEY, token);
+      window.location.href = "/Profile.html";
+    }
+
+    // Try common register endpoints for plug-n-play
+    const REGISTER_ENDPOINTS = [
+      "/auth/register",
+      "/auth/signup",
+      "/users",
+      "/register"
+    ];
+
+    async function apiPostJson(path, body) {
+      const res = await fetch(API_PREFIX + path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      let data = {};
+      try { data = await res.json(); } catch {}
+      if (!res.ok) {
+        const msg = data.message || data.error || (res.status + " " + res.statusText);
+        throw new Error(msg);
+      }
+      return data;
+    }
+
+    async function tryRegister(payloads) {
+      // We'll try each endpoint with the given payload shapes until one works
+      let lastErr = null;
+      for (const { path, body } of payloads) {
+        try {
+          const data = await apiPostJson(path, body);
+          return { path: API_PREFIX + path, data };
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw lastErr || new Error("No registration endpoint responded.");
+    }
+
+    function SignupForm() {
+      const [username, setUsername] = useState("");
+      const [email, setEmail]       = useState("");
+      const [password, setPassword] = useState("");
+      const [confirm, setConfirm]   = useState("");
+      const [agree, setAgree]       = useState(false);
+      const [status, setStatus]     = useState("");
+
+      const canSubmit = () =>
+        username.trim().length >= 3 &&
+        password.length >= 6 &&
+        confirm === password &&
+        (!email || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) &&
+        agree;
+
+      const onSubmit = async (e) => {
+        e.preventDefault();
+        if (!canSubmit()) {
+          setStatus("Please fill all fields correctly and agree to terms.");
+          return;
+        }
+        setStatus("Creating your account...");
+        // Prepare payload variants to maximize compatibility
+        const payloadVariants = [];
+
+        // Shapes that many APIs accept
+        for (const path of REGISTER_ENDPOINTS) {
+          payloadVariants.push({ path, body: { username, email, password } });
+          payloadVariants.push({ path, body: { name: username, email, password } });
+          payloadVariants.push({ path, body: { user: { username, email, password } } });
+        }
+
+        try {
+          const { data, path } = await tryRegister(payloadVariants);
+          // Accept a few common success shapes
+          const ok    = data.ok !== undefined ? data.ok : true;
+          const token = data.token || (data.data && data.data.token);
+          if (!ok && !token) { setStatus(data.message || "Sign up failed"); return; }
+          setStatus("Account created via " + path + ". Redirecting…");
+          SaveTokenAndGo(token);
+        } catch (err) {
+          setStatus("Registration error: " + err.message);
+        }
+      };
+
+      return (
+        <>
+          <h2>Create Your Account</h2>
+          <form onSubmit={onSubmit}>
+            <input
+              type="text"
+              placeholder="Username"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Email (optional if your API doesn't need it)"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password (min 6 chars)"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              required
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+            />
+
+            <div className="options-row">
+              <label className="remember-me">
+                <input
+                  type="checkbox"
+                  checked={agree}
+                  onChange={(e) => setAgree(e.target.checked)}
+                />
+                I agree to the Terms
+              </label>
+              <a href="/login.html" className="forgot-link">Already have an account?</a>
+            </div>
+
+            <button type="submit" className="login-btn">Create Account</button>
+
+            <div className="signup-row">
+              Prefer to sign in? <a className="signup-link" href="/login.html">Back to Login</a>
+            </div>
+          </form>
+
+          {status && <div className="note" style={{ marginTop: 8 }}>{status}</div>}
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<SignupForm />);
+  </script>
+</body>
+</html>
