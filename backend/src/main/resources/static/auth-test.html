@@ -17,18 +17,18 @@
   <section>
     <h2>Register (POST /auth/register)</h2>
     <div class="row">
-      <div><label>First name</label><input id="fn" value="Tony"></div>
-      <div><label>Last name</label><input id="ln" value="Adhikari"></div>
+      <div><label>First name</label><input id="fn" value="John"></div>
+      <div><label>Last name</label><input id="ln" value="Doe"></div>
     </div>
-    <label>Email</label><input id="em" value="tony@example.com">
-    <label>Password</label><input id="pw" type="password" value="secret123">
+    <label>Email</label><input id="em" value="john@email.com">
+    <label>Password</label><input id="pw" type="password" value="password">
     <button onclick="register()">Register</button>
   </section>
 
   <section>
     <h2>Login (POST /auth/login)</h2>
-    <label>Email</label><input id="lem" value="tony@example.com">
-    <label>Password</label><input id="lpw" type="password" value="secret123">
+    <label>Email</label><input id="lem" value="john@email.com">
+    <label>Password</label><input id="lpw" type="password" value="password">
     <button onclick="login()">Login</button>
   </section>
 
@@ -42,7 +42,6 @@
 
 <script>
 const OUT = document.getElementById('out');
-const URL_BASE = 'http://puggu.dev'
 
 function show(res) {
   OUT.textContent = typeof res === 'string' ? res : JSON.stringify(res, null, 2);
@@ -56,7 +55,7 @@ async function register() {
     password:  document.getElementById('pw').value
   };
   try {
-    const r = await fetch(URL_BASE + '/auth/register', {
+    const r = await fetch('/auth/register', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(body)
@@ -72,7 +71,7 @@ async function login() {
     password: document.getElementById('lpw').value
   }
   try {
-    const r = await fetch(URL_BASE + '/auth/login', {
+    const r = await fetch('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(body)
