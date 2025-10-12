@@ -14,6 +14,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import org.springframework.http.HttpMethod;
+
 //this is
 @Configuration
 @EnableWebSecurity
@@ -24,8 +26,19 @@ public class SecurityConfig {
     http.csrf(csrf -> csrf.disable());
     http.cors(Customizer.withDefaults());
     http.authorizeHttpRequests(auth -> auth
-          .requestMatchers("/api/auth/**","/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
-          .requestMatchers("/api/users/**").authenticated()
+          .requestMatchers(
+		  "/auth/**",
+		  "/",
+		  "/static/**",
+		  "/css/**",
+		  "/js/**",
+		  "/images/**",
+		  "/login.html",
+		  "/index.html",
+		  "/auth-test.html"
+		  ).permitAll()
+	  .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+          .requestMatchers("/auth/**").authenticated()
           .anyRequest().authenticated()
           
       )
@@ -33,21 +46,30 @@ public class SecurityConfig {
       .formLogin(f -> f.disable());
     return http.build();
   }
+
   @Bean
   public PasswordEncoder passwordEncoder() {
 	  return new BCryptPasswordEncoder();
   }
-  //
+
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration cfg = new CorsConfiguration();
-      //this is for local (React on 3000, Vite on 5173)
-      cfg.setAllowedOriginPatterns(List.of("http://localhost:*", "https://*.ngrok-free.app","https://*.ngrok.app", "http:/127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
+      cfg.setAllowedOriginPatterns(List.of(
+			      "http://localhost:*",
+			      "http://127.0.0.1:*",
+			      "http://puggu.dev:*"
+			      // "http://puggu.dev"
+			      // "http:/127.0.0.1:*",
+			      // "http://192.168.*.*:*"
+			      ));
       cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
       cfg.setAllowedHeaders(List.of("*"));
       cfg.setAllowCredentials(true);
+
       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
       source.registerCorsConfiguration("/**", cfg);
+      
       return source;
   }
   
