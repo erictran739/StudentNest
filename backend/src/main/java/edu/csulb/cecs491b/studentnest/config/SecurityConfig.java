@@ -28,16 +28,16 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/",
-                                "/static/**",
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
                                 "/login.html",
                                 "/index.html",
-                                "/auth-test.html"
+                                "/auth-test.html",
+                                "/api/users/**"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**").authenticated()
+//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                        .requestMatchers("/auth/**").authenticated()
                         .anyRequest().authenticated()
 
                 )

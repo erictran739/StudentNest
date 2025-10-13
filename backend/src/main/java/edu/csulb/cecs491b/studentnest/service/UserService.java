@@ -7,18 +7,29 @@ import edu.csulb.cecs491b.studentnest.entity.Student;
 import edu.csulb.cecs491b.studentnest.entity.User;
 import edu.csulb.cecs491b.studentnest.entity.UserStatus;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class UserService {
 
     private final UserRepository repo;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repo) { this.repo = repo; }
+//    public UserService(UserRepository repo) {
+//        this.repo = repo;
+//    }
+
+    public UserService(UserRepository repo, PasswordEncoder passwordEncoder) {
+        this.repo = repo;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<UserResponse> list() {
         return repo.findAll().stream().map(this::toResponse).toList();
@@ -44,6 +55,17 @@ public class UserService {
 
     public UserResponse update(int id, UpdateUserRequest r) {
         User u = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+
+        // Check if found user has the same email in request
+//        if (!u.getEmail().equals(r.email())) {
+//            throw new IllegalArgumentException("Incorrect email");
+//        }
+//
+//        boolean valid_pass = passwordEncoder.matches(r.password(), u.getPassword());
+//        if (!valid_pass) {
+//            throw new IllegalArgumentException("Incorrect password");
+//        }
+//
         //setters are on the base class works for any subtype
         u.setFirstName(r.firstName());
         u.setLastName(r.lastName());
@@ -59,7 +81,7 @@ public class UserService {
     }
 
     private UserResponse toResponse(User u) {
-    	//if UserResponse expects string for status, pass name()
+        //if UserResponse expects string for status, pass name()
         return new UserResponse(
                 u.getUserID(),
                 u.getFirstName(),
@@ -68,7 +90,7 @@ public class UserService {
                 u.getStatus().name()
         );
     }
-    
+
     private static UserStatus parseStatusOrDefault(String s, UserStatus dflt) {
         if (s == null) return dflt;
         try {
@@ -77,5 +99,5 @@ public class UserService {
             return dflt;
         }
     }
-    
+
 }
