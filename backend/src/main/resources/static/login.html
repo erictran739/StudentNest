@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - StudentNest</title>
+    <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+<div class="login-container">
+    <img id="csulb-emblem" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogodix.com%2Flogo%2F2182744.png&f=1&nofb=1&ipt=cf118d18cd4302ae5fbe54b31cbfbf3edede59e69c9b199e2fec58fd9d8a1e78kkk" alt="csulb-emblem">
+    <h1>StudentNest Login</h1>
+    <form id="loginForm">
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="text" id="email" placeholder="Enter email" required />
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" required />
+        </div>
+
+        <div class="forgot-password-container">
+            <a class="forgot-password-link" href="">Forgot password?</a>
+        </div>
+
+        <button type="submit">Login</button>
+    </form>
+    <p id="message"></p>
+</div>
+
+<script src="js/login.js"></script>
+</body>
+</html>

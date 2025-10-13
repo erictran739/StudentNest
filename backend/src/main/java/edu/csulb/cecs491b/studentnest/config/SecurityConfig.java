@@ -33,6 +33,7 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/login.html",
                                 "/index.html",
+                                "/login.css",
                                 "/auth-test.html",
                                 "/api/users/**"
                         ).permitAll()
