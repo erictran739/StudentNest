@@ -60,4 +60,9 @@ public class AuthController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new AuthResponse("Invalid credentials", null)));
     }
+    
+    @GetMapping("/tryagain") 
+    public Map<String, String> tryagain() {
+    	return Map.of("status", "ok");
+    }
 }

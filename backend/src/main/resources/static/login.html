@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Nest - Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="login-box" id="root"></div>
+
+  <!-- React (CDN) + JSX runtime -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    function LoginForm() {
+      const [username, setUsername] = useState("");
+      const [password, setPassword] = useState("");
+      const [remember, setRemember] = useState(false);
+      const [status, setStatus] = useState("");
+
+      const onSubmit = async (e) => {
+        e.preventDefault();
+        setStatus("Submitting...");
+        try {
+          const res = await fetch("/api/auth/login", {
+          const res = await fetch("http://localhost:8080/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ email: username, password: password })
+          });
+          const data = await res.json();
+          if (!res.ok || !data.ok) { setStatus(data.message || "Login failed"); return; }
+          if (data.token) localStorage.setItem("authToken", data.token);
+          // Redirect or update UI
+          window.location.href = "/Profile.html";
+        } catch (err) { setStatus("Network error: " + err.message); }
+      };
+
+      return (
+        <>
+          <h2>Student Nest Login</h2>
+          <form onSubmit={onSubmit}>
+            <input
+              type="text"
+              placeholder="Username"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            {/* Remember me + Forgot password row */}
+            <div className="options-row">
+              <label className="remember-me">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                Remember Me
+              </label>
+              <a
+                href="#"
+                className="forgot-link"
+                onClick={(e) => { e.preventDefault(); setStatus("Forgot Password clicked (no-op)"); }}
+              >
+                Forgot Password?
+              </a>
+            </div>
+
+            <button type="submit" className="login-btn">Login</button>
+
+            {/* Sign up prompt */}
+            <div className="signup-row">
+              Don’t have an account?
+              <a href="#" className="signup-link" onClick={(e) => e.preventDefault()}>
+                Create One!
+              </a>
+            </div>
+          </form>
+
+          {status && <div className="note" style={{ marginTop: 8 }}>{status}</div>}
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<LoginForm />);
+  </script>
+</body>

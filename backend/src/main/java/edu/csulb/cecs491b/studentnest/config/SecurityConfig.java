@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +25,7 @@ public class SecurityConfig {
     http.csrf(csrf -> csrf.disable());
     http.cors(Customizer.withDefaults());
     http.authorizeHttpRequests(auth -> auth
+    	  .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
           .requestMatchers("/api/auth/**","/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
           .requestMatchers("/api/users/**").authenticated()
           .anyRequest().authenticated()
@@ -42,7 +44,7 @@ public class SecurityConfig {
   CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration cfg = new CorsConfiguration();
       //this is for local (React on 3000, Vite on 5173)
-      cfg.setAllowedOriginPatterns(List.of("http://localhost:*", "https://*.ngrok-free.app","https://*.ngrok.app", "http:/127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
+      cfg.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:*", "https://*.ngrok-free.app","https://*.ngrok.app", "http://127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
       cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
       cfg.setAllowedHeaders(List.of("*"));
       cfg.setAllowCredentials(true);
