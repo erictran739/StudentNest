@@ -7,7 +7,17 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="login-box" id="root"></div>
+  <!-- Animated organic rings container -->
+  <div class="ring" style="--clr:#ff6ec7">
+    <i></i>
+    <i></i>
+    <i></i>
+    
+    <!-- Centered login area -->
+    <div class="login">
+      <div class="login-box" id="root"></div>
+    </div>
+  </div>
 
   <!-- React (CDN) + JSX runtime -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -35,14 +45,16 @@
           const data = await res.json();
           if (!res.ok || !data.ok) { setStatus(data.message || "Login failed"); return; }
           if (data.token) localStorage.setItem("authToken", data.token);
-          // Redirect or update UI
+          setStatus("Success! Redirecting...");
           window.location.href = "/Profile.html";
-        } catch (err) { setStatus("Network error: " + err.message); }
+        } catch (err) {
+          setStatus("Network error: " + err.message);
+        }
       };
 
       return (
         <>
-          <h2>Student Nest Login</h2>
+          <h2>StudentNest Login</h2>
           <form onSubmit={onSubmit}>
             <input
               type="text"
@@ -69,13 +81,7 @@
                 />
                 Remember Me
               </label>
-              <a
-                href="#"
-                className="forgot-link"
-                onClick={(e) => { e.preventDefault(); setStatus("Forgot Password clicked (no-op)"); }}
-              >
-                Forgot Password?
-              </a>
+              <a href="#" className="forgot">Forgot Password?</a>
             </div>
 
             <button type="submit" className="login-btn">Login</button>
@@ -83,7 +89,7 @@
             {/* Sign up prompt */}
             <div className="signup-row">
               Don’t have an account?
-              <a href="#" className="signup-link" onClick={(e) => e.preventDefault()}>
+              <a href="/register.html" className="signup-link">
                 Create One!
               </a>
             </div>

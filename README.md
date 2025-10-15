@@ -37,14 +37,14 @@
 ##  API Endpoints
 
 ### Login
-#### /auth/login/{student | professor}
+#### /auth/login/
 | type   | description |
 |--------|-------------|
 | string | email       |
 | string | password    |
 
 ### Register
-#### /auth/register/{student | professor}
+#### /auth/register/
 | type   | description |
 |--------|-------------|
 | string | first name  |
