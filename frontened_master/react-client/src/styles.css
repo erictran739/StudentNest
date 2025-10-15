@@ -1,4 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap");
+
+/* Ensure note text is visible and not too close to the button */
+.note { color: rgba(255,255,255,0.85); line-height: 1.4; }
+
 /* ===== Baseline & Theme ===== */
 * {
   margin: 0;

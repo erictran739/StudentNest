@@ -7,7 +7,17 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="login-box" id="root"></div>
+  <!-- Animated organic rings container -->
+  <div class="ring" style="--clr:#ff6ec7">
+    <i></i>
+    <i></i>
+    <i></i>
+
+    <!-- Centered login area (keeps React functionality intact) -->
+    <div class="login">
+      <div class="login-box" id="root"></div>
+    </div>
+  </div>
 
   <!-- React (CDN) + JSX runtime -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -42,7 +52,7 @@
 
       return (
         <>
-          <h2>Student Nest Login</h2>
+          <h2>StudentNest Login</h2>
           <form onSubmit={onSubmit}>
             <input
               type="text"
