@@ -1,11 +1,6 @@
 /backend/target/
-.project
-.classpath
-.setting/
-/backend/target/
-.project
-.classpath
-.setting/
-/backend/target/
-//frontend_master/
-/frontened_master/
+/backend/src/main/resources/application.yml
+/backend/.factorypath
+/backend/.settings
+
+.idea
