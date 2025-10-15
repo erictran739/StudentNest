@@ -1,43 +1,38 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [status, setStatus] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus("Submitting...");
+  e.preventDefault();
+  setStatus("Submitting...");
 
-    try {
-      const res = await fetch("/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: username, password })
-      });
+  try {
+    const res = await fetch("https://puggu.dev/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: username, password: password }),
+    });
 
-      // Some backends return empty body on 401/204 → guard json()
-      const ct = res.headers.get("content-type") || "";
-      let data = null;
-      if (ct.includes("application/json")) {
-        data = await res.json();
-      } else {
-        const text = await res.text();
-        data = text ? { message: text } : {};
-      }
+    const data = await res.json().catch(() => ({}));
 
-      if (!res.ok || (data && data.ok === false)) {
-        setStatus((data && data.message) || `Login failed (${res.status})`);
-        return;
-      }
-
-      if (data && data.token) localStorage.setItem("authToken", data.token);
-      window.location.href = "/Profile.html"; // (swap to React Router later)
-    } catch (err) {
-      setStatus("Network error: " + err.message);
+    if (!res.ok) {
+      setStatus(data.message || `Login failed (${res.status})`);
+      return;
     }
-  };
+
+    setStatus("Login successful!");
+    navigate("/home");
+
+  } catch (err) {
+    setStatus("Network error: " + err.message);
+  }
+};
 
   return (
     <div className="login-box">
