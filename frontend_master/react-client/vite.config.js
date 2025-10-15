@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/auth': 'http://localhost:8080',
-      '/api': 'http://localhost:8080'
+      '/auth': { target: 'https://puggu.dev', changeOrigin: true, secure: true },
+      '/api':  { target: 'https://puggu.dev', changeOrigin: true, secure: true },
     }
   }
 })

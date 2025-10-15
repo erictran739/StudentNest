@@ -12,8 +12,8 @@
     <i></i>
     <i></i>
     <i></i>
-
-    <!-- Centered login area (keeps React functionality intact) -->
+    
+    <!-- Centered login area -->
     <div class="login">
       <div class="login-box" id="root"></div>
     </div>
@@ -45,9 +45,11 @@
           const data = await res.json();
           if (!res.ok || !data.ok) { setStatus(data.message || "Login failed"); return; }
           if (data.token) localStorage.setItem("authToken", data.token);
-          // Redirect or update UI
+          setStatus("Success! Redirecting...");
           window.location.href = "/Profile.html";
-        } catch (err) { setStatus("Network error: " + err.message); }
+        } catch (err) {
+          setStatus("Network error: " + err.message);
+        }
       };
 
       return (
@@ -79,13 +81,7 @@
                 />
                 Remember Me
               </label>
-              <a
-                href="#"
-                className="forgot-link"
-                onClick={(e) => { e.preventDefault(); setStatus("Forgot Password clicked (no-op)"); }}
-              >
-                Forgot Password?
-              </a>
+              <a href="#" className="forgot">Forgot Password?</a>
             </div>
 
             <button type="submit" className="login-btn">Login</button>
@@ -93,7 +89,7 @@
             {/* Sign up prompt */}
             <div className="signup-row">
               Don’t have an account?
-              <a href="#" className="signup-link" onClick={(e) => e.preventDefault()}>
+              <a href="/register.html" className="signup-link">
                 Create One!
               </a>
             </div>

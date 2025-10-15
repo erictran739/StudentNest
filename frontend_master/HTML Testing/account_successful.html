@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Created • StudentNest</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ring" style="--clr:#7bd88f">
+    <i></i>
+    <i></i>
+    <i></i>
+
+    <div class="login">
+      <div class="login-box">
+        <h2>Account successfully created 🎉</h2>
+        <p class="note" id="redirect-msg" style="margin: 8px 0 16px;">Redirecting to login in <strong><span id="count">4</span>s</strong>…</p>
+        <div style="display:flex; gap:12px; justify-content:center;">
+          <a id="login-link" href="/login.html" class="login-btn" style="text-align:center; text-decoration:none;">Go to Login</a>
+          <a href="/" class="signup-link" style="align-self:center;">Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get('next') || '/login.html';
+      const link = document.getElementById('login-link');
+      link.href = next;
+
+      // countdown + auto redirect
+      let n = 4; // seconds
+      const span = document.getElementById('count');
+      const timer = setInterval(() => {
+        n -= 1;
+        if (span) span.textContent = n;
+        if (n <= 0) {
+          clearInterval(timer);
+          window.location.href = next;
+        }
+      }, 1000);
+    })();
+  </script>
+</body>
+</html>
