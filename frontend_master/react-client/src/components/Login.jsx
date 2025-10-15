@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -79,9 +81,9 @@ export default function Login() {
 
         <div className="signup-row">
           Don’t have an account?
-          <a href="/register" className="signup-link" onClick={(e) => { e.preventDefault(); navigate("/register"); }}>
+          <Link to="/register" className="signup-link">
             Create One!
-          </a>
+          </Link>
         </div>
       </form>
 
