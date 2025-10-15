@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UpdateUserRequest(
-        @NotBlank String firstName,
-        @NotBlank String lastName,
-        @Email @NotBlank String email,
+        String firstName,
+        String lastName,
+        @Email String email,
         @Size(min = 6) String password,
-        @NotBlank String status
+        String status
 ) {}
