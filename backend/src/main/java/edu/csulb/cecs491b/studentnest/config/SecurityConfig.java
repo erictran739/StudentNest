@@ -20,60 +20,37 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain security(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable());
-        http.cors(Customizer.withDefaults());
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/auth/**",
-                                "/",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
-                                "/login.html",
-                                "/index.html",
-                                "/login.css",
-                                "/auth-test.html",
-                                "/api/users/**"
-                        ).permitAll()
-//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                        .requestMatchers("/auth/**").authenticated()
-                        .anyRequest().authenticated()
-
-                )
-                .httpBasic(b -> b.disable())
-                .formLogin(f -> f.disable());
-        return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOriginPatterns(List.of(
-                "http://localhost:*",
-                "http://127.0.0.1:*",
-                "http://puggu.dev:*",
-                "http://puggu.dev",
-                "https://puggu.dev:*",
-                "https://puggu.dev"
-                // "http:/127.0.0.1:*",
-                // "http://192.168.*.*:*"
-        ));
-        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
-        cfg.setAllowedHeaders(List.of("*"));
-        cfg.setExposedHeaders(List.of("*"));
-        cfg.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cfg);
-
-        return source;
-    }
-
+  @Bean
+  public SecurityFilterChain security(HttpSecurity http) throws Exception {
+    http.csrf(csrf -> csrf.disable());
+    http.cors(Customizer.withDefaults());
+    http.authorizeHttpRequests(auth -> auth
+    	  .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
+          .requestMatchers("/api/auth/**","/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
+          .requestMatchers("/api/users/**").authenticated()
+          .anyRequest().authenticated()
+          
+      )
+      .httpBasic(b -> b.disable())
+      .formLogin(f -> f.disable());
+    return http.build();
+  }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+	  return new BCryptPasswordEncoder();
+  }
+  //
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+      CorsConfiguration cfg = new CorsConfiguration();
+      //this is for local (React on 3000, Vite on 5173)
+      cfg.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:*", "https://*.ngrok-free.app","https://*.ngrok.app", "http://127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
+      cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+      cfg.setAllowedHeaders(List.of("*"));
+      cfg.setAllowCredentials(true);
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", cfg);
+      return source;
+  }
+  
 }
