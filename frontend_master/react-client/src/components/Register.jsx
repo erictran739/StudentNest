@@ -13,7 +13,7 @@ export default function Register() {
   const [status, setStatus]       = useState("");
   const [busy, setBusy]           = useState(false);
 
-  const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const validEmail = (v) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
 
   const validate = () => {
     if (!studentId.trim()) return "Student ID is required.";
