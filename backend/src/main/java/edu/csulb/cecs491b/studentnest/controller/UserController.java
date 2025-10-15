@@ -36,7 +36,7 @@ public class UserController {
 //        return service.update(id, req);
 //    }
     
-    @PatchMapping("/{id")
+    @PatchMapping("/{id}")
     public UserResponse patch(@PathVariable int id, @RequestBody UpdateUserRequest req) {
     	return service.partialUpdate(id, req);
     }
