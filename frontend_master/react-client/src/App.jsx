@@ -8,7 +8,7 @@ import AccountFailure from "./components/AccountFailure";
 
 function App() {
   return (
-    <div className="ring" style={{ "--clr": "#ff6ec7" }}>
+    <div className="ring" style={{ "--clr": "#ecaa00" }}>
       <i></i>
       <i></i>
       <i></i>
