@@ -79,7 +79,7 @@ export default function Login() {
 
         <div className="signup-row">
           Don’t have an account?
-          <a href="#" className="signup-link" onClick={(e) => e.preventDefault()}>
+          <a href="/register" className="signup-link" onClick={(e) => { e.preventDefault(); navigate("/register"); }}>
             Create One!
           </a>
         </div>
