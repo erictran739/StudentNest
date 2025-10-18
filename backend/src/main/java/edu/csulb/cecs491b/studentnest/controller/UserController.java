@@ -41,11 +41,25 @@ public class UserController {
     	return service.partialUpdate(id, req);
     }
     
-    
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/enroll")
+    public ResponseEntity<Void> enroll(@PathVariable int id, int sectionID){
+        // Check if user exits
+        // Check if section exists
+        // enroll/assign section to user
+        return null;
+    }
+
+    @PostMapping("/drop")
+    public ResponseEntity<Void> drop(@PathVariable int id, int sectionID){
+        // Check if user exits
+        // Check if section exists
+        // drop/resign section from user
+        return null;
     }
 }
