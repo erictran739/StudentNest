@@ -4,20 +4,22 @@ import { useNavigate } from "react-router-dom";
 export default function Register() {
   const navigate = useNavigate();
 
-  const [studentId, setStudentId] = useState("");
-  const [name, setName]           = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName]   = useState("");
   const [email, setEmail]         = useState("");
   const [password, setPassword]   = useState("");
   const [confirm, setConfirm]     = useState("");
-  const [role, setRole]           = useState("student");
+  const [role, setRole]           = useState("student"); // student | professor
   const [status, setStatus]       = useState("");
   const [busy, setBusy]           = useState(false);
 
-  const validEmail = (v) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
+  // Simple, reliable email check
+  const validEmail = (v) =>
+    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
 
   const validate = () => {
-    if (!studentId.trim()) return "Student ID is required.";
-    if (!name.trim()) return "Name is required.";
+    if (!firstName.trim()) return "First name is required.";
+    if (!lastName.trim())  return "Last name is required.";
     if (!validEmail(email)) return "Please enter a valid email.";
     if (password.length < 8) return "Password must be at least 8 characters.";
     if (password !== confirm) return "Passwords do not match.";
@@ -37,9 +39,9 @@ export default function Register() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          student_id: studentId.trim(),
-          name: name.trim(),
-          email: email.trim(),
+          firstName: firstName.trim(),
+          lastName:  lastName.trim(),
+          email:     email.trim(),
           password
         })
       });
@@ -54,7 +56,7 @@ export default function Register() {
         return;
       }
 
-      // optional: if your API returns a token and you want to store it:
+      // Optional: store token if returned
       if (data.token) localStorage.setItem("authToken", data.token);
 
       navigate("/account-success?next=/login");
@@ -72,17 +74,17 @@ export default function Register() {
       <form onSubmit={handleSubmit} noValidate>
         <input
           type="text"
-          placeholder="Student ID"
+          placeholder="First Name"
           required
-          value={studentId}
-          onChange={(e) => setStudentId(e.target.value)}
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Full Name"
+          placeholder="Last Name"
           required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
         />
         <input
           type="email"
@@ -106,6 +108,7 @@ export default function Register() {
           onChange={(e) => setConfirm(e.target.value)}
         />
 
+        {/* Role selector: student | professor */}
         <div className="options-row" style={{ justifyContent: "center", gap: 12 }}>
           <label className="remember-me">
             <input
@@ -121,21 +124,11 @@ export default function Register() {
             <input
               type="radio"
               name="role"
-              value="teacher"
-              checked={role === "teacher"}
-              onChange={() => setRole("teacher")}
+              value="professor"
+              checked={role === "professor"}
+              onChange={() => setRole("professor")}
             />
-            Teacher
-          </label>
-          <label className="remember-me">
-            <input
-              type="radio"
-              name="role"
-              value="admin"
-              checked={role === "admin"}
-              onChange={() => setRole("admin")}
-            />
-            Admin
+            Professor
           </label>
         </div>
 
@@ -145,7 +138,11 @@ export default function Register() {
 
         <div className="signup-row">
           Already have an account?
-          <a href="/login" className="signup-link" onClick={(e) => { e.preventDefault(); navigate("/login"); }}>
+          <a
+            href="/login"
+            className="signup-link"
+            onClick={(e) => { e.preventDefault(); navigate("/login"); }}
+          >
             Log In
           </a>
         </div>
