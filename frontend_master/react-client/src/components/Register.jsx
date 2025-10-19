@@ -10,8 +10,8 @@ export default function Register() {
   const [password, setPassword]   = useState("");
   const [confirm, setConfirm]     = useState("");
   const [role, setRole]           = useState("student"); // student | professor
-  const [status, setStatus]       = useState("");
-  const [busy, setBusy]           = useState(false);
+  // const [status, setStatus]       = useState("");
+  // const [busy, setBusy]           = useState(false);
 
   // Simple, reliable email check
   const validEmail = (v) =>
