@@ -13,7 +13,10 @@ import edu.csulb.cecs491b.studentnest.controller.dto.LoginRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.RegisterRequest;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import edu.csulb.cecs491b.studentnest.entity.Admin;
+import edu.csulb.cecs491b.studentnest.entity.Professor;
 import edu.csulb.cecs491b.studentnest.entity.Student;
+import edu.csulb.cecs491b.studentnest.entity.User;
 import edu.csulb.cecs491b.studentnest.entity.UserStatus;
 
 //this is 
@@ -31,18 +34,68 @@ public class AuthController {
         if (users.findByEmail(req.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse("error", "Email already exists"));
         }
-        //create a student as the concrete subtype
-        Student s = new Student();
-        s.setFirstName(req.getFirstName());
-        s.setLastName(req.getLastName());
-        s.setEmail(req.getEmail());
-        s.setPassword(passwordEncoder.encode(req.getPassword()));
-        s.setStatus(UserStatus.ACTIVE);
         
+        
+        User newUser; // declare before switch
+
+        String role = req.getRole() == null ? "" : req.getRole().toLowerCase();
+        switch (role) {
+            case "teacher":
+            case "professor":
+                newUser = new Professor();
+                break;
+            case "admin":
+                newUser = new Admin();
+                break;
+            default:
+            	 // 👇 This block handles STUDENT registration
+                Student s = new Student();
+                if (req.getMajor() != null) {
+                    try {
+                        s.setMajor(edu.csulb.cecs491b.studentnest.entity.Major.valueOf(
+                                req.getMajor().toUpperCase()
+                        ));
+                    } catch (IllegalArgumentException e) {
+                        s.setMajor(edu.csulb.cecs491b.studentnest.entity.Major.UNDECLARED);
+                    }
+                } else {
+                    s.setMajor(edu.csulb.cecs491b.studentnest.entity.Major.UNDECLARED);
+                }
+
+                // set enrollment year if provided, otherwise default
+                if (req.getEnrollmentYear() > 0) {
+                    s.setEnrollmentYear(req.getEnrollmentYear());
+                } else {
+                    s.setEnrollmentYear(2025);
+                }
+
+                newUser = s;
+                break;
+        }
+        
+
+    // Common fields for all user types
+    newUser.setFirstName(req.getFirstName());
+    newUser.setLastName(req.getLastName());
+    newUser.setEmail(req.getEmail());
+    newUser.setPassword(passwordEncoder.encode(req.getPassword()));
+    newUser.setStatus(UserStatus.ACTIVE);
+
+        users.save(newUser);
+        
+        
+        //create a student as the concrete subtype
+//        Student s = new Student();
+//        s.setFirstName(req.getFirstName());
+//        s.setLastName(req.getLastName());
+//        s.setEmail(req.getEmail());
+//        s.setPassword(passwordEncoder.encode(req.getPassword()));
+//        s.setStatus(UserStatus.ACTIVE);
+//        
         //this line we will add after 
         //s.setMajor(Major.UNDECLARED);
         //s.setEnrollmentYear(2025);
-        users.save(s);
+//        users.save(s);
         return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse("registered", req.getEmail()));
     }
 
