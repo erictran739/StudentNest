@@ -55,7 +55,7 @@ async function register() {
     password:  document.getElementById('pw').value
   };
   try {
-    const r = await fetch('/api/auth/register', {
+    const r = await fetch('/auth/register', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(body)
@@ -71,7 +71,7 @@ async function login() {
     password: document.getElementById('lpw').value
   };
   try {
-    const r = await fetch('/api/auth/login', {
+    const r = await fetch('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(body)
@@ -83,7 +83,7 @@ async function login() {
 
 async function listUsers() {
   try {
-    const r = await fetch('/api/users');
+    const r = await fetch('/auth/users');
     const data = await r.json();
     show({status:r.status, data});
   } catch (e) { show(String(e)); }
