@@ -5,7 +5,7 @@ export default function AccountSuccess() {
   const navigate = useNavigate();
   const { search } = useLocation();
   const params = new URLSearchParams(search);
-  const next = params.get("next") || "/login";
+  const next = params.get("next") || "/";
 
   const [count, setCount] = useState(4);
 
