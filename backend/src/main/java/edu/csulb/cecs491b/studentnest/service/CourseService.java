@@ -5,6 +5,7 @@ import edu.csulb.cecs491b.studentnest.controller.dto.course.AddSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.course.CourseResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.ErrorResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.course.CreateCourseRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
 import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.entity.Section;
 import edu.csulb.cecs491b.studentnest.repository.CourseRepository;
@@ -76,34 +77,42 @@ public class CourseService {
 //        return ResponseEntity.status(HttpStatus.OK).body("Section successfully added to course");
     }
 
-//    public ResponseEntity<?> getCourseSection(int course_id, int section_id) {
-//        // Get Course
-//        Course course = getCourse(course_id);
-//        // Get Section
-//        Section section = getSection(section_id);
-//        // Return Section
-//        return null;
-//    }
+    public ResponseEntity<?> getSectionOfCourse(int course_id, int section_id) {
+        // Get Course
+        Course course = getCourse(course_id);
+        if (course == null){
+            return ErrorResponse.build(HttpStatus.BAD_REQUEST, "Course does not exist");
+        }
+
+        // Get Section
+        Section section = getSection(section_id);
+        if (section == null){
+            return ErrorResponse.build(HttpStatus.BAD_REQUEST, "Section does not exist");
+        }
+
+        // Check if Section has a valid Course
+        if (section.getCourse() == null){
+            return ErrorResponse.build(HttpStatus.INTERNAL_SERVER_ERROR, "Section does not contain a valid course");
+        }
+
+        if (section.getCourse().getCourseID() != course_id){
+            return ErrorResponse.build(HttpStatus.BAD_REQUEST, "The given Section and Course are not related");
+        }
+
+        // Return Section
+        return SectionResponse.build(HttpStatus.OK, section, course);
+    }
 
     // Helper functions
     public Course getCourse(int id){
         Optional<Course> courseOptional = courseRepository.findById(id);
-        if (courseOptional.isEmpty()){
-            return null;
-        }
-        Course course = courseOptional.get();
-
-        return course;
+        return courseOptional.orElse(null);
     }
 
-//    public Course getSection(int id){
-//        Optional<Section> sectionOptional = sectionRepository.findById(id);
-//        if (courseOptional.isEmpty()){
-//            return null;
-//        }
-//        Course course = courseOptional.get();
-//
-//        return course;
-//    }
+    public Section getSection(int id){
+        Optional<Section> sectionOptional = sectionRepository.findById(id);
+        return sectionOptional.orElse(null);
+
+    }
 
 }
