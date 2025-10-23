@@ -27,14 +27,24 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/auth/**",
+                                "/api/users/**",
+                                "/api/courses/**",
+                                // Web controller endpoints
                                 "/",
+                                "/login",
+                                "/auth-test",
+                                "/profile",
+                                // Explicit for now
+                                // I think  I have to move .html files to resources/private
+                                // so I don't have to use expose them as endpoints
+                                "/index.html",
+                                "/login.html",
+                                "/auth-test.html",
+                                "/profile.html",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**",
-                                "/login.html",
-                                "/index.html",
-                                "/auth-test.html",
-                                "/api/users/**"
+                                "/html/**",
+                                "/images/**"
                         ).permitAll()
 //                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 //                        .requestMatchers("/auth/**").authenticated()

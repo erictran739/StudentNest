@@ -1,8 +1,8 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.CreateUserRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.UpdateUserRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.UserResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.*;
+import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollResponse;
 import edu.csulb.cecs491b.studentnest.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -48,16 +48,13 @@ public class UserController {
     }
 
     @PostMapping("/enroll")
-    public ResponseEntity<Void> enroll(@PathVariable int id, int sectionID){
-        // Check if user exits
-        // Check if section exists
-        // enroll/assign section to user
-        return null;
+    public ResponseEntity<EnrollResponse> enroll(@RequestBody EnrollRequest req){
+        return service.enroll(req.user_id(), req.section_id());
     }
 
     @PostMapping("/drop")
-    public ResponseEntity<Void> drop(@PathVariable int id, int sectionID){
-        // Check if user exits
+    public ResponseEntity<EnrollResponse> enroll(@RequestBody DropRequest req){
+            // Check if user exits
         // Check if section exists
         // drop/resign section from user
         return null;

@@ -21,9 +21,14 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private List<Section> sections;
 
+    @ManyToOne
+    @JoinColumn(name="professor_id")
+    private Professor professor_id;
+
     private String name;
-    private String abbreviation;
     private String description;
     private Department department;
+    private int credits;
 
+    // TODO: Prerequisites
 }

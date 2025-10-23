@@ -12,17 +12,20 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Enrollment {
-    @Id
-    private int enrollmentID;
+    @EmbeddedId
+    private EnrollmentID enrollmentID;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @MapsId("userID")
+    @JoinColumn(name = "user_id")
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name="section_id")
+    @MapsId("sectionID")
+    @JoinColumn(name = "section_id")
     private Section section;
 
     private String enrollmentDate;
+    private char grade; // A-D, F, P,
 }
 

@@ -100,8 +100,21 @@ public enum Department {
 
     private final String abbreviation;
 
-   Department(String abbreviation) {
+    Department(String abbreviation) {
         this.abbreviation = abbreviation;
     }
+
+    public static Department fromAbbreviation(String abbreviation) {
+        if (abbreviation == null || abbreviation.isBlank()) return null;
+
+        for (Department dept : Department.values()) {
+            if (dept.getAbbreviation().equalsIgnoreCase(abbreviation)) {
+                return dept;
+            }
+        }
+
+        return null;
+    }
+
 
 }

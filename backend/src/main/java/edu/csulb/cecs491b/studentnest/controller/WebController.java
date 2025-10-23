@@ -9,5 +9,20 @@ public class WebController {
     public String index() {
         return "forward:/index.html";
     }
+
+    @GetMapping(value = {"/login"})
+    public String login() {
+        return "forward:/login.html";
+    }
+
+    @GetMapping(value = {"/auth-test"})
+    public String auth_test() {
+        return "forward:/auth-test.html";
+    }
+
+    @GetMapping(value = {"/profile"})
+    public String profile() {
+        return "forward:/profile.html";
+    }
 }
 

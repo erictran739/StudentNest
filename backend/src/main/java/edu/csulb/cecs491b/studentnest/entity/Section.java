@@ -20,5 +20,18 @@ public class Section {
     @JoinColumn(name="course_id")
     private Course course;
 
+    @ManyToOne
+    @JoinColumn(name="professor_id")
+    private Professor professor_id;
+
     private Department department;
+//        int capacity,
+//        int enrollCount,
+//        String startTime,
+//        String endTime,
+//        String building,
+//        String roomNumber,
+//        String type,        //Lab, Lecture, etc
+//        String term,        // Winter/Spring/Summer/Fall
+//        String date         // MM/DD/YY
 }
