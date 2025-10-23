@@ -29,6 +29,7 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/api/users/**",
                                 "/api/courses/**",
+                                "/api/sections/**",
                                 // Web controller endpoints
                                 "/",
                                 "/login",

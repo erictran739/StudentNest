@@ -8,6 +8,7 @@
             font-family: system-ui, Arial;
             max-width: 760px;
             margin: 24px auto;
+            background: #efefef;
         }
 
         input, button, select {
@@ -29,12 +30,19 @@
         }
 
         section {
-            border: 1px solid #ddd;
+            border: 1px solid #afafaf;
             padding: 16px;
             border-radius: 8px;
             margin: 16px 0;
             display: flex;
             flex-direction: column;
+        }
+
+        .section-title {
+            margin: 0;
+            padding: 0;
+            font-size: xx-large;
+            font-weight: bolder;
         }
     </style>
 </head>
@@ -42,65 +50,88 @@
 <h1>StudentNest API — Browser Tester</h1>
 
 <section>
-    <h2>Register (POST /auth/register)</h2>
-    <label for="fn">First name</label><input id="fn" value="John">
-    <label for="ln">Last name</label><input id="ln" value="Doe">
-    <label for="em">Email</label><input id="em" value="john@email.com">
-    <label for="pw">Password</label><input id="pw" type="password" value="password">
-    <button onclick="register()">Register</button>
+    <div class="section-title">User Endpoints</div>
+    <section>
+        <h2>Register (POST /auth/register)</h2>
+        <label for="fn">First name</label><input id="fn" value="John">
+        <label for="ln">Last name</label><input id="ln" value="Doe">
+        <label for="em">Email</label><input id="em" value="john@email.com">
+        <label for="pw">Password</label><input id="pw" type="password" value="password">
+        <button onclick="register()">Register</button>
+    </section>
+
+    <section>
+        <h2>Login (POST /auth/login)</h2>
+        <label>Email</label><input id="lem" value="john@email.com">
+        <label>Password</label><input id="lpw" type="password" value="password">
+        <button onclick="login()">Login</button>
+    </section>
+
+    <section>
+        <h2>Users (GET /api/users)</h2>
+        <button onclick="listUsers()">Load Users</button>
+    </section>
+
+    <section>
+        <h2>Users (DELETE /api/users/{id})</h2>
+        <label for="delete_id">ID</label><input id="delete_id" value="1" placeholder="ID of user">
+
+        <button onclick="deleteUser()">Delete User</button>
+    </section>
 </section>
 
 <section>
-    <h2>Login (POST /auth/login)</h2>
-    <label>Email</label><input id="lem" value="john@email.com">
-    <label>Password</label><input id="lpw" type="password" value="password">
-    <button onclick="login()">Login</button>
+    <div class="section-title">Course Endpoints</div>
+    <section>
+        <h2>Course (GET /api/courses/get/{id})</h2>
+        <label for="get_course_id">ID</label><input id="get_course_id" value="1" placeholder="ID of course">
+
+        <button onclick="getCourse()">Get Course</button>
+    </section>
+
+    <section>
+        <h2>Course (POST /api/courses/create)</h2>
+        <label for="course_name">Name</label><input id="course_name" value="Intro to Python" placeholder="Course name">
+        <label for="course_description">Description</label><input id="course_description"
+                                                                  value="Introduction course to python"
+                                                                  placeholder="Course description">
+        <label for="course_department">Department</label>
+        <select id="course_department">
+            <option value="CECS">CECS</option>
+            <option value="EE">EE</option>
+        </select>
+        <label for="course_credits">Credits</label>
+        <input id="course_credits" value="3" placeholder="Course credits">
+
+        <button onclick="createCourse()">Create Course</button>
+    </section>
+
+    <section>
+        <h2>Course (POST /api/courses/add/section)</h2>
+        <label for="section_add_course_id">Course ID</label>
+        <input id="section_add_course_id" type="number" value="1" placeholder="Course ID">
+
+        <button onclick="addSectionToCourse()">Create Section</button>
+    </section>
+
+    <section>
+        <h2>Course (GET /api/courses/{course_id}/section/{section_id})</h2>
+        <label for="get_section_course_id">Course ID</label>
+        <input id="get_section_course_id" type="number" value="1" placeholder="Course ID">
+
+        <label for="get_section_section_id">Section ID</label>
+        <input id="get_section_section_id" type="number" value="1" placeholder="Section ID">
+
+        <button onclick="getSectionOfCourse()">Get Section</button>
+    </section>
 </section>
 
 <section>
-    <h2>Users (GET /api/users)</h2>
-    <button onclick="listUsers()">Load Users</button>
+    <section>
+        <h2>Sections (GET /api/sections)</h2>
+        <button onclick="listSections()">Load Sections</button>
+    </section>
 </section>
-
-<section>
-    <h2>Users (DELETE /api/users/{id})</h2>
-    <label for="delete_id">ID</label><input id="delete_id" value="1" placeholder="ID of user">
-
-    <button onclick="deleteUser()">Delete User</button>
-</section>
-
-<section>
-    <h2>Course (GET /api/courses/get/{id})</h2>
-    <label for="get_course_id">ID</label><input id="get_course_id" value="1" placeholder="ID of course">
-
-    <button onclick="getCourse()">Get Course</button>
-</section>
-
-<section>
-    <h2>Course (POST /api/courses/create)</h2>
-    <label for="course_name">Name</label><input id="course_name" value="Intro to Python" placeholder="Course name">
-    <label for="course_description">Description</label><input id="course_description"
-                                                              value="Introduction course to python"
-                                                              placeholder="Course description">
-    <label for="course_department">Department</label>
-    <!--    <input type="text" list="departments" id="course_department" value="CECS" placeholder="Course department">-->
-    <select id="course_department">
-        <option value="CECS">CECS</option>
-        <option value="EE">EE</option>
-    </select>
-    <label for="course_credits">Credits</label>
-    <input id="course_credits" value="3" placeholder="Course credits">
-
-    <button onclick="createCourse()">Create Course</button>
-</section>
-
-<section>
-    <h2>Course (POST /api/courses/add/section)</h2>
-    <label for="section_add_course_id">Course ID</label><input id="section_add_course_id" type="number" value="1" placeholder="Course ID">
-
-    <button onclick="addSectionToCourse()">Create Section</button>
-</section>
-
 <!--<section>-->
 <!--    <h2>Users (PUT /api/users)</h2>-->
 <!--    <label for="update_id">ID</label><input id="update_id" value="john@email.com">-->
@@ -117,136 +148,6 @@
 <h2>Response</h2>
 <pre id="out">Waiting…</pre>
 
-<script>
-    const OUT = document.getElementById('out');
-
-    function show(res) {
-        OUT.textContent = typeof res === 'string' ? res : JSON.stringify(res, null, 2);
-    }
-
-    function showOut(status) {
-        OUT.textContent = status;
-    }
-
-    async function register() {
-        const body = {
-            firstName: document.getElementById('fn').value,
-            lastName: document.getElementById('ln').value,
-            email: document.getElementById('em').value,
-            password: document.getElementById('pw').value
-        };
-        try {
-            const r = await fetch('/auth/register', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body)
-            });
-            const data = await r.json().catch(() => ({}));
-            show({status: r.status, data});
-        } catch (e) {
-            show(String(e));
-        }
-    }
-
-    async function login() {
-        const body = {
-            email: document.getElementById('lem').value,
-            password: document.getElementById('lpw').value
-        }
-        try {
-            const r = await fetch('/auth/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body)
-            });
-            const data = await r.json().catch(() => ({}));
-            show({status: r.status, data});
-        } catch (e) {
-            show(String(e));
-        }
-    }
-
-    async function listUsers() {
-        try {
-            const r = await fetch('/api/users');
-            const data = await r.json();
-            show({status: r.status, data});
-        } catch (e) {
-            show(String(e));
-        }
-    }
-
-    async function getCourse() {
-        try {
-            const id = document.getElementById('get_course_id').value
-
-            const r = await fetch("/api/courses/get/" + id)
-            const data = await r.json()
-            show({status: r.status, data})
-        } catch (e) {
-            show(String(e));
-        }
-    }
-
-    async function createCourse() {
-        const url = "/api/courses/create";
-        const body = {
-            name: document.getElementById('course_name').value,
-            description: document.getElementById('course_description').value,
-            department: document.getElementById('course_department').value,
-            credits: document.getElementById('course_credits').value
-        }
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body)
-            });
-            const data = await response.json();
-
-            show({status: response.status, data});
-        } catch (e) {
-            show(String(e))
-        }
-    }
-
-    async function deleteUser() {
-        const id = document.getElementById('delete_id').value;
-
-        const url = '/api/users/' + id;
-        const body = {method: 'DELETE'};
-
-        try {
-            const r = await fetch(url, body);
-            show({status: r.status});
-        } catch (e) {
-            show(String(e));
-        }
-    }
-
-    async function addSectionToCourse(){
-        const id = document.getElementById('section_add_course_id').value;
-        const url = '/api/courses/add/section';
-        const body = {
-            courseID: id
-        }
-        try {
-            const r = await fetch(url,{
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body)
-            });
-            const data = await r.json();
-            show({status: r.status, data});
-        } catch (e) {
-            show(String(e));
-        }
-    }
-
-    async function updateUser() {
-        const body = {}
-    }
-</script>
+<script src="js/auth-test.js"></script>
 </body>
 </html>

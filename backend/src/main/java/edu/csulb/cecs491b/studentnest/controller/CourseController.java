@@ -13,26 +13,27 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    public CourseController(CourseService service) { this.courseService = service; }
+    public CourseController(CourseService service) {
+        this.courseService = service;
+    }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody CreateCourseRequest request){
+    public ResponseEntity<?> create(@Valid @RequestBody CreateCourseRequest request) {
         return courseService.create(request);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<?> get(@PathVariable int id){
+    public ResponseEntity<?> get(@PathVariable int id) {
         return courseService.get(id);
     }
 
     @PostMapping("/add/section")
-    public ResponseEntity<?> addSection(@Valid @RequestBody AddSectionRequest request){
-        System.out.println(request.courseID());
+    public ResponseEntity<?> addSection(@Valid @RequestBody AddSectionRequest request) {
         return courseService.addSection(request);
     }
 
-//    @GetMapping("/{course_id}/section/{section_id}")
-//    public ResponseEntity<?> getSection(@PathVariable int course_id, int section_id){
-//        return courseService.getSection(course_id, section_id);
-//    }
+    @GetMapping("/{course_id}/section/{section_id}")
+    public ResponseEntity<?> getSection(@PathVariable int course_id, @PathVariable int section_id) {
+        return courseService.getSectionOfCourse(course_id, section_id);
+    }
 }
