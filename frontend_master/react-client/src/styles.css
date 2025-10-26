@@ -11,15 +11,19 @@
   font-family: "Quicksand", sans-serif;
 }
  /* testing */
+
 body {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #111; /* dark stage for neon ring */
+  background: url("./assets/homepage.jpg") no-repeat center center fixed;
+  background-size: cover;
   width: 100%;
   overflow: hidden;
 }
+
+
 
 /* ===== Organic Ring Animation (from user's CSS) ===== */
 .ring {
@@ -466,6 +470,54 @@ body:has(.home-page) {
   opacity: 1;
   pointer-events: auto;
 }
+.role-group {
+  margin-top: 15px;
+  border: none;
+  padding: 0;
+  text-align: left;
+}
+
+.role-legend {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #fff; /* adjust to match your form text color */
+}
+.role-chip {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s ease;
+}
+
+.role-chip:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.role-options {
+  display: flex;
+  flex-direction: column; /* Stack vertically */
+  gap: 6px; /* space between each radio */
+  align-items: flex-start; /* left align */
+}
+
+.role-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: #fff; /* same color as inputs */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.role-chip input[type="radio"] {
+  accent-color: #ffb81c; /* CSULB gold look */
+  transform: scale(1.1);
+}
+
 
 .home-drawer {
   position: fixed;
