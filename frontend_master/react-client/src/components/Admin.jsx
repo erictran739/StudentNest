@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
  * - Only accessible to admins: guard code is present but COMMENTED OUT per your request.
  * - Uses your Home layout/theme classes.
  *
- * Back-end references (from your auth-test.js):
+ * Back-end references:
  *   GET  /api/users          -> list users                                  (implemented in auth-test.js)
  *   // TODO: Update role endpoint is not defined in auth-test.js.
  *   // Example we’ll prep for (adjust to your real API):
@@ -22,7 +22,7 @@ const ROLES = ["Admin", "Student", "Professor"];
 export default function Admin() {
   const nav = useNavigate();
 
-  // ----- Admin-only access (commented as requested) -----
+  // ----- Admin-only access) -----
   // useEffect(() => {
   //   const token = localStorage.getItem("authToken");
   //   const userRole = localStorage.getItem("role"); // or decode from token
@@ -92,7 +92,7 @@ export default function Admin() {
     if (!hasChanges) return;
     setStatus("Applying changes...");
     try {
-      // Example batch apply (adjust to your real API):
+      // Example batch apply:
       // for (const [id, newRole] of Object.entries(pending)) {
       //   const r = await fetch(`/api/users/${encodeURIComponent(id)}`, {
       //     method: "PATCH",
