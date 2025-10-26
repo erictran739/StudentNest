@@ -9,8 +9,8 @@ export default function Register() {
   const [email,     setEmail]     = useState("");
   const [password,  setPassword]  = useState("");
   const [confirm,   setConfirm]   = useState("");
-  //const [status,    setStatus]    = useState("");
-  //const [busy,      setBusy]      = useState(false);
+  const [status,    setStatus]    = useState("");
+  const [busy,      setBusy]      = useState(false);
 
   // Simple, reliable email check
   const validEmail = (v) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
