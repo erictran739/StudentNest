@@ -12,7 +12,6 @@ export default function Register() {
   //const [status,    setStatus]    = useState("");
   //const [busy,      setBusy]      = useState(false);
 
-  // Simple, reliable email check
   const validEmail = (v) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
 
   const validate = () => {
@@ -44,32 +43,27 @@ export default function Register() {
         })
       });
 
-      // Be robust to non-JSON responses (prevents crash/black screen)
+      // Guard against non-JSON responses so we never crash/black-screen
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         const msg = data.message || data.error || "Registration failed";
-        navigate(
-          `/account-failure?status=${encodeURIComponent(String(res.status))}&msg=${encodeURIComponent(msg)}`
-        );
+        navigate(`/account-failure?status=${encodeURIComponent(String(res.status))}&msg=${encodeURIComponent(msg)}`);
         return;
       }
 
-      // Optional: save token if your API returns one
       if (data && data.token) localStorage.setItem("authToken", data.token);
-
       navigate("/account-success?next=/login");
     } catch (e2) {
-      navigate(
-        `/account-failure?status=network&msg=${encodeURIComponent(e2.message || "Network error")}`
-      );
+      navigate(`/account-failure?status=network&msg=${encodeURIComponent(e2.message || "Network error")}`);
     } finally {
       setBusy(false);
     }
   };
 
+  // Minimal inline style so content is visible even if theme CSS is dark
   return (
-    <div className="login-box">
+    <div className="login-box" style={{ color: "#fff", minHeight: 200 }}>
       <h2>Create Your StudentNest Account</h2>
 
       <form onSubmit={handleSubmit} noValidate>
@@ -95,7 +89,7 @@ export default function Register() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          key="password"                    // <- added key as requested
+          key="password"   // <- key added
           type="password"
           placeholder="Password (min 8 chars)"
           required
