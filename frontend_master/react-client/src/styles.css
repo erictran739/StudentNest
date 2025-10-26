@@ -99,6 +99,7 @@ h2 {
 }
 
 /* ===== Inputs (keep existing functionality, adapt to dark theme) ===== */
+input[type="email"],
 input[type="text"],
 input[type="password"] {
   width: 90%;
