@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Auth/User API Test</title>
+  <title>StudentNest API Tester</title>
   <style>
     body { font-family: system-ui, Arial; max-width: 760px; margin: 24px auto; }
-    input, button { padding: 8px; margin: 4px 0; width: 100%; }
+    input, select, button { padding: 8px; margin: 4px 0; width: 100%; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     pre { background:#111; color:#0f0; padding:12px; overflow:auto; }
     section { border:1px solid #ddd; padding:16px; border-radius:8px; margin:16px 0; }
@@ -22,6 +22,22 @@
     </div>
     <label>Email</label><input id="em" value="tony@example.com">
     <label>Password</label><input id="pw" type="password" value="secret123">
+
+    <label>Role</label>
+    <select id="role" onchange="toggleExtraFields()">
+      <option value="student">Student</option>
+      <option value="professor">Professor</option>
+      <option value="admin">Admin</option>
+      <option value="chair">Department Chair</option>
+    </select>
+
+    <div id="chairFields" style="display:none;">
+      <label>Building</label><input id="building" value="Engineering 2">
+      <label>Room Number</label><input id="room" value="E-214">
+      <label>Contact Email</label><input id="contact" value="cecs@csulb.edu">
+      <label>Phone Number</label><input id="phone" value="562-985-1234">
+    </div>
+
     <button onclick="register()">Register</button>
   </section>
 
@@ -32,19 +48,19 @@
     <button onclick="login()">Login</button>
   </section>
 
-  <section>
-    <h2>Users (GET /api/users)</h2>
-    <button onclick="listUsers()">Load Users</button>
-  </section>
-
   <h2>Response</h2>
   <pre id="out">Waiting…</pre>
 
 <script>
 const OUT = document.getElementById('out');
-
 function show(res) {
   OUT.textContent = typeof res === 'string' ? res : JSON.stringify(res, null, 2);
+}
+
+function toggleExtraFields() {
+  const role = document.getElementById('role').value;
+  document.getElementById('chairFields').style.display =
+    role === 'chair' ? 'block' : 'none';
 }
 
 async function register() {
@@ -52,10 +68,20 @@ async function register() {
     firstName: document.getElementById('fn').value,
     lastName:  document.getElementById('ln').value,
     email:     document.getElementById('em').value,
-    password:  document.getElementById('pw').value
+    password:  document.getElementById('pw').value,
+    role:      document.getElementById('role').value
   };
+
+  // If Department Chair selected, add extra fields
+  if (body.role === 'chair') {
+    body.building = document.getElementById('building').value;
+    body.roomNumber = document.getElementById('room').value;
+    body.contactEmail = document.getElementById('contact').value;
+    body.phoneNumber = document.getElementById('phone').value;
+  }
+
   try {
-    const r = await fetch('/auth/register', {
+    const r = await fetch('http://localhost:8080/auth/register', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(body)
@@ -71,20 +97,12 @@ async function login() {
     password: document.getElementById('lpw').value
   };
   try {
-    const r = await fetch('/auth/login', {
+    const r = await fetch('http://localhost:8080/auth/login', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify(body)
     });
     const data = await r.json().catch(()=> ({}));
-    show({status:r.status, data});
-  } catch (e) { show(String(e)); }
-}
-
-async function listUsers() {
-  try {
-    const r = await fetch('/auth/users');
-    const data = await r.json();
     show({status:r.status, data});
   } catch (e) { show(String(e)); }
 }

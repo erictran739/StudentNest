@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import edu.csulb.cecs491b.studentnest.entity.DepartmentChair;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.AuthResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.LoginRequest;
@@ -47,6 +48,18 @@ public class AuthController {
             case "admin":
                 newUser = new Admin();
                 break;
+                
+            case "chair":
+            case "departmentchair":
+                DepartmentChair chair = new DepartmentChair();
+                chair.setBuilding(req.getBuilding());
+                chair.setRoomNumber(req.getRoomNumber());
+                chair.setContactEmail(req.getContactEmail());
+                chair.setPhoneNumber(req.getPhoneNumber());
+                // optional: assign department when we add a Department entity
+                newUser = chair;
+                break;
+                
             default:
             	 // 👇 This block handles STUDENT registration
                 Student s = new Student();
