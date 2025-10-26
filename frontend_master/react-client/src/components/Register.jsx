@@ -40,7 +40,7 @@ export default function Register() {
           firstName: firstName.trim(),
           lastName:  lastName.trim(),
           email:     email.trim(),
-          password
+          password: password.trim()
         })
       });
 
