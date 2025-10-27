@@ -1,7 +1,7 @@
 package edu.csulb.cecs491b.studentnest.controller.dto.course;
 
 import edu.csulb.cecs491b.studentnest.entity.Course;
-import edu.csulb.cecs491b.studentnest.entity.Department;
+import edu.csulb.cecs491b.studentnest.entity.enums.Department;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

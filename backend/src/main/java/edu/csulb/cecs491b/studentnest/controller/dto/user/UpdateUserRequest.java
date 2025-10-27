@@ -1,7 +1,6 @@
-package edu.csulb.cecs491b.studentnest.controller.dto;
+package edu.csulb.cecs491b.studentnest.controller.dto.user;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UpdateUserRequest(

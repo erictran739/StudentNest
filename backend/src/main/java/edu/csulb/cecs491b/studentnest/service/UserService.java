@@ -1,8 +1,11 @@
 package edu.csulb.cecs491b.studentnest.service;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.*;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.CreateUserRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.UpdateUserRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.UserResponse;
 import edu.csulb.cecs491b.studentnest.entity.*;
+import edu.csulb.cecs491b.studentnest.entity.enums.UserStatus;
 import edu.csulb.cecs491b.studentnest.repository.EnrollmentRepository;
 import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;

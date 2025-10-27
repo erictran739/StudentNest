@@ -1,4 +1,4 @@
-package edu.csulb.cecs491b.studentnest.controller.dto;
+package edu.csulb.cecs491b.studentnest.controller.dto.user;
 
 public class LoginRequest {
     private String email;

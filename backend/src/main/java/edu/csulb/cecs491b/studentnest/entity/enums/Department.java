@@ -1,4 +1,4 @@
-package edu.csulb.cecs491b.studentnest.entity;
+package edu.csulb.cecs491b.studentnest.entity.enums;
 
 import lombok.Getter;
 
