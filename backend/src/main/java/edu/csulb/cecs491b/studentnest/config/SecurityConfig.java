@@ -27,8 +27,10 @@ public class SecurityConfig {
     http.authorizeHttpRequests(auth -> auth
     	  .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
           .requestMatchers("/api/auth/**","/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
-          .requestMatchers("/api/users/**").authenticated()
-          .anyRequest().authenticated()
+//          .requestMatchers("/api/users/**").authenticated()
+          .requestMatchers("/api/users/**").permitAll() //this line for testing auth-test.html
+//          .anyRequest().authenticated() 
+          .anyRequest().permitAll()
           
       )
       .httpBasic(b -> b.disable())

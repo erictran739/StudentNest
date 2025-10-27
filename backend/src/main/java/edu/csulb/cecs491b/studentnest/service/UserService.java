@@ -68,10 +68,13 @@ public class UserService {
     }
  
     
+   
     public void delete(int id) {
-        if (!repo.existsById(id)) throw new IllegalArgumentException("User not found: " + id);
-        repo.deleteById(id);
+        var u = repo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+        repo.delete(u);
     }
+
 
     private UserResponse toResponse(User u) {
     	//if UserResponse expects string for status, pass name()
