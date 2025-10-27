@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>StudentNest – Auth & User Admin (Dev)</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width: 900px; margin: 24px auto; }
+    input, select, button, textarea { padding: 8px; margin: 6px 0; width: 100%; box-sizing: border-box; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    section { border:1px solid #ddd; padding:16px; border-radius:10px; margin:16px 0; }
+    .actions { display:flex; gap: 10px; }
+    .ok { color:#0a0; } .err { color:#a00; white-space:pre-wrap; }
+    pre { background:#111; color:#0f0; padding:12px; border-radius:8px; overflow:auto; }
+  </style>
+</head>
+<body onload="init()">
+  <h1>StudentNest – Auth & User Admin (Dev)</h1>
+
+  <!-- HEALTH -->
+  <section>
+    <h2>Health</h2>
+    <button onclick="ping()">GET /auth/tryagain</button>
+    <div id="healthMsg"></div>
+  </section>
+
+  <!-- REGISTER -->
+  <section>
+    <h2>Register</h2>
+    <div class="row">
+      <div><label>First name</label><input id="r_fn" value="Tony"></div>
+      <div><label>Last name</label><input id="r_ln" value="Adhikari"></div>
+    </div>
+    <label>Email</label><input id="r_em" value="tony@example.com">
+    <label>Password</label><input id="r_pw" type="password" value="secret123">
+
+    <label>Role</label>
+    <select id="r_role" onchange="toggleRegisterFields()">
+      <option value="student" selected>Student</option>
+      <option value="professor">Professor</option>
+      <option value="chair">Department Chair</option>
+      <!-- Admin intentionally not here (blocked on backend) -->
+    </select>
+
+    <div id="r_student">
+      <label>Major</label><input id="r_major" value="COMPUTER_SCIENCE">
+      <label>Enrollment Year</label><input id="r_year" type="number" value="2025">
+    </div>
+
+    <div id="r_chair" style="display:none;">
+      <label>Building</label><input id="r_building" value="Engineering 2">
+      <label>Room Number</label><input id="r_room" value="E-214">
+      <label>Contact Email</label><input id="r_contact" value="cecs@csulb.edu">
+      <label>Phone Number</label><input id="r_phone" value="562-985-1234">
+    </div>
+
+    <button onclick="register()">POST /auth/register</button>
+    <div id="regMsg"></div>
+  </section>
+
+  <!-- LOGIN -->
+  <section>
+    <h2>Login</h2>
+    <label>Email</label><input id="l_em" value="tony@example.com">
+    <label>Password</label><input id="l_pw" type="password" value="secret123">
+    <button onclick="login()">POST /auth/login</button>
+    <div id="loginMsg"></div>
+  </section>
+
+  <!-- USER LOOKUP + EDIT/DELETE -->
+  <section>
+    <h2>User Search / Edit / Delete</h2>
+    <div class="actions">
+      <input id="u_id" placeholder="User ID (e.g., 8)" style="max-width:200px;">
+      <button onclick="loadUser()">Load</button>
+      <button onclick="listUsers()">List All</button>
+    </div>
+    <div id="userStatus" class="err"></div>
+
+    <div id="userCard" style="display:none;">
+      <div class="row">
+        <div>
+          <label>First name</label>
+          <input id="u_fn" disabled>
+        </div>
+        <div>
+          <label>Last name</label>
+          <input id="u_ln" disabled>
+        </div>
+      </div>
+      <label>Email</label>
+      <input id="u_em" disabled>
+      <label>Status</label>
+      <select id="u_st" disabled>
+        <option value="ACTIVE">ACTIVE</option>
+        <option value="INACTIVE">INACTIVE</option>
+        <option value="LOCKED">LOCKED</option>
+      </select>
+
+      <div class="actions" style="margin-top:10px;">
+        <button id="editBtn" onclick="toggleEdit(true)">Edit</button>
+        <button id="saveBtn" onclick="saveUser()" style="display:none;">Save</button>
+        <button id="cancelBtn" onclick="toggleEdit(false)" style="display:none;">Cancel</button>
+        <button onclick="deleteUser()" style="margin-left:auto;background:#fee;border:1px solid #f88;">Delete</button>
+      </div>
+
+      <h3>Raw JSON</h3>
+      <pre id="u_raw"></pre>
+      <div id="u_msg"></div>
+    </div>
+
+    <h3>Response (last request)</h3>
+    <pre id="out">Waiting…</pre>
+  </section>
+
+<script>
+const API = 'http://localhost:8080';
+const OUT = document.getElementById('out');
+
+function init(){ toggleRegisterFields(); }
+function showOut(obj){ OUT.textContent = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2); }
+function setText(id, text, ok=false){ const el = document.getElementById(id); el.className = ok?'ok':'err'; el.textContent=text; }
+
+function toggleRegisterFields(){
+  const role = document.getElementById('r_role').value;
+  document.getElementById('r_student').style.display = role==='student' ? 'block' : 'none';
+  document.getElementById('r_chair').style.display   = role==='chair'   ? 'block' : 'none';
+}
+
+// HEALTH
+async function ping(){
+  const r = await fetch(`${API}/auth/tryagain`);
+  const j = await r.json(); setText('healthMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok);
+  showOut({status:r.status, data:j});
+}
+
+// REGISTER
+async function register(){
+  const role = document.getElementById('r_role').value.toLowerCase();
+  const body = {
+    firstName: document.getElementById('r_fn').value,
+    lastName:  document.getElementById('r_ln').value,
+    email:     document.getElementById('r_em').value,
+    password:  document.getElementById('r_pw').value,
+    role
+  };
+  if(role==='student'){
+    body.major = document.getElementById('r_major').value;
+    body.enrollmentYear = parseInt(document.getElementById('r_year').value || '0', 10);
+  }
+  if(role==='chair'){
+    body.building     = document.getElementById('r_building').value;
+    body.roomNumber   = document.getElementById('r_room').value;
+    body.contactEmail = document.getElementById('r_contact').value;
+    body.phoneNumber  = document.getElementById('r_phone').value;
+  }
+  const r = await fetch(`${API}/auth/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  const j = await r.json().catch(()=> ({}));
+  setText('regMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok || r.status===201);
+  showOut({status:r.status, data:j});
+}
+
+// LOGIN
+async function login(){
+  const body = { email: document.getElementById('l_em').value, password: document.getElementById('l_pw').value };
+  const r = await fetch(`${API}/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  const j = await r.json().catch(()=> ({}));
+  setText('loginMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok);
+  showOut({status:r.status, data:j});
+}
+
+// USERS
+const els = {
+  userCard: document.getElementById('userCard'),
+  status:   document.getElementById('userStatus'),
+  fn:       document.getElementById('u_fn'),
+  ln:       document.getElementById('u_ln'),
+  em:       document.getElementById('u_em'),
+  st:       document.getElementById('u_st'),
+  raw:      document.getElementById('u_raw'),
+  msg:      document.getElementById('u_msg'),
+  id:       document.getElementById('u_id')
+};
+let originalUser = null;
+
+function setDisabled(dis){ els.fn.disabled = els.ln.disabled = els.em.disabled = els.st.disabled = dis; }
+function toggleEdit(edit){
+  setDisabled(!edit);
+  document.getElementById('editBtn').style.display   = edit ? 'none' : 'inline-block';
+  document.getElementById('saveBtn').style.display   = edit ? 'inline-block' : 'none';
+  document.getElementById('cancelBtn').style.display = edit ? 'inline-block' : 'none';
+  els.msg.textContent='';
+  if(!edit && originalUser) fillForm(originalUser);
+}
+function fillForm(u){ els.fn.value=u.firstName||''; els.ln.value=u.lastName||''; els.em.value=u.email||''; els.st.value=(u.status||'ACTIVE').toUpperCase(); els.raw.textContent=JSON.stringify(u,null,2); }
+
+async function listUsers(){
+  const r = await fetch(`${API}/api/users`);
+  const j = await r.json();
+  showOut({status:r.status, data:j});
+}
+
+async function loadUser(){
+  const id = (els.id.value||'').trim(); if(!id){ els.status.textContent='Enter a user id.'; return; }
+  els.status.textContent='Loading…';
+  const r = await fetch(`${API}/api/users/${id}`);
+  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+  if(r.status===403){ els.status.textContent='403 Forbidden: backend blocking /api/users/**'; els.userCard.style.display='none'; return; }
+  if(r.ok){
+    originalUser=j; fillForm(j); setDisabled(true); toggleEdit(false);
+    els.userCard.style.display='block'; els.status.textContent=`Loaded user #${id}`;
+  }else{
+    els.userCard.style.display='none'; els.status.textContent=`GET ${r.status}: ${typeof j==='string'?j:JSON.stringify(j)}`;
+  }
+  showOut({status:r.status, data:j});
+}
+
+async function saveUser(){
+  const id = (els.id.value||'').trim();
+  const p = {};
+  if(els.fn.value!==originalUser.firstName) p.firstName=els.fn.value;
+  if(els.ln.value!==originalUser.lastName)  p.lastName =els.ln.value;
+  if(els.em.value!==originalUser.email)     p.email    =els.em.value;
+  if((els.st.value||'').toUpperCase()!==(originalUser.status||'').toUpperCase()) p.status=els.st.value.toUpperCase();
+  if(Object.keys(p).length===0){ els.msg.textContent='Nothing to update.'; toggleEdit(false); return; }
+  const r = await fetch(`${API}/api/users/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(p)});
+  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+  if(r.ok){ originalUser=j; fillForm(j); toggleEdit(false); els.msg.textContent='Updated successfully.'; els.msg.className='ok'; }
+  else { els.msg.textContent=`PATCH ${r.status}: ${typeof j==='string'?j:JSON.stringify(j)}`; els.msg.className='err'; }
+  showOut({status:r.status, data:j});
+}
+
+async function deleteUser(){
+  const id = (els.id.value||'').trim();
+  if(!confirm(`Delete user #${id}?`)) return;
+  const r = await fetch(`${API}/api/users/${id}`, { method:'DELETE' });
+  if(r.status===204){ els.userCard.style.display='none'; els.status.textContent=`Deleted user #${id}`; els.msg.textContent=''; }
+  else { const t=await r.text(); els.msg.textContent=`DELETE ${r.status}: ${t}`; els.msg.className='err'; }
+  showOut({status:r.status, data: r.status===204 ? 'Deleted' : undefined});
+}
+</script>
+</body>
+</html>
