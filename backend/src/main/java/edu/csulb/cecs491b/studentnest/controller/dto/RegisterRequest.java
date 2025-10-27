@@ -12,6 +12,13 @@ public class RegisterRequest {
     private String major;          //  "Computer Science"
     private int enrollmentYear;    // 2025
     
+    private String building;
+    private String roomNumber;
+    private String contactEmail;
+    private String phoneNumber;
+    private Long departmentId;  // optional for when we linking Department later
+
+    
     
 
     public String getEmail()    { return email; }

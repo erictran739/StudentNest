@@ -79,50 +79,15 @@ public class UserService {
 
         return toResponse(userRepository.save(u));
     }
-
+ 
+    
+   
     public void delete(int id) {
-        if (!userRepository.existsById(id)) throw new IllegalArgumentException("User not found: " + id);
-        userRepository.deleteById(id);
+        var u = repo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+        repo.delete(u);
     }
 
-    // We don't know what kind of response yet
-    // The frontend can check by the status code first, then decide how to parse it?
-    public ResponseEntity<EnrollResponse> enroll(int user_id, int section_id){
-        // Get Student
-        Optional<User> userOptional = userRepository.findById(user_id);
-        if (userOptional.isEmpty()){ // Check if user exists
-            return EnrollResponse.build(HttpStatus.NOT_FOUND, "The user was not found", user_id, section_id);
-        }
-
-        User user = userOptional.get();
-        if (!(user instanceof Student student)){ // Check if user is a student
-            return EnrollResponse.build(HttpStatus.BAD_REQUEST, "The user is not a student", user_id, section_id);
-        }
-
-        // Get Section
-        Optional<Section> sectionOptional = sectionRepository.findById(section_id);
-        if (sectionOptional.isEmpty()){
-            return EnrollResponse.build(HttpStatus.NOT_FOUND, "The section was not found", user_id, section_id);
-        }
-        Section section = sectionOptional.get();
-
-        //TODO: Check if the student is already enrolled in the section
-//        boolean exists = enrollmentRepository.existsByUserIdAndSectionId(user_id, section_id);
-//        if (exists){
-//            return EnrollResponse.build(HttpStatus.BAD_REQUEST, "The user is already enrolled in this section", user_id, section_id);
-//        }
-
-        // Create enrollment and save
-        Enrollment enrollment = new Enrollment();
-        enrollment.setStudent(student);
-        enrollment.setSection(section);
-        enrollmentRepository.save(enrollment);
-
-        return EnrollResponse.build(HttpStatus.OK, "Student successfully added to section", user_id, section_id);
-
-    }
-
-    // Helper Functions
 
     private UserResponse toResponse(User u) {
         //if UserResponse expects string for status, pass name()

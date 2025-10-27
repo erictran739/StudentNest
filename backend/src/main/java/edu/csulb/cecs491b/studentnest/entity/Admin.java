@@ -10,7 +10,7 @@ import lombok.Setter;
 @DiscriminatorValue("ADMIN")
 @Getter @Setter
 @NoArgsConstructor
-public class Admin extends User {
+public abstract class Admin extends User {
 
     @Column(length = 64)
     private String roleTitle = "System Admin";
