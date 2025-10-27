@@ -10,7 +10,7 @@ export default function Register() {
   const [password,  setPassword]  = useState("");
   const [confirm,   setConfirm]   = useState("");
   const [status,    setStatus]    = useState("");
-  const [role, setRole] = useState("student");
+  const [role,      setRole]      = useState("student");
   const [busy,      setBusy]      = useState(false);
 
   // Simple, reliable email check
@@ -33,51 +33,19 @@ export default function Register() {
     setBusy(true);
     setStatus("Creating your account...");
     try {
-  const payload = {
-    firstName: firstName.trim(),
-    lastName:  lastName.trim(),
-    email:     email.trim(),
-    password:  password.trim(),
-    role, // <-- "student" | "professor" | "admin"
-  };
+      const payload = {
+        firstName: firstName.trim(),
+        lastName:  lastName.trim(),
+        email:     email.trim(),
+        // Consider not trimming passwords; keep as-is if you prefer:
+        password:  password.trim(),
+        role, // "student" | "professor" | "admin"
+      };
 
-  const res = await fetch("/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    const msg = data.message || data.error || "Registration failed";
-    navigate(
-      `/account-failure?status=${encodeURIComponent(String(res.status))}&msg=${encodeURIComponent(msg)}`
-    );
-    return;
-  }
-
-  if (data && data.token) localStorage.setItem("authToken", data.token);
-  navigate("/account-success?next=/login");
-} catch (e2) {
-  navigate(
-    `/account-failure?status=network&msg=${encodeURIComponent(e2.message || "Network error")}`
-  );
-} finally {
-  setBusy(false);
-}
-
-
-    try {
       const res = await fetch("/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: firstName.trim(),
-          lastName:  lastName.trim(),
-          email:     email.trim(),
-          password: password.trim()
-        })
+        body: JSON.stringify(payload),
       });
 
       // Be robust to non-JSON responses (prevents crash/black screen)
@@ -91,9 +59,7 @@ export default function Register() {
         return;
       }
 
-      // Optional: save token if your API returns one
       if (data && data.token) localStorage.setItem("authToken", data.token);
-
       navigate("/account-success?next=/login");
     } catch (e2) {
       navigate(
@@ -131,7 +97,7 @@ export default function Register() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          key="password"                    // <- added key as requested
+          key="password" // keeps your remount behavior if needed
           type="password"
           placeholder="Password (min 8 chars)"
           required
@@ -145,26 +111,29 @@ export default function Register() {
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
         />
-<fieldset className="role-group">
-  <legend className="role-legend">I am a…</legend>
-  <div className="role-options">
-    {["student", "professor", "admin"].map(opt => (
-      <label key={opt} className={`role-chip ${role === opt ? "selected" : ""}`}>
-        <input
-          type="radio"
-          name="role"
-          value={opt}
-          checked={role === opt}
-          onChange={(e) => setRole(e.target.value)}
-        />
-        <span className="role-label">
-          {opt.charAt(0).toUpperCase() + opt.slice(1)}
-        </span>
-      </label>
-    ))}
-  </div>
-</fieldset>
 
+        <fieldset className="role-group" disabled={busy}>
+          <legend className="role-legend">I am a…</legend>
+          <div className="role-options">
+            {["student", "professor", "admin"].map((opt) => (
+              <label
+                key={opt}
+                className={`role-chip ${role === opt ? "selected" : ""}`}
+              >
+                <input
+                  type="radio"
+                  name="role"
+                  value={opt}
+                  checked={role === opt}
+                  onChange={(e) => setRole(e.target.value)}
+                />
+                <span className="role-label">
+                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
         <button type="submit" className="login-btn" disabled={busy}>
           {busy ? "Creating…" : "Create Account"}
