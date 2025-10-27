@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "professors")
 @DiscriminatorValue("PROFESSOR")
@@ -18,5 +20,9 @@ public class Professor extends User {
     @Column(length = 50)
     private String office;
 
-    // You can later add a OneToMany<Course> relationship if needed.
+    @OneToMany(mappedBy = "professor_id")
+    private List<Course> courses;
+
+    @OneToMany(mappedBy = "professor_id")
+    private List<Section> sections;
 }

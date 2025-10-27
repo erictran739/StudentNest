@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Not Created • StudentNest</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ring" style="--clr:#ff7b7b">
+    <i></i>
+    <i></i>
+    <i></i>
+
+    <div class="login">
+      <div class="login-box">
+        <h2>Account creation failed</h2>
+        <p class="note" style="margin: 8px 0 16px;">Something went wrong while creating your account. This could be due to a network issue, duplicate email/ID, or a server error.</p>
+
+        <div id="error-detail" class="note" style="word-break:break-word; margin-bottom:12px; display:none;"></div>
+
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <a href="/register.html" class="login-btn" style="text-align:center; text-decoration:none;">Try Again</a>
+          <a href="/login.html" class="signup-link" style="align-self:center;">Back to Login</a>
+        </div>
+
+        <details style="margin-top:12px; opacity:0.9">
+          <summary>Troubleshooting tips</summary>
+          <ul style="margin-top:8px; text-align:left; line-height:1.4">
+            <li>Use a valid email address and a password with at least 8 characters.</li>
+            <li>Make sure your Student ID isn't already registered.</li>
+            <li>If the server is down, try again later or contact support.</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Show specific error details from query string if provided
+    (function(){
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get('status');
+      const msg = params.get('msg');
+      if (status || msg) {
+        const box = document.getElementById('error-detail');
+        box.style.display = 'block';
+        let text = '';
+        if (status) text += `Status: ${status}`;
+        if (msg) text += (text? ' • ' : '') + msg;
+        box.textContent = text;
+      }
+    })();
+  </script>
+</body>
+</html>
