@@ -67,14 +67,8 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOriginPatterns(List.of(
-                "http://localhost:*",
-                "http://127.0.0.1:*",
-                "http://puggu.dev:*",
-                "http://puggu.dev",
                 "https://puggu.dev:*",
                 "https://puggu.dev"
-                // "http:/127.0.0.1:*",
-                // "http://192.168.*.*:*"
         ));
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
         cfg.setAllowedHeaders(List.of("*"));
