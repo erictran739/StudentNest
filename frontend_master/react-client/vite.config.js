@@ -10,8 +10,8 @@ export default defineConfig({
             '/api': {target: 'https://puggu.dev', changeOrigin: true, secure: true},
         },
         build: {
-            outDir: '../../backend/src/main/resources/static/',
-            emptyOutDir: false
+            outDir: '~/StudentNest/backend/src/main/resources/static/frontend/',
+            // emptyOutDir: false
         }
     }
 })

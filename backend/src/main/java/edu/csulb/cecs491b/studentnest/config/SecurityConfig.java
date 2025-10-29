@@ -43,10 +43,14 @@ public class SecurityConfig {
                                 "/login.html",
                                 "/auth-test.html",
                                 "/profile.html",
+                                "/landing.html",
                                 "/css/**",
                                 "/js/**",
                                 "/html/**",
-                                "/images/**"
+                                "/images/**",
+
+                                "/react",
+                                "/assets/**"
                         ).permitAll()
 //                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 //                        .requestMatchers("/auth/**").authenticated()
