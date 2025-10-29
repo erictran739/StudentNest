@@ -13,17 +13,22 @@
  /* testing */
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background: url("./assets/homepage.jpg") no-repeat center center fixed;
-  background-size: cover;
+  margin: 0;
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;  /* allow normal scroll */
+  overflow-y: auto;
+  background: var(--home-bg); /* beige by default; Home keeps this */
+  display: block;             /* cancel global flex-centering */
 }
 
-
+body:has(.home-page) {
+  display: block;
+  background: var(--home-bg);
+  overflow-x: hidden;
+  justify-content: unset;
+  align-items: unset;
+}
 
 /* ===== Organic Ring Animation (from user's CSS) ===== */
 .ring {
@@ -594,4 +599,22 @@ body:has(.home-page) {
   margin-top: 16px;
   font-style: italic;
   color: var(--home-muted);
+}
+
+/* Auth pages (Login/Register/Success/Failure) use the background image */
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+
+  /* Nay's image, scoped to auth only */
+  background: url("./assets/homepage.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Keep the translucent card look for .login-box on top of the image */
+.auth-page .login-box {
+  background: rgba(15, 15, 15, 0.7);
+  backdrop-filter: blur(4px);
 }
