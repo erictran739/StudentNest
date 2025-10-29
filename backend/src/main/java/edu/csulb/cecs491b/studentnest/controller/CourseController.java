@@ -2,6 +2,7 @@ package edu.csulb.cecs491b.studentnest.controller;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.course.AddSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.course.CreateCourseRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.course.DeleteSectionRequest;
 import edu.csulb.cecs491b.studentnest.service.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,9 @@ public class CourseController {
         return courseService.addSection(request);
     }
 
-    @PostMapping("/remove/section")
-    public ResponseEntity<?> removeSection(@Valid @RequestBody AddSectionRequest request) {
-        return courseService.addSection(request);
+    @PostMapping("/delete/section")
+    public ResponseEntity<?> removeSection(@Valid @RequestBody DeleteSectionRequest request) {
+        return courseService.deleteSection(request);
     }
 
     @GetMapping("/{course_id}/section/{section_id}")
