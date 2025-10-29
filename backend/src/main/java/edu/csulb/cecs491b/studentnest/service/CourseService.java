@@ -66,12 +66,14 @@ public class CourseService {
         }
 
         // Create section for this course and save
-        Section section = AddSectionRequest.fromRequest(request, courseOptional.get());
+//        Section section = AddSectionRequest.fromRequest(request, courseOptional.get());
+        Section section = new Section();
+        section.setCourse(courseOptional.get());
         sectionRepository.save(section);
 
-        if (sectionRepository.findById(section.getSectionID()).isEmpty()){
-            return ErrorResponse.build(HttpStatus.INTERNAL_SERVER_ERROR, "Course could not be created: unknown reason");
-        }
+//        if (sectionRepository.findById(section.getSectionID()).isEmpty()){
+//            return ErrorResponse.build(HttpStatus.INTERNAL_SERVER_ERROR, "Course could not be created: unknown reason");
+//        }
 
         return GenericResponse.build(HttpStatus.OK, "Section successfully added to course");
 //        return ResponseEntity.status(HttpStatus.OK).body("Section successfully added to course");

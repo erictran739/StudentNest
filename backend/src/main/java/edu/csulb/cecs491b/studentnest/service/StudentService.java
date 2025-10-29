@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -34,16 +36,29 @@ public class StudentService {
     }
 
 
-//    public List<UserResponse> list() {
-//        return userRepository.findAll().stream().map(this::toResponse).toList();
-//    }
-
     public ResponseEntity<?> get(int id) {
         Optional<Student> optionalStudent = studentRepository.findById(id);
-        if (optionalStudent.isEmpty()){
+        if (optionalStudent.isEmpty()) {
             return ErrorResponse.build(HttpStatus.BAD_REQUEST, "Student not found");
         }
 
         return StudentResponse.build(HttpStatus.OK, optionalStudent.get());
+    }
+
+    public List<StudentResponse> list() {
+        return studentRepository.findAll().stream()
+                .map(student ->
+                        new StudentResponse(
+                                student.getUserID(),
+                                student.getFirstName(),
+                                student.getLastName(),
+                                student.getEmail(),
+                                student.getStatus().toString(),
+                                student.getMajor().toString(),
+                                student.getEnrollmentStatus(),
+                                student.getGpa(),
+                                student.getEnrollmentYear()
+                        )
+                ).toList();
     }
 }

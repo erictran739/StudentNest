@@ -1,6 +1,6 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.*;
+import edu.csulb.cecs491b.studentnest.controller.dto.section.DropSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.CreateUserRequest;
@@ -51,15 +51,12 @@ public class UserController {
     }
 
     @PostMapping("/enroll")
-    public ResponseEntity<EnrollResponse> enroll(@RequestBody EnrollRequest req){
+    public ResponseEntity<?> enroll(@RequestBody EnrollRequest req){
         return service.enroll(req.user_id(), req.section_id());
     }
 
     @PostMapping("/drop")
-    public ResponseEntity<EnrollResponse> enroll(@RequestBody DropRequest req){
-            // Check if user exits
-        // Check if section exists
-        // drop/resign section from user
-        return null;
+    public ResponseEntity<?> drop(@RequestBody DropSectionRequest req){
+        return service.drop(req.user_id(), req.section_id());
     }
 }

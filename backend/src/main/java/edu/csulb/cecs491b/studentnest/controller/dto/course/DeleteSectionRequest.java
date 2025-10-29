@@ -3,7 +3,7 @@ package edu.csulb.cecs491b.studentnest.controller.dto.course;
 import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.entity.Section;
 
-public record AddSectionRequest(
+public record DeleteSectionRequest(
         int courseID
 //        int capacity,
 //        int enrollCount,
@@ -16,7 +16,7 @@ public record AddSectionRequest(
 //        String date         // MM/DD/YY
 
 ) {
-    public static Section fromRequest(AddSectionRequest request, Course course) {
+    public static Section fromRequest(DeleteSectionRequest request, Course course) {
         Section section = new Section();
         section.setCourse(course);
         return section;

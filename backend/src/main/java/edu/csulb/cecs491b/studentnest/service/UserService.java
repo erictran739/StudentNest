@@ -1,6 +1,9 @@
 package edu.csulb.cecs491b.studentnest.service;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.ErrorResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.StudentResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.CreateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UpdateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UserResponse;
@@ -8,6 +11,7 @@ import edu.csulb.cecs491b.studentnest.entity.*;
 import edu.csulb.cecs491b.studentnest.entity.enums.UserStatus;
 import edu.csulb.cecs491b.studentnest.repository.EnrollmentRepository;
 import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
+import edu.csulb.cecs491b.studentnest.repository.StudentRepository;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +29,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final SectionRepository sectionRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final StudentRepository studentRepository;
 
 //    private final PasswordEncoder; // Will use when passwords must be passed and checked
 
-    public UserService(UserRepository userRepository, SectionRepository sectionRepository, EnrollmentRepository enrollmentRepository) {
+    public UserService(UserRepository userRepository,
+     SectionRepository sectionRepository,
+     EnrollmentRepository enrollmentRepository,
+     StudentRepository studentRepository
+     ) {
         this.userRepository = userRepository;
         this.sectionRepository = sectionRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.studentRepository = studentRepository;
     }
 
 
@@ -57,19 +67,7 @@ public class UserService {
         s.setStatus(parseStatusOrDefault(r.status(), UserStatus.ACTIVE));
         return toResponse(userRepository.save(s));
     }
-    //when you are update this will be update entire thing
-//    public UserResponse update(int id, UpdateUserRequest r) {
-//        User u = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
-//        //setters are on the base class works for any subtype
-//        u.setFirstName(r.firstName());
-//        u.setLastName(r.lastName());
-//        u.setEmail(r.email());
-//        u.setPassword(r.password()); // TODO: BCrypt later
-//        u.setStatus(parseStatusOrDefault(r.status(), u.getStatus()));
-//        return toResponse(repo.save(u));
-//    }
 
-    //on here when you update user data this call be update whatever you want to change only that thing update other things are stay same
     public UserResponse partialUpdate(int id, UpdateUserRequest r) {
         User u = userRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
@@ -90,24 +88,20 @@ public class UserService {
 
     // We don't know what kind of response yet
     // The frontend can check by the status code first, then decide how to parse it?
-    public ResponseEntity<EnrollResponse> enroll(int user_id, int section_id){
+    public ResponseEntity<?> enroll(int user_id, int section_id){
         // Get Student
-        Optional<User> userOptional = userRepository.findById(user_id);
-        if (userOptional.isEmpty()){ // Check if user exists
-            return EnrollResponse.build(HttpStatus.NOT_FOUND, "The user was not found", user_id, section_id);
-        }
-
-        User user = userOptional.get();
-        if (!(user instanceof Student student)){ // Check if user is a student
-            return EnrollResponse.build(HttpStatus.BAD_REQUEST, "The user is not a student", user_id, section_id);
+        Optional<Student> optionalStudent = studentRepository.findById(user_id);
+        if (optionalStudent.isEmpty()){
+            return EnrollResponse.build(HttpStatus.BAD_REQUEST, "The user was not found", user_id, section_id);
         }
 
         // Get Section
         Optional<Section> sectionOptional = sectionRepository.findById(section_id);
+
+
         if (sectionOptional.isEmpty()){
-            return EnrollResponse.build(HttpStatus.NOT_FOUND, "The section was not found", user_id, section_id);
+            return EnrollResponse.build(HttpStatus.BAD_REQUEST, "The section was not found", user_id, section_id);
         }
-        Section section = sectionOptional.get();
 
         //TODO: Check if the student is already enrolled in the section
 //        boolean exists = enrollmentRepository.existsByUserIdAndSectionId(user_id, section_id);
@@ -117,12 +111,26 @@ public class UserService {
 
         // Create enrollment and save
         Enrollment enrollment = new Enrollment();
-        enrollment.setStudent(student);
-        enrollment.setSection(section);
+        enrollment.setStudent(optionalStudent.get());
+        enrollment.setSection(sectionOptional.get());
+
+        EnrollmentID enrollmentID = new EnrollmentID(user_id, section_id);
+        enrollment.setEnrollmentID(enrollmentID);
         enrollmentRepository.save(enrollment);
 
         return EnrollResponse.build(HttpStatus.OK, "Student successfully added to section", user_id, section_id);
+    }
 
+    public ResponseEntity<?> drop(int studentID, int sectionID) {
+        EnrollmentID enrollmentID = new EnrollmentID(studentID, sectionID);
+        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentID);
+        if (optionalEnrollment.isEmpty()){
+            return ErrorResponse.build(HttpStatus.BAD_REQUEST, "Enrollment not found");
+        }
+
+        // Get enrollment and delete
+        enrollmentRepository.delete(optionalEnrollment.get());
+        return GenericResponse.build(HttpStatus.OK, "Dropped student");
     }
 
     // Helper Functions

@@ -32,6 +32,11 @@ public class CourseController {
         return courseService.addSection(request);
     }
 
+    @PostMapping("/remove/section")
+    public ResponseEntity<?> removeSection(@Valid @RequestBody AddSectionRequest request) {
+        return courseService.addSection(request);
+    }
+
     @GetMapping("/{course_id}/section/{section_id}")
     public ResponseEntity<?> getSection(@PathVariable int course_id, @PathVariable int section_id) {
         return courseService.getSectionOfCourse(course_id, section_id);

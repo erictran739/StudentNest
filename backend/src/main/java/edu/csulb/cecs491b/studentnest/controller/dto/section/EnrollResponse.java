@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 public record EnrollResponse(
         String message,
         int userID,
-        int SectionID
+        int sectionID
 ) {
     /**
      This is a "helper function?" It builds a response with a status code, so I don't have to write:
