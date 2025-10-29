@@ -30,51 +30,6 @@ body:has(.home-page) {
   align-items: unset;
 }
 
-/* ===== Organic Ring Animation (from user's CSS) ===== */
-.ring {
-  position: relative;
-  width: 500px;
-  height: 500px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.ring i {
-  position: absolute;
-  inset: 0;
-  border: 2px solid #fff;
-  transition: 0.5s;
-}
-
-.ring i:nth-child(1) {
-  border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-  animation: animate 6s linear infinite;
-}
-.ring i:nth-child(2) {
-  border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
-  animation: animate 4s linear infinite;
-}
-.ring i:nth-child(3) {
-  border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
-  animation: animate2 10s linear infinite;
-}
-
-.ring:hover i {
-  border: 6px solid var(--clr);
-  filter: drop-shadow(0 0 20px var(--clr));
-}
-
-@keyframes animate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes animate2 {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
-}
-
 /* ===== Centered Login Container (from user's CSS) ===== */
 .login {
   position: absolute;
@@ -617,4 +572,83 @@ body:has(.home-page) {
 .auth-page .login-box {
   background: rgba(15, 15, 15, 0.7);
   backdrop-filter: blur(4px);
+}
+
+/* Generic page shell (light theme, same as Home spacing) */
+.page-wrap {
+  width: 100%;
+  max-width: 1000px;
+  margin: 18px auto 48px;
+  padding: 0 24px;
+}
+
+/* Reusable card container */
+.page-card {
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 14px;
+  box-shadow: var(--home-shadow);
+  overflow: hidden;
+}
+
+/* Simple card header */
+.page-card-header {
+  padding: 14px 16px;
+  background: #fff8e6;
+  border-bottom: 1px solid var(--home-border);
+  font-weight: 700;
+}
+
+/* Card body */
+.page-card-body {
+  padding: 16px;
+}
+
+/* Simple form */
+.page-form {
+  display: grid;
+  gap: 12px;
+  max-width: 560px;
+}
+.page-form input,
+.page-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--home-border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--home-text);
+  font-size: 15px;
+}
+.page-form button {
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--csulb-gold);
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+}
+.page-form button:hover { filter: brightness(0.95); }
+
+/* Centered system page */
+.system-center {
+  min-height: calc(100vh - 64px);
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+}
+.system-box {
+  background: #fff;
+  border: 1px solid var(--home-border);
+  border-radius: 16px;
+  box-shadow: var(--home-shadow);
+  width: min(90%, 520px);
+  padding: 36px 28px;
+  text-align: center;
+}
+
+.page-form input::placeholder,
+.page-form textarea::placeholder {
+  color: #000;
 }

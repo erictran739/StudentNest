@@ -6,6 +6,9 @@ import Register from "./components/Register";
 import AccountSuccess from "./components/AccountSuccess";
 import AccountFailure from "./components/AccountFailure";
 import Downtime from "./components/Downtime";
+import Contact from "./components/Contact";
+import FAQ from "./components/FAQ";
+import NotFound from "./components/NotFound";
 
 function CenteredLayout({ children }) {
   return <div className="auth-page">{children}</div>;
@@ -17,6 +20,8 @@ export default function App() {
       {/* App pages */}
       <Route path="/home" element={<Home />} />
       <Route path="/downtime" element={<Downtime />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/faq" element={<FAQ />} />
 
       {/* Auth pages (centered on bg image) */}
       <Route path="/" element={<CenteredLayout><Login /></CenteredLayout>} />
@@ -26,7 +31,7 @@ export default function App() {
       <Route path="/account-failure" element={<CenteredLayout><AccountFailure /></CenteredLayout>} />
 
       {/* Fallback */}
-      <Route path="*" element={<Navigate to="/home" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
