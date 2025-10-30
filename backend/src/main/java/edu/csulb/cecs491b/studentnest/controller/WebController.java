@@ -11,22 +11,12 @@ public class WebController {
         return "forward:/landing.html";
     }
 
-//    @GetMapping(value = {"/login"})
-//    public String login() {
-//        return "forward:/login.html";
-//    }
-//
-//    @GetMapping(value = {"/auth-test"})
-//    public String auth_test() {
-//        return "forward:/auth-test.html";
-//    }
-//
-//    @GetMapping(value = {"/profile"})
-//    public String profile() {
-//        return "forward:/profile.html";
-//    }
-//
-    @GetMapping(value = {"/react"})
+    @GetMapping(value = {"/auth-test"})
+    public String auth_test() {
+        return "forward:/auth-test.html";
+    }
+
+    @GetMapping(value = {"/login"})
     public String react() {
         return "forward:/index.html";
     }

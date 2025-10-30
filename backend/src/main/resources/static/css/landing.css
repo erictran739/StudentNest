@@ -1,0 +1,19 @@
+body{
+    background-color: #0d0e0f;
+    color: #dddddd;
+
+    font-family: Arial, serif;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#link-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 1px;
+}
