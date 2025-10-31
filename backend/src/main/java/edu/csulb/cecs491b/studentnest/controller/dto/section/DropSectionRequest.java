@@ -1,7 +1,11 @@
 package edu.csulb.cecs491b.studentnest.controller.dto.section;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record DropSectionRequest(
-        int user_id,
-        int section_id
-        // Reason for drop?
-        ) { }
+        @NotNull @NotBlank int user_id,
+        @NotNull @NotBlank int section_id,
+        String reason
+) {
+}

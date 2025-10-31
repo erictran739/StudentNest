@@ -2,18 +2,20 @@ package edu.csulb.cecs491b.studentnest.controller.dto.course;
 
 import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.entity.Section;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record AddSectionRequest(
-        int courseID
-//        int capacity,
-//        int enrollCount,
-//        String startTime,
-//        String endTime,
-//        String building,
-//        String roomNumber,
-//        String type,        //Lab, Lecture, etc
-//        String term,        // Winter/Spring/Summer/Fall
-//        String date         // MM/DD/YY
+        @NotNull @NotBlank int courseID,
+        int capacity,
+        int enrollCount,
+        String startTime,
+        String endTime,
+        String building,
+        String roomNumber,
+        String type,        //Lab, Lecture, etc
+        String term,        // Winter/Spring/Summer/Fall
+        String date         // MM/DD/YY
 
 ) {
     public static Section fromRequest(AddSectionRequest request, Course course) {

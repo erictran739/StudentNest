@@ -2,13 +2,11 @@ package edu.csulb.cecs491b.studentnest.controller.dto.course;
 
 import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.entity.Section;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record DeleteSectionRequest(
-        int sectionID
+        @NotNull @NotBlank @Positive int sectionID
 ) {
-    public static Section fromRequest(DeleteSectionRequest request, Course course) {
-        Section section = new Section();
-        section.setCourse(course);
-        return section;
-    }
 }

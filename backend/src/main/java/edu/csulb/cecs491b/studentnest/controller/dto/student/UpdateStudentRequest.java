@@ -8,8 +8,12 @@ public record UpdateStudentRequest(
         String firstName,
         String lastName,
         @Email String email,
-        @Size(min = 6) String password,
-        String status
-        // Student specific attributes
+        @Size(min = 8) String password,
+        String status,
 
+        // Student specific attributes
+        String major,
+        String enrollmentStatus,
+        float gpa,
+        int enrollmentYear
 ) {}

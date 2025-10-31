@@ -92,7 +92,7 @@ public class UserService {
         // Get Student
         Optional<Student> optionalStudent = studentRepository.findById(user_id);
         if (optionalStudent.isEmpty()){
-            return EnrollResponse.build(HttpStatus.BAD_REQUEST, "The user was not found", user_id, section_id);
+            return EnrollResponse.build(HttpStatus.BAD_REQUEST, user_id, section_id, "The user was not found");
         }
 
         // Get Section
@@ -100,7 +100,7 @@ public class UserService {
 
 
         if (sectionOptional.isEmpty()){
-            return EnrollResponse.build(HttpStatus.BAD_REQUEST, "The section was not found", user_id, section_id);
+            return EnrollResponse.build(HttpStatus.BAD_REQUEST, user_id, section_id, "The section was not found");
         }
 
         //TODO: Check if the student is already enrolled in the section
@@ -118,7 +118,7 @@ public class UserService {
         enrollment.setEnrollmentID(enrollmentID);
         enrollmentRepository.save(enrollment);
 
-        return EnrollResponse.build(HttpStatus.OK, "Student successfully added to section", user_id, section_id);
+        return EnrollResponse.build(HttpStatus.OK, user_id, section_id, "Student successfully added to section");
     }
 
     public ResponseEntity<?> drop(int studentID, int sectionID) {
