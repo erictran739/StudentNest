@@ -1,24 +1,39 @@
 package edu.csulb.cecs491b.studentnest.controller.dto.section;
 
 
+import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public record EnrollResponse(
-        String message,
-        int userID,
-        int sectionID
-) {
-    /**
-     This is a "helper function?" It builds a response with a status code, so I don't have to write:
-     ResponseEntity.status(HttpStatus.<SOME_CODE>).body(arg1, arg2, arg3);
-     */
-    public static ResponseEntity<EnrollResponse> build(HttpStatus status, String message, int userID, int sectionID) {
-        EnrollResponse enrollResponse = new EnrollResponse(message, userID, sectionID);
+import java.util.Optional;
 
-        return ResponseEntity
-                .status(status)
-                .body(enrollResponse);
+@Getter
+@Setter
+
+@AllArgsConstructor
+public class EnrollResponse extends GenericResponse {
+    private int user_id;
+    private int section_id;
+
+    public static ResponseEntity<?> build(HttpStatus status, int userID, int sectionID) {
+        EnrollResponse enrollResponse = new EnrollResponse(
+                userID,
+                sectionID
+        );
+        return GenericResponse.build(status, enrollResponse);
     }
 
+    public static ResponseEntity<?> build(HttpStatus status, int userID, int sectionID, String message) {
+        EnrollResponse enrollResponse = new EnrollResponse(
+                userID,
+                sectionID
+        );
+        enrollResponse.setMessage(message);
+        return GenericResponse.build(status, enrollResponse);
+    }
+
+    public static ResponseEntity<?> build(HttpStatus status, EnrollResponse response) {
+        return GenericResponse.build(status, response);
+    }
 }

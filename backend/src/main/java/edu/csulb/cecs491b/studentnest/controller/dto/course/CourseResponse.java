@@ -1,18 +1,26 @@
 package edu.csulb.cecs491b.studentnest.controller.dto.course;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.entity.enums.Department;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public record CourseResponse(
-        int courseID,
-        String name,
-        String description,
-        Department department,
-        int credits
-) {
-    public static ResponseEntity<CourseResponse> build(HttpStatus status, Course course) {
+@Getter
+@Setter
+
+@AllArgsConstructor
+public class CourseResponse extends GenericResponse {
+    private int courseID;
+    private String name;
+    private String description;
+    private Department department;
+    private int credits;
+
+    public static ResponseEntity<?> build(HttpStatus status, Course course) {
         CourseResponse courseResponse = new CourseResponse(
                 course.getCourseID(),
                 course.getName(),
@@ -21,8 +29,6 @@ public record CourseResponse(
                 course.getCredits()
         );
 
-        return ResponseEntity
-                .status(status)
-                .body(courseResponse);
+        return GenericResponse.build(status, courseResponse);
     }
 }

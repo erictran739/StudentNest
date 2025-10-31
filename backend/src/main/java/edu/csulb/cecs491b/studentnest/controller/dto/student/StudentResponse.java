@@ -1,24 +1,34 @@
 package edu.csulb.cecs491b.studentnest.controller.dto.student;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.entity.Student;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public record StudentResponse(
-        // User attributes
-        int userID,
-        String firstName,
-        String lastName,
-        String email,
-        String status,
+import java.util.Optional;
 
-        // Student specific attributes
-        String major,
-        String enrollmentStatus,
-        float gpa,
-        int enrollmentYear
-) {
-    public static ResponseEntity<StudentResponse> build(HttpStatus status, Student student) {
+@Getter
+@Setter
+
+@AllArgsConstructor
+public class StudentResponse extends GenericResponse {
+    // User attributes
+    private int userID;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String status;
+
+    // Student specific attributes
+    private String major;
+    private String enrollmentStatus;
+    private float gpa;
+    private int enrollmentYea;
+
+    public static ResponseEntity<?> build(HttpStatus status, Student student) {
         StudentResponse studentResponse = new StudentResponse(
                 student.getUserID(),
                 student.getFirstName(),
@@ -31,8 +41,6 @@ public record StudentResponse(
                 student.getEnrollmentYear()
         );
 
-        return ResponseEntity
-                .status(status)
-                .body(studentResponse);
+        return GenericResponse.build(status, studentResponse);
     }
 }
