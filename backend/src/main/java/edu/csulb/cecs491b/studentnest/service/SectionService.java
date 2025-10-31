@@ -34,12 +34,4 @@ public class SectionService {
                 )
         ).toList();
     }
-
-
-    // Should use this in the listSections() function, verify course exist and other checks
-    private SectionResponse multipleSectionsToResponse(Section s) {
-        // Verify Course exists
-        return new SectionResponse(s.getCourse().getCourseID(), s.getSectionID(), s.getDepartment());
-    }
-
 }
