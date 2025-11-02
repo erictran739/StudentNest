@@ -1,8 +1,5 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.section.DropSectionRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.CreateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UpdateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UserResponse;
@@ -48,15 +45,5 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable int id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/enroll")
-    public ResponseEntity<?> enroll(@RequestBody EnrollRequest req){
-        return service.enroll(req.user_id(), req.section_id());
-    }
-
-    @PostMapping("/drop")
-    public ResponseEntity<?> drop(@RequestBody DropSectionRequest req){
-        return service.drop(req.user_id(), req.section_id());
     }
 }

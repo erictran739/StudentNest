@@ -4,6 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 public record UpdateStudentRequest(
+        // Student to be updated
+        int studentId,
+
         // User attributes
         String firstName,
         String lastName,

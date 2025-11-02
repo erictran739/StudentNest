@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -43,8 +44,6 @@ public class UserService {
         this.enrollmentRepository = enrollmentRepository;
         this.studentRepository = studentRepository;
     }
-
-
 
     public List<UserResponse> list() {
         return userRepository.findAll().stream().map(this::toResponse).toList();
@@ -86,55 +85,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    // We don't know what kind of response yet
-    // The frontend can check by the status code first, then decide how to parse it?
-    public ResponseEntity<?> enroll(int user_id, int section_id){
-        // Get Student
-        Optional<Student> optionalStudent = studentRepository.findById(user_id);
-        if (optionalStudent.isEmpty()){
-            return EnrollResponse.build(HttpStatus.BAD_REQUEST, user_id, section_id, "The user was not found");
-        }
-
-        // Get Section
-        Optional<Section> sectionOptional = sectionRepository.findById(section_id);
-
-
-        if (sectionOptional.isEmpty()){
-            return EnrollResponse.build(HttpStatus.BAD_REQUEST, user_id, section_id, "The section was not found");
-        }
-
-        //TODO: Check if the student is already enrolled in the section
-//        boolean exists = enrollmentRepository.existsByUserIdAndSectionId(user_id, section_id);
-//        if (exists){
-//            return EnrollResponse.build(HttpStatus.BAD_REQUEST, "The user is already enrolled in this section", user_id, section_id);
-//        }
-
-        // Create enrollment and save
-        Enrollment enrollment = new Enrollment();
-        enrollment.setStudent(optionalStudent.get());
-        enrollment.setSection(sectionOptional.get());
-
-        EnrollmentID enrollmentID = new EnrollmentID(user_id, section_id);
-        enrollment.setEnrollmentID(enrollmentID);
-        enrollmentRepository.save(enrollment);
-
-        return EnrollResponse.build(HttpStatus.OK, user_id, section_id, "Student successfully added to section");
-    }
-
-    public ResponseEntity<?> drop(int studentID, int sectionID) {
-        EnrollmentID enrollmentID = new EnrollmentID(studentID, sectionID);
-        Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentID);
-        if (optionalEnrollment.isEmpty()){
-            return ErrorResponse.build(HttpStatus.BAD_REQUEST, "Enrollment not found");
-        }
-
-        // Get enrollment and delete
-        enrollmentRepository.delete(optionalEnrollment.get());
-        return GenericResponse.build(HttpStatus.OK, "Dropped student");
-    }
 
     // Helper Functions
-
     private UserResponse toResponse(User u) {
         //if UserResponse expects string for status, pass name()
         return new UserResponse(
@@ -154,5 +106,4 @@ public class UserService {
             return dflt;
         }
     }
-
 }

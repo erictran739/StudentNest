@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record AddSectionRequest(
-        @NotNull @NotBlank int courseID,
+        @NotNull int courseID,
         int capacity,
         int enrollCount,
         String startTime,

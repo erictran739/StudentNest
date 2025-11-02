@@ -1,8 +1,10 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.section.DropSectionRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.StudentResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.UpdateStudentRequest;
 import edu.csulb.cecs491b.studentnest.service.StudentService;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +30,18 @@ public class StudentController {
         return studentService.list();
     }
 
-//    @PatchMapping("/update")
-//    public ResponseEntity<?> updateStudent(@RequestBody UpdateStudentRequest){
-//
-//        return null;
-//    }
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateStudent(@RequestBody UpdateStudentRequest request) {
+        return studentService.update(request);
+    }
 
+    @PostMapping("/enroll")
+    public ResponseEntity<?> enroll(@RequestBody EnrollSectionRequest req){
+        return studentService.enroll(req.student_id(), req.section_id());
+    }
+
+    @PostMapping("/drop")
+    public ResponseEntity<?> drop(@RequestBody DropSectionRequest req){
+        return studentService.drop(req.student_id(), req.section_id());
+    }
 }
