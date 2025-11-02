@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -32,55 +33,46 @@ public class CourseService {
     private final StudentRepository studentRepository;
     private final EnrollmentRepository enrollmentRepository;
 
-    CourseService (CourseRepository courseRepo,
-     SectionRepository sectionRepo,
-     StudentRepository studentRepository,
-     EnrollmentRepository enrollmentRepository
-     ){
+    CourseService(CourseRepository courseRepo,
+                  SectionRepository sectionRepo,
+                  StudentRepository studentRepository,
+                  EnrollmentRepository enrollmentRepository
+    ) {
         this.courseRepository = courseRepo;
         this.sectionRepository = sectionRepo;
         this.studentRepository = studentRepository;
         this.enrollmentRepository = enrollmentRepository;
     }
 
-    public ResponseEntity<?> get(int id){
+    public ResponseEntity<?> get(int id) {
         Course course = getCourse(id);
-        if (course == null){
-            String message = String.format("Course %d does not exist", id);
-            return GenericResponse.build(HttpStatus.BAD_REQUEST, message);
-        }
 
         return CourseResponse.build(HttpStatus.OK, course);
     }
 
-    public ResponseEntity<?> create(CreateCourseRequest request){
+    public ResponseEntity<?> create(CreateCourseRequest request) {
         // Create course
         Course course = CreateCourseRequest.fromRequest(request);
-        if (course == null){
+
+        // Verify course creation
+        if (course == null) {
             return GenericResponse.build(HttpStatus.BAD_REQUEST, "Course could not be created: unknown reason");
         }
 
+        // Save course
         courseRepository.save(course);
-
-        // Verify course created
-        if (courseRepository.findById(course.getCourseID()).isEmpty()){
-            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Course could not be created: unknown reason");
-        }
 
         return CourseResponse.build(HttpStatus.OK, course);
     }
 
-    public ResponseEntity<?> addSection(AddSectionRequest request){
+    public ResponseEntity<?> addSection(AddSectionRequest request) {
         // Verify course exists
-        Optional<Course> courseOptional = courseRepository.findById(request.courseID());
-        if (courseOptional.isEmpty()){
-            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Course does not exist");
-        }
+        Course course = getCourse(request.courseID());
 
         // Create section for this course and save
 //        Section section = AddSectionRequest.fromRequest(request, courseOptional.get());
         Section section = new Section();
-        section.setCourse(courseOptional.get());
+        section.setCourse(course);
         sectionRepository.save(section);
 
 //        if (sectionRepository.findById(section.getSectionID()).isEmpty()){
@@ -90,62 +82,51 @@ public class CourseService {
         return GenericResponse.build(HttpStatus.OK, "Section successfully added to course");
     }
 
-    public ResponseEntity<?> deleteSection(DeleteSectionRequest request){
+    public ResponseEntity<?> deleteSection(DeleteSectionRequest request) {
         // Verify section exists
-        Optional<Section> sectionOptional = sectionRepository.findById(request.sectionID());
-        if (sectionOptional.isEmpty()){
-            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Section does not exist");
-        }
+        Section section = getSection(request.sectionID());
 
         // Check to see if students are enrolled in this course
-        List<Enrollment> enrollments = enrollmentRepository.findAllBySectionIs(sectionOptional.get());
-        if (!enrollments.isEmpty()){
+        List<Enrollment> enrollments = enrollmentRepository.findAllBySectionIs(section);
+        if (!enrollments.isEmpty()) {
             return GenericResponse.build(HttpStatus.BAD_REQUEST, "Section exists in enrollments. Drop users first");
         }
 
         // TODO: This needs to be a cascading delete in case enrollments contain this section
         // Delete section
-        sectionRepository.delete(sectionOptional.get());
+        sectionRepository.delete(section);
 
         return GenericResponse.build(HttpStatus.OK, "Section successfully deleted from course");
     }
 
-    public ResponseEntity<?> getSectionOfCourse(int course_id, int section_id) {
-        // Get Course
-        Course course = getCourse(course_id);
-        if (course == null){
-            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Course does not exist");
-        }
-
+    public ResponseEntity<?> getSectionOfCourse(int courseId, int sectionId) {
         // Get Section
-        Section section = getSection(section_id);
-        if (section == null){
-            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Section does not exist");
-        }
+        Section section = getSection(sectionId);
 
         // Check if Section has a valid Course
-        if (section.getCourse() == null){
-            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Section does not contain a valid course");
+        if (section.getCourse() == null) {
+            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Section does not contain a course");
         }
 
-        if (section.getCourse().getCourseID() != course_id){
+        if (section.getCourse().getCourseID() != courseId) {
             return GenericResponse.build(HttpStatus.BAD_REQUEST, "The given Section and Course are not related");
         }
 
         // Return Section
-        return SectionResponse.build(HttpStatus.OK, section, course);
+        return SectionResponse.build(HttpStatus.OK, section);
     }
 
     // Helper functions
-    public Course getCourse(int id){
-        Optional<Course> courseOptional = courseRepository.findById(id);
-        return courseOptional.orElse(null);
+    public Course getCourse(int id) {
+        return courseRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Course with id [" + id + "] does not exist")
+        );
     }
 
-    public Section getSection(int id){
-        Optional<Section> sectionOptional = sectionRepository.findById(id);
-        return sectionOptional.orElse(null);
-
+    public Section getSection(int id) {
+        return sectionRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Section with id [" + id + "] does not exist")
+        );
     }
 
 }
