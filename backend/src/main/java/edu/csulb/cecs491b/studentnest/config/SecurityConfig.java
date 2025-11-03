@@ -1,88 +1,85 @@
 package edu.csulb.cecs491b.studentnest.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
 
 //this is
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain security(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable());
-        http.cors(Customizer.withDefaults());
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/auth/**",
-                                "/api/users/**",
-                                "/api/courses/**",
-                                "/api/sections/**",
-                                "/api/students/**",
-                                // Web controller endpoints
-                                "/",
-                                "/login",
-                                "/auth-test",
-                                "/profile",
-                                // Explicit for now
-                                // I think  I have to move .html files to resources/private
-                                // so I don't have to use expose them as endpoints
-                                "/index.html",
-                                "/login.html",
-                                "/auth-test.html",
-                                "/profile.html",
-                                "/landing.html",
-                                "/css/**",
-                                "/js/**",
-                                "/html/**",
-                                "/images/**",
+	 @Bean
+	  public SecurityFilterChain security(HttpSecurity http) throws Exception {
+	    http
+	      .csrf(csrf -> csrf.disable())
+	      .cors(Customizer.withDefaults())
+	      .authorizeHttpRequests(auth -> auth
+	          // public/dev endpoints
+	          .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
+	          .requestMatchers("/auth/**", "/auth-test.html", "/admin-tools.html",
+	                           "/css/**", "/js/**", "/images/**").permitAll()
 
-                                "/react",
-                                "/assets/**"
-                        ).permitAll()
-//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                        .requestMatchers("/auth/**").authenticated()
-                        .anyRequest().authenticated()
+	          // Admin-only API
+	          .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
-                )
-                .httpBasic(b -> b.disable())
-                .formLogin(f -> f.disable());
-        return http.build();
-    }
+	          // Open the users API for our tester HTML (dev only)
+	          .requestMatchers("/api/users/**").permitAll()
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	          .anyRequest().permitAll()
+	      )
+	      .httpBasic(Customizer.withDefaults())   // keep ENABLED
+	      .formLogin(f -> f.disable());
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOriginPatterns(List.of(
-                "https://puggu.dev:*",
-                "https://puggu.dev"
-        ));
-        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
-        cfg.setAllowedHeaders(List.of("*"));
-        cfg.setExposedHeaders(List.of("*"));
-        cfg.setAllowCredentials(true);
+	    return http.build();
+	  }
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cfg);
-
-        return source;
-    }
-
+  
+//In-memory admin for demo/dev
+ @Bean
+ public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+   UserDetails admin = User.builder()
+       .username("admin")
+       .password(encoder.encode("admin123")) // change for your demo
+       .roles("ADMIN")
+       .build();
+   return new InMemoryUserDetailsManager(admin);
+ }
+  
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+	  return new BCryptPasswordEncoder();
+  }
+  //
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+      CorsConfiguration cfg = new CorsConfiguration();
+      //this is for local (React on 3000, Vite on 5173)
+      cfg.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:*", "https://*.ngrok-free.app","https://*.ngrok.app", "http://127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
+      cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
+      cfg.setAllowedHeaders(List.of("*"));
+      cfg.setAllowCredentials(true);
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", cfg);
+      return source;
+  }
+  
+  
+  
 }

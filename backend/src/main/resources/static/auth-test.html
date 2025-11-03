@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>StudentNest – Auth & User Admin (Dev)</title>
+  <title>StudentNest – Auth & Admin API Tester (Dev)</title>
   <style>
-    body { font-family: system-ui, Arial; max-width: 900px; margin: 24px auto; }
+    body { font-family: system-ui, Arial; max-width: 980px; margin: 24px auto; }
     input, select, button, textarea { padding: 8px; margin: 6px 0; width: 100%; box-sizing: border-box; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     section { border:1px solid #ddd; padding:16px; border-radius:10px; margin:16px 0; }
-    .actions { display:flex; gap: 10px; }
+    .actions { display:flex; flex-wrap: wrap; gap: 10px; }
     .ok { color:#0a0; } .err { color:#a00; white-space:pre-wrap; }
     pre { background:#111; color:#0f0; padding:12px; border-radius:8px; overflow:auto; }
+    .half { max-width: 220px; }
   </style>
 </head>
 <body onload="init()">
-  <h1>StudentNest – Auth & User Admin (Dev)</h1>
+  <h1>StudentNest – Auth & Admin API Tester (Dev)</h1>
 
   <!-- HEALTH -->
   <section>
@@ -32,7 +33,6 @@
     </div>
     <label>Email</label><input id="r_em" value="tony@example.com">
     <label>Password</label><input id="r_pw" type="password" value="secret123">
-
     <label>Role</label>
     <select id="r_role" onchange="toggleRegisterFields()">
       <option value="student" selected>Student</option>
@@ -40,19 +40,16 @@
       <option value="chair">Department Chair</option>
       <!-- Admin intentionally not here (blocked on backend) -->
     </select>
-
     <div id="r_student">
       <label>Major</label><input id="r_major" value="COMPUTER_SCIENCE">
       <label>Enrollment Year</label><input id="r_year" type="number" value="2025">
     </div>
-
     <div id="r_chair" style="display:none;">
       <label>Building</label><input id="r_building" value="Engineering 2">
       <label>Room Number</label><input id="r_room" value="E-214">
       <label>Contact Email</label><input id="r_contact" value="cecs@csulb.edu">
       <label>Phone Number</label><input id="r_phone" value="562-985-1234">
     </div>
-
     <button onclick="register()">POST /auth/register</button>
     <div id="regMsg"></div>
   </section>
@@ -66,29 +63,22 @@
     <div id="loginMsg"></div>
   </section>
 
-  <!-- USER LOOKUP + EDIT/DELETE -->
+  <!-- USER LOOKUP + EDIT/DELETE (dev-open /api/users/**) -->
   <section>
-    <h2>User Search / Edit / Delete</h2>
+    <h2>Users API (dev-open)</h2>
     <div class="actions">
-      <input id="u_id" placeholder="User ID (e.g., 8)" style="max-width:200px;">
-      <button onclick="loadUser()">Load</button>
-      <button onclick="listUsers()">List All</button>
+      <input id="u_id" placeholder="User ID (e.g., 8)" class="half">
+      <button onclick="loadUser()">GET /api/users/{id}</button>
+      <button onclick="listUsers()">GET /api/users</button>
     </div>
     <div id="userStatus" class="err"></div>
 
     <div id="userCard" style="display:none;">
       <div class="row">
-        <div>
-          <label>First name</label>
-          <input id="u_fn" disabled>
-        </div>
-        <div>
-          <label>Last name</label>
-          <input id="u_ln" disabled>
-        </div>
+        <div><label>First name</label><input id="u_fn" disabled></div>
+        <div><label>Last name</label><input id="u_ln" disabled></div>
       </div>
-      <label>Email</label>
-      <input id="u_em" disabled>
+      <label>Email</label><input id="u_em" disabled>
       <label>Status</label>
       <select id="u_st" disabled>
         <option value="ACTIVE">ACTIVE</option>
@@ -107,10 +97,39 @@
       <pre id="u_raw"></pre>
       <div id="u_msg"></div>
     </div>
-
-    <h3>Response (last request)</h3>
-    <pre id="out">Waiting…</pre>
   </section>
+
+  <!-- ADMIN MANAGEMENT (secured /api/admin/** via Basic Auth) -->
+  <section>
+    <h2>Admin Management (secured)</h2>
+    <div class="row">
+      <div><label>Admin Username</label><input id="a_user" value="admin"></div>
+      <div><label>Admin Password</label><input id="a_pass" type="password" value="admin123"></div>
+    </div>
+
+    <div class="actions">
+      <button onclick="adminList()">GET /api/admin/users</button>
+      <input id="a_id" placeholder="User ID (e.g., 8)" class="half">
+      <button onclick="adminGet()">GET /api/admin/users/{id}</button>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>PATCH body (JSON)</label>
+        <textarea id="a_patch" rows="6" placeholder='{"firstName":"Tony","lastName":"A."}'></textarea>
+        <button onclick="adminPatch()">PATCH /api/admin/users/{id}</button>
+      </div>
+      <div>
+        <label>Delete user by ID</label>
+        <input id="a_del" placeholder="User ID">
+        <button onclick="adminDelete()">DELETE /api/admin/users/{id}</button>
+      </div>
+    </div>
+    <div id="adminMsg"></div>
+  </section>
+
+  <h2>Response (last request)</h2>
+  <pre id="out">Waiting…</pre>
 
 <script>
 const API = 'http://localhost:8080';
@@ -120,20 +139,27 @@ function init(){ toggleRegisterFields(); }
 function showOut(obj){ OUT.textContent = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2); }
 function setText(id, text, ok=false){ const el = document.getElementById(id); el.className = ok?'ok':'err'; el.textContent=text; }
 
-function toggleRegisterFields(){
-  const role = document.getElementById('r_role').value;
-  document.getElementById('r_student').style.display = role==='student' ? 'block' : 'none';
-  document.getElementById('r_chair').style.display   = role==='chair'   ? 'block' : 'none';
+// Unicode-safe Base64 for Basic Auth
+function b64(s){ return window.btoa(unescape(encodeURIComponent(s))); }
+function adminHeaders(){
+  const u = document.getElementById('a_user').value;
+  const p = document.getElementById('a_pass').value;
+  return { 'Authorization': 'Basic ' + b64(`${u}:${p}`) };
 }
 
-// HEALTH
+/* -------- HEALTH -------- */
 async function ping(){
   const r = await fetch(`${API}/auth/tryagain`);
   const j = await r.json(); setText('healthMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok);
   showOut({status:r.status, data:j});
 }
 
-// REGISTER
+/* -------- REGISTER -------- */
+function toggleRegisterFields(){
+  const role = document.getElementById('r_role').value;
+  document.getElementById('r_student').style.display = role==='student' ? 'block' : 'none';
+  document.getElementById('r_chair').style.display   = role==='chair'   ? 'block' : 'none';
+}
 async function register(){
   const role = document.getElementById('r_role').value.toLowerCase();
   const body = {
@@ -159,7 +185,7 @@ async function register(){
   showOut({status:r.status, data:j});
 }
 
-// LOGIN
+/* -------- LOGIN -------- */
 async function login(){
   const body = { email: document.getElementById('l_em').value, password: document.getElementById('l_pw').value };
   const r = await fetch(`${API}/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
@@ -168,7 +194,7 @@ async function login(){
   showOut({status:r.status, data:j});
 }
 
-// USERS
+/* -------- USERS (dev-open) -------- */
 const els = {
   userCard: document.getElementById('userCard'),
   status:   document.getElementById('userStatus'),
@@ -191,7 +217,13 @@ function toggleEdit(edit){
   els.msg.textContent='';
   if(!edit && originalUser) fillForm(originalUser);
 }
-function fillForm(u){ els.fn.value=u.firstName||''; els.ln.value=u.lastName||''; els.em.value=u.email||''; els.st.value=(u.status||'ACTIVE').toUpperCase(); els.raw.textContent=JSON.stringify(u,null,2); }
+function fillForm(u){
+  els.fn.value=u.firstName||'';
+  els.ln.value=u.lastName||'';
+  els.em.value=u.email||'';
+  els.st.value=(u.status||'ACTIVE').toUpperCase();
+  els.raw.textContent=JSON.stringify(u,null,2);
+}
 
 async function listUsers(){
   const r = await fetch(`${API}/api/users`);
@@ -235,6 +267,53 @@ async function deleteUser(){
   const r = await fetch(`${API}/api/users/${id}`, { method:'DELETE' });
   if(r.status===204){ els.userCard.style.display='none'; els.status.textContent=`Deleted user #${id}`; els.msg.textContent=''; }
   else { const t=await r.text(); els.msg.textContent=`DELETE ${r.status}: ${t}`; els.msg.className='err'; }
+  showOut({status:r.status, data: r.status===204 ? 'Deleted' : undefined});
+}
+
+/* -------- ADMIN (secured) -------- */
+function setAdminMsg(msg, ok=false){ setText('adminMsg', msg, ok); }
+
+async function adminList(){
+  const r = await fetch(`${API}/api/admin/users`, { headers: { ...adminHeaders() } });
+  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+  setAdminMsg(`Status ${r.status}`, r.ok);
+  showOut({status:r.status, data:j});
+}
+
+async function adminGet(){
+  const id = (document.getElementById('a_id').value||'').trim();
+  if(!id) return setAdminMsg('Enter a user id.');
+  const r = await fetch(`${API}/api/admin/users/${id}`, { headers: { ...adminHeaders() } });
+  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+  setAdminMsg(`GET ${r.status}`, r.ok);
+  showOut({status:r.status, data:j});
+}
+
+async function adminPatch(){
+  const id = (document.getElementById('a_id').value||'').trim();
+  if(!id) return setAdminMsg('Enter a user id.');
+  let payload;
+  try { payload = JSON.parse(document.getElementById('a_patch').value || '{}'); }
+  catch { return setAdminMsg('Invalid JSON in PATCH body'); }
+  const r = await fetch(`${API}/api/admin/users/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type':'application/json', ...adminHeaders() },
+    body: JSON.stringify(payload)
+  });
+  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+  setAdminMsg(`PATCH ${r.status}`, r.ok);
+  showOut({status:r.status, data:j});
+}
+
+async function adminDelete(){
+  const id = (document.getElementById('a_del').value||'').trim();
+  if(!id) return setAdminMsg('Enter a user id to delete');
+  if(!confirm(`Delete user #${id} as ADMIN?`)) return;
+  const r = await fetch(`${API}/api/admin/users/${id}`, {
+    method: 'DELETE',
+    headers: { ...adminHeaders() }
+  });
+  setAdminMsg(`DELETE ${r.status}`, r.status===204);
   showOut({status:r.status, data: r.status===204 ? 'Deleted' : undefined});
 }
 </script>
