@@ -39,10 +39,6 @@ public class UserController {
         return ResponseEntity.created(URI.create("/api/users/" + saved.userID())).body(saved);
     }
 
-//    @PutMapping("/{id}")
-//    public UserResponse update(@PathVariable int id, @Valid @RequestBody UpdateUserRequest req) {
-//        return service.update(id, req);
-//    }
     
     @PatchMapping("/{id}")
     public UserResponse patch(@PathVariable int id, @RequestBody UpdateUserRequest req) {

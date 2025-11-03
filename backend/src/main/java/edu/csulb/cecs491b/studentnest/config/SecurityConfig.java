@@ -8,35 +8,60 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 
 //this is
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-  @Bean
-  public SecurityFilterChain security(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable());
-    http.cors(Customizer.withDefaults());
-    http.authorizeHttpRequests(auth -> auth
-    	  .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
-          .requestMatchers("/api/auth/**","/auth/**","/auth-test.html", "/login.html", "/css/**", "/js/**", "/images/**").permitAll()
-//          .requestMatchers("/api/users/**").authenticated()
-          .requestMatchers("/api/users/**").permitAll() //this line for testing auth-test.html
-//          .anyRequest().authenticated() 
-          .anyRequest().permitAll()
-          
-      )
-      .httpBasic(b -> b.disable())
-      .formLogin(f -> f.disable());
-    return http.build();
-  }
+	 @Bean
+	  public SecurityFilterChain security(HttpSecurity http) throws Exception {
+	    http
+	      .csrf(csrf -> csrf.disable())
+	      .cors(Customizer.withDefaults())
+	      .authorizeHttpRequests(auth -> auth
+	          // public/dev endpoints
+	          .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
+	          .requestMatchers("/auth/**", "/auth-test.html", "/admin-tools.html",
+	                           "/css/**", "/js/**", "/images/**").permitAll()
+
+	          // Admin-only API
+	          .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+	          // Open the users API for our tester HTML (dev only)
+	          .requestMatchers("/api/users/**").permitAll()
+
+	          .anyRequest().permitAll()
+	      )
+	      .httpBasic(Customizer.withDefaults())   // keep ENABLED
+	      .formLogin(f -> f.disable());
+
+	    return http.build();
+	  }
+
+  
+//In-memory admin for demo/dev
+ @Bean
+ public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+   UserDetails admin = User.builder()
+       .username("admin")
+       .password(encoder.encode("admin123")) // change for your demo
+       .roles("ADMIN")
+       .build();
+   return new InMemoryUserDetailsManager(admin);
+ }
+  
   @Bean
   public PasswordEncoder passwordEncoder() {
 	  return new BCryptPasswordEncoder();
@@ -47,12 +72,14 @@ public class SecurityConfig {
       CorsConfiguration cfg = new CorsConfiguration();
       //this is for local (React on 3000, Vite on 5173)
       cfg.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:*", "https://*.ngrok-free.app","https://*.ngrok.app", "http://127.0.0.1:*", "http://192.168.*.*:*")); // allow device in local network
-      cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+      cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
       cfg.setAllowedHeaders(List.of("*"));
       cfg.setAllowCredentials(true);
       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
       source.registerCorsConfiguration("/**", cfg);
       return source;
   }
+  
+  
   
 }
