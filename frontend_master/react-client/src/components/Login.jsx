@@ -57,7 +57,7 @@ export default function Login() {
           required
         />
 
-        {/* Remember + Forgot row (matches your CSS) */}
+
         <div className="options-row">
           <label className="remember-me">
             <input
@@ -68,13 +68,10 @@ export default function Login() {
             Remember Me
           </label>
 
-          <a
-            href="#"
-            className="forgot-link"
-            onClick={(e) => { e.preventDefault(); setStatus("Forgot Password clicked (no-op)"); }}
-          >
+          {/* Route to the page instead of no-op */}
+          <Link to="/forgot-password" className="forgot-link">
             Forgot Password?
-          </a>
+          </Link>
         </div>
 
         <button type="submit" className="login-btn">Login</button>
