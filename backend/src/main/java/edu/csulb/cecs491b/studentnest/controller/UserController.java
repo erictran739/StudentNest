@@ -23,7 +23,15 @@ public class UserController {
     public List<UserResponse> list() { return service.list(); }
 
     @GetMapping("/{id}")
-    public UserResponse get(@PathVariable int id) { return service.get(id); }
+//    public UserResponse get(@PathVariable int id) { return service.get(id); }
+    
+    public ResponseEntity<?> get(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(service.get(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
 
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest req) {
@@ -42,8 +50,12 @@ public class UserController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable int id) {
+        try {
+            service.delete(id);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage()); // "User not found: X"
+        }
     }
 }
