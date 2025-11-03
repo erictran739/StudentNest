@@ -9,11 +9,10 @@ import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
 import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.entity.Enrollment;
 import edu.csulb.cecs491b.studentnest.entity.Section;
-import edu.csulb.cecs491b.studentnest.repository.CourseRepository;
-import edu.csulb.cecs491b.studentnest.repository.EnrollmentRepository;
-import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
-import edu.csulb.cecs491b.studentnest.repository.StudentRepository;
+import edu.csulb.cecs491b.studentnest.entity.enums.Department;
+import edu.csulb.cecs491b.studentnest.repository.*;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,16 +31,18 @@ public class CourseService {
     private final SectionRepository sectionRepository;
     private final StudentRepository studentRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final DepartmentRepository departmentRepository;
 
     CourseService(CourseRepository courseRepo,
                   SectionRepository sectionRepo,
                   StudentRepository studentRepository,
-                  EnrollmentRepository enrollmentRepository
-    ) {
+                  EnrollmentRepository enrollmentRepository,
+                  DepartmentRepository departmentRepository) {
         this.courseRepository = courseRepo;
         this.sectionRepository = sectionRepo;
         this.studentRepository = studentRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     public ResponseEntity<?> get(int id) {
@@ -50,18 +51,26 @@ public class CourseService {
         return CourseResponse.build(HttpStatus.OK, course);
     }
 
+    public List<Course> getCourse(String dept_abbv) {
+        // TODO: Finish 1st
+        return null;
+    }
+
     public ResponseEntity<?> create(CreateCourseRequest request) {
         // Create course
-        Course course = CreateCourseRequest.fromRequest(request);
+        Course course = new Course();
+        course.setName(request.name());
+        course.setDescription(request.description());
+        course.setCredits(request.credits());
 
-        // Verify course creation
-        if (course == null) {
-            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Course could not be created: unknown reason");
-        }
+        // Check to see if department exists
+        Department department =  departmentRepository.findByName(request.department()).orElseThrow(
+                () -> new NoSuchElementException("Department with name" + request.name() + "does not exist")
+        );
+
+        course.setDepartment(department);
 
         // Save course
-        courseRepository.save(course);
-
         return CourseResponse.build(HttpStatus.OK, course);
     }
 
@@ -116,6 +125,17 @@ public class CourseService {
         return SectionResponse.build(HttpStatus.OK, section);
     }
 
+    public List<SectionResponse> listSections(int courseId) {
+        Course course = getCourse(courseId);
+        return sectionRepository.findAllByCourseIs(course).stream().map(
+                section -> new SectionResponse(
+                        section.getCourse().getCourseID(),
+                        section.getSectionID(),
+                        section.getDepartment()
+                )
+        ).toList();
+    }
+
     // Helper functions
     public Course getCourse(int id) {
         return courseRepository.findById(id).orElseThrow(
@@ -128,5 +148,4 @@ public class CourseService {
                 () -> new NoSuchElementException("Section with id [" + id + "] does not exist")
         );
     }
-
 }

@@ -1,9 +1,5 @@
 package edu.csulb.cecs491b.studentnest.service;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.ErrorResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.student.StudentResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.CreateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UpdateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UserResponse;
@@ -13,15 +9,11 @@ import edu.csulb.cecs491b.studentnest.repository.EnrollmentRepository;
 import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
 import edu.csulb.cecs491b.studentnest.repository.StudentRepository;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -81,9 +73,9 @@ public class UserService {
     }
 
     public void delete(int id) {
-        var u = repo.findById(id)
+        var u = userRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
-        repo.delete(u);
+        userRepository.delete(u);
     }
 
 

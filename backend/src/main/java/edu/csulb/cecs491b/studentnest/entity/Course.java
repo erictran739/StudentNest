@@ -23,12 +23,15 @@ public class Course {
     private List<Section> sections;
 
     @ManyToOne
-    @JoinColumn(name="professor_id")
-    private Professor professor_id;
+    @JoinColumn(name="professor")
+    private Professor professor;
+
+    @ManyToOne
+    @JoinColumn(name="department")
+    private Department department;
 
     private String name;
     private String description;
-    private Department department;
     private int credits;
 
     // TODO: Prerequisites

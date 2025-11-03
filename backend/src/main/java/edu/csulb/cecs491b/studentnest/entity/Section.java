@@ -14,17 +14,19 @@ import lombok.*;
 public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="section_id")
+    @Column(name = "section_id")
     private int sectionID;
 
     @ManyToOne
-    @JoinColumn(name="course_id")
+    @JoinColumn(name = "course_id")
     private Course course;
 
     @ManyToOne
-    @JoinColumn(name="professor_id")
+    @JoinColumn(name = "professor_id")
     private Professor professor_id;
 
+    @ManyToOne
+    @JoinColumn(name = "department_id")
     private Department department;
 //        int capacity,
 //        int enrollCount,

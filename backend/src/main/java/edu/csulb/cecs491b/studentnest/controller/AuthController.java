@@ -13,37 +13,33 @@ import edu.csulb.cecs491b.studentnest.controller.dto.user.LoginRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.RegisterRequest;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import edu.csulb.cecs491b.studentnest.entity.Admin;
 import edu.csulb.cecs491b.studentnest.entity.Professor;
 import edu.csulb.cecs491b.studentnest.entity.Student;
 import edu.csulb.cecs491b.studentnest.entity.User;
 import edu.csulb.cecs491b.studentnest.entity.enums.UserStatus;
-import edu.csulb.cecs491b.studentnest.entity.UserStatus;
 import edu.csulb.cecs491b.studentnest.entity.DepartmentChair;
-import edu.csulb.cecs491b.studentnest.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-	
-	private final UserRepository users;
-	private final PasswordEncoder passwordEncoder;
-	
-	
+
+    private final UserRepository users;
+    private final PasswordEncoder passwordEncoder;
+
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
         if (users.findByEmail(req.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse("error", "Email already exists"));
         }
-        
-     // Block raw Admin signup (Admin is a base type, not a public signup)
+
+        // Block raw Admin signup (Admin is a base type, not a public signup)
         String role = req.getRole() == null ? "" : req.getRole().toLowerCase();
         if ("admin".equals(role)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new AuthResponse("error","Admin must be created by an existing admin."));
+                    .body(new AuthResponse("error", "Admin must be created by an existing admin."));
         }
 
         //this is pick the concrete subtype
@@ -65,7 +61,7 @@ public class AuthController {
 
 
             default:
-            	 // This block handles STUDENT registration
+                // This block handles STUDENT registration
                 Student s = new Student();
                 if (req.getMajor() != null) {
                     try {
@@ -90,18 +86,18 @@ public class AuthController {
                 newUser = s;
                 break;
         }
-        
 
-    // Common fields for all user types
-    newUser.setFirstName(req.getFirstName());
-    newUser.setLastName(req.getLastName());
-    newUser.setEmail(req.getEmail());
-    newUser.setPassword(passwordEncoder.encode(req.getPassword()));
-    newUser.setStatus(UserStatus.ACTIVE);
+
+        // Common fields for all user types
+        newUser.setFirstName(req.getFirstName());
+        newUser.setLastName(req.getLastName());
+        newUser.setEmail(req.getEmail());
+        newUser.setPassword(passwordEncoder.encode(req.getPassword()));
+        newUser.setStatus(UserStatus.ACTIVE);
 
         users.save(newUser);
-        
-        
+
+
         //create a student as the concrete subtype
 //        Student s = new Student();
 //        s.setFirstName(req.getFirstName());
@@ -115,9 +111,9 @@ public class AuthController {
         //s.setEnrollmentYear(2025);
 //        users.save(s);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("status", "registered", "id",
-        		newUser.getUserID(),     // 👈 return id
-        	    "email", req.getEmail()
-        	));
+                newUser.getUserID(),     // 👈 return id
+                "email", req.getEmail()
+        ));
 //        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse("registered", req.getEmail()));
     }
 
@@ -135,9 +131,9 @@ public class AuthController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new AuthResponse("Invalid credentials", null)));
     }
-    
-    @GetMapping("/tryagain") 
+
+    @GetMapping("/tryagain")
     public Map<String, String> tryagain() {
-    	return Map.of("status", "ok");
+        return Map.of("status", "ok");
     }
 }

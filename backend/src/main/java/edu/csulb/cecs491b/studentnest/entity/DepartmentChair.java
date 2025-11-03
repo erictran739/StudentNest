@@ -1,5 +1,6 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
+import edu.csulb.cecs491b.studentnest.entity.enums.Department;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class DepartmentChair extends Admin {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id",
-                foreignKey = @ForeignKey(name = "fk_departmentchair_department"))
+            foreignKey = @ForeignKey(name = "fk_departmentchair_department"))
     private Department department;     // the department the chair leads
 
     @Column(length = 100)

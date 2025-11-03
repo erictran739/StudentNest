@@ -20,7 +20,7 @@ public class Professor extends User {
     @Column(length = 50)
     private String office;
 
-    @OneToMany(mappedBy = "professor_id")
+    @OneToMany(mappedBy = "professor")
     private List<Course> courses;
 
     @OneToMany(mappedBy = "professor_id")
