@@ -2,7 +2,7 @@ package edu.csulb.cecs491b.studentnest.controller.dto.course;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.entity.Course;
-import edu.csulb.cecs491b.studentnest.entity.enums.Department;
+import edu.csulb.cecs491b.studentnest.entity.Department;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

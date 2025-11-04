@@ -1,6 +1,5 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
-import edu.csulb.cecs491b.studentnest.entity.enums.Department;
 import jakarta.persistence.*;
 import lombok.*;
 

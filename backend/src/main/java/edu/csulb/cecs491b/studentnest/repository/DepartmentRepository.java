@@ -1,6 +1,6 @@
 package edu.csulb.cecs491b.studentnest.repository;
 
-import edu.csulb.cecs491b.studentnest.entity.enums.Department;
+import edu.csulb.cecs491b.studentnest.entity.Department;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;

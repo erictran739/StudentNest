@@ -1,7 +1,7 @@
 package edu.csulb.cecs491b.studentnest;
 
 import edu.csulb.cecs491b.studentnest.entity.SystemAdmin;
-import edu.csulb.cecs491b.studentnest.entity.UserStatus;
+import edu.csulb.cecs491b.studentnest.entity.enums.UserStatus;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

@@ -1,4 +1,4 @@
-package edu.csulb.cecs491b.studentnest.entity.enums;
+package edu.csulb.cecs491b.studentnest.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

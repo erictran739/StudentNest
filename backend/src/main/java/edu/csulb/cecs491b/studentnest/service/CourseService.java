@@ -9,10 +9,9 @@ import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
 import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.entity.Enrollment;
 import edu.csulb.cecs491b.studentnest.entity.Section;
-import edu.csulb.cecs491b.studentnest.entity.enums.Department;
+import edu.csulb.cecs491b.studentnest.entity.Department;
 import edu.csulb.cecs491b.studentnest.repository.*;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Transactional

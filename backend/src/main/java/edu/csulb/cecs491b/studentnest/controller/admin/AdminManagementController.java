@@ -1,7 +1,7 @@
 package edu.csulb.cecs491b.studentnest.controller.admin;
 
 import edu.csulb.cecs491b.studentnest.entity.SystemAdmin;
-import edu.csulb.cecs491b.studentnest.entity.UserStatus;
+import edu.csulb.cecs491b.studentnest.entity.enums.UserStatus;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;

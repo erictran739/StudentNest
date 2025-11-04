@@ -1,7 +1,7 @@
 package edu.csulb.cecs491b.studentnest.controller.admin;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.UpdateUserRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.UserResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.UpdateUserRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.UserResponse;
 import edu.csulb.cecs491b.studentnest.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
