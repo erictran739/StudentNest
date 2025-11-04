@@ -98,6 +98,152 @@
       <div id="u_msg"></div>
     </div>
   </section>
+  
+  <section>
+    <h2>Department Management</h2>
+
+    <!-- Create -->
+	<h3>Create Department</h3>
+	  <label>Department Name</label><input id="d_name" placeholder="e.g. Computer Science"><br>
+	  <label>Description</label><input id="d_desc" placeholder="e.g. CECS Department"><br>
+	  <button onclick="createDepartment()">POST /api/departments</button><br><br>
+
+    <hr/>
+	
+	<h3>List All Departments</h3>
+	  <button onclick="listDepartments()">GET /api/departments</button><br><br>
+
+    <!-- List / Get -->
+    <div class="row">
+      <div>
+        <h3>List All</h3>
+        <button onclick="deptList()">GET /api/departments</button>
+      </div>
+      <div>
+        <h3>Get One</h3>
+        <label>Department ID</label>
+        <input id="d_id_get" placeholder="e.g., 1">
+        <button onclick="deptGet()">GET /api/departments/{id}</button>
+      </div>
+    </div>
+
+    <hr/>
+
+    <!-- Update -->
+    <h3>Update Department</h3>
+    <div class="row">
+      <div><label>ID</label><input id="d_id_patch" placeholder="e.g., 1"></div>
+      <div><label>New Name</label><input id="d_name_patch" placeholder="Optional"></div>
+    </div>
+    <label>New Description</label>
+    <input id="d_desc_patch" placeholder="Optional">
+    <button onclick="deptUpdate()">PATCH /api/departments/{id}</button>
+
+    <hr/>
+
+    <!-- Assign Chair -->
+    <h3>Assign Chair</h3>
+    <div class="row">
+      <div><label>Department ID</label><input id="d_id_chair" placeholder="e.g., 1"></div>
+      <div><label>Chair User ID</label><input id="d_chair_user" placeholder="e.g., 12 (must be DepartmentChair)"></div>
+    </div>
+    <button onclick="deptAssignChair()">PUT /api/departments/{id}/chair?chairUserId=</button>
+
+    <hr/>
+
+    <!-- Delete -->
+    <h3>Delete Department</h3>
+    <div class="row">
+      <div><label>Department ID</label><input id="d_id_del" placeholder="e.g., 1"></div>
+    </div>
+    <button onclick="deptDelete()" style="background:#fee;border:1px solid #f88;">DELETE /api/departments/{id}</button>
+  </section>
+
+  <script>
+	
+	<h3>Assign or Remove Department Chair</h3>
+	  <label>Department ID</label><input id="dept_id" placeholder="e.g. 1"><br>
+	  <label>Chair User ID</label><input id="chair_uid" placeholder="e.g. 11"><br>
+	  <button onclick="assignChair()">PUT /api/departments/{id}/chair?chairUserId=</button>
+	  <button onclick="removeChair()">DELETE /api/departments/{id}/chair?chairUserId=</button>
+	  <div id="deptMsg"></div>
+	</section>
+  // ---------- Departments ----------
+  async function deptCreate() {
+    const body = {
+      name: document.getElementById('d_name').value.trim(),
+      description: document.getElementById('d_desc').value.trim()
+    };
+    const r = await fetch(`${API}/api/departments`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
+    showOut({status:r.status, data:j});
+  }
+
+  async function deptList() {
+    const r = await fetch(`${API}/api/departments`);
+    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
+    showOut({status:r.status, data:j});
+  }
+
+  async function deptGet() {
+    const id = document.getElementById('d_id_get').value.trim();
+    if (!id) return showOut('Enter Department ID.');
+    const r = await fetch(`${API}/api/departments/${id}`);
+    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
+    showOut({status:r.status, data:j});
+  }
+
+  async function deptUpdate() {
+    const id   = document.getElementById('d_id_patch').value.trim();
+    const name = document.getElementById('d_name_patch').value.trim();
+    const desc = document.getElementById('d_desc_patch').value.trim();
+    if (!id) return showOut('Enter Department ID.');
+
+    const payload = {};
+    if (name) payload.name = name;
+    if (desc) payload.description = desc;
+
+    const r = await fetch(`${API}/api/departments/${id}`, {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
+    showOut({status:r.status, data:j});
+  }
+
+  async function deptAssignChair() {
+    const id = document.getElementById('d_id_chair').value.trim();
+    const chairUserId = document.getElementById('d_chair_user').value.trim();
+    if (!id || !chairUserId) return showOut('Enter Department ID and Chair User ID.');
+
+    // Adjust if your controller uses a different route (e.g., /assign-chair or path variable)
+    const r = await fetch(`${API}/api/departments/${id}/chair?chairUserId=${encodeURIComponent(chairUserId)}`, {
+      method: 'PUT'
+    });
+    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
+    showOut({status:r.status, data:j});
+  }
+
+  async function deptDelete() {
+    const id = document.getElementById('d_id_del').value.trim();
+    if (!id) return showOut('Enter Department ID.');
+    if (!confirm(`Delete department #${id}?`)) return;
+
+    const r = await fetch(`${API}/api/departments/${id}`, { method: 'DELETE' });
+    if (r.status === 204) {
+      showOut({status:r.status, data:'Deleted'});
+    } else {
+      const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
+      showOut({status:r.status, data:j});
+    }
+  }
+  </script>
+
 
   <!-- ADMIN MANAGEMENT (secured /api/admin/** via Basic Auth) -->
   <section>
