@@ -19,6 +19,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import edu.csulb.cecs491b.studentnest.repository.UserRepository;
+
 
 //this is
 @Configuration
@@ -38,11 +40,13 @@ public class SecurityConfig {
 
 	          // Admin-only API
 	          .requestMatchers("/api/admin/**").hasRole("ADMIN")
+	          .requestMatchers("/api/departments/**").hasRole("ADMIN")
 
 	          // Open the users API for our tester HTML (dev only)
 	          .requestMatchers("/api/users/**").permitAll()
 
-	          .anyRequest().permitAll()
+//	          .anyRequest().permitAll()
+	          .anyRequest().authenticated()
 	      )
 	      .httpBasic(Customizer.withDefaults())   // keep ENABLED
 	      .formLogin(f -> f.disable());
@@ -52,15 +56,15 @@ public class SecurityConfig {
 
   
 //In-memory admin for demo/dev
- @Bean
- public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-   UserDetails admin = User.builder()
-       .username("admin")
-       .password(encoder.encode("admin123")) // change for your demo
-       .roles("ADMIN")
-       .build();
-   return new InMemoryUserDetailsManager(admin);
- }
+// @Bean
+// public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+//   UserDetails admin = User.builder()
+//       .username("admin")
+//       .password(encoder.encode("admin123")) // change for your demo
+//       .roles("ADMIN")
+//       .build();
+//   return new InMemoryUserDetailsManager(admin);
+// }
   
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -80,6 +84,28 @@ public class SecurityConfig {
       return source;
   }
   
+  //This bean tells Spring Security to use your UserRepository 
+  //to find users by email when someone logs in via Basic Auth
+  @Bean
+  public UserDetailsService dbUserDetailsService(UserRepository users) {
+      return username -> users.findByEmail(username)
+          .map(u -> {
+              // Determine the role based on the entity type
+              String role = switch (u.getClass().getSimpleName()) {
+                  case "SystemAdmin", "Admin", "DepartmentChair" -> "ADMIN";
+                  case "Professor" -> "PROFESSOR";
+                  default -> "STUDENT";
+              };
+
+              return org.springframework.security.core.userdetails.User
+                  .withUsername(u.getEmail())
+                  .password(u.getPassword())   // already BCrypt-hashed in DB
+                  .roles(role)
+                  .build();
+          })
+          .orElseThrow(() -> new RuntimeException("User not found: " + username));
+  }
+
   
   
 }

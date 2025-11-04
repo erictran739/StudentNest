@@ -18,5 +18,5 @@ public class Professor extends User {
     @Column(length = 50)
     private String office;
 
-    // You can later add a OneToMany<Course> relationship if needed.
+    // we can later add a OneToMany<Course> relationship if needed.
 }
