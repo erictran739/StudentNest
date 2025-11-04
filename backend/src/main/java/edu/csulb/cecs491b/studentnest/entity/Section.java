@@ -22,7 +22,7 @@ public class Section {
 
     @ManyToOne
     @JoinColumn(name = "professor_id")
-    private Professor professor_id;
+    private Professor professor;
 
     @ManyToOne
     @JoinColumn(name = "department_id")

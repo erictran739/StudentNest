@@ -25,7 +25,7 @@ public class Department {
     private String description;
 
     // Relationship with DepartmentChair
-    @OneToOne(mappedBy = "department", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "department")
     private DepartmentChair chair;
 
     // Relationship with courses

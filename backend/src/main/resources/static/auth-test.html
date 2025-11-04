@@ -1,130 +1,177 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <title>StudentNest – Auth & Admin API Tester (Dev)</title>
-  <style>
-    body { font-family: system-ui, Arial; max-width: 980px; margin: 24px auto; }
-    input, select, button, textarea { padding: 8px; margin: 6px 0; width: 100%; box-sizing: border-box; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    section { border:1px solid #ddd; padding:16px; border-radius:10px; margin:16px 0; }
-    .actions { display:flex; flex-wrap: wrap; gap: 10px; }
-    .ok { color:#0a0; } .err { color:#a00; white-space:pre-wrap; }
-    pre { background:#111; color:#0f0; padding:12px; border-radius:8px; overflow:auto; }
-    .half { max-width: 220px; }
-  </style>
+    <meta charset="utf-8"/>
+    <title>StudentNest – Auth & Admin API Tester (Dev)</title>
+    <style>
+        body {
+            font-family: system-ui, Arial;
+            max-width: 980px;
+            margin: 24px auto;
+        }
+
+        input, select, button, textarea {
+            padding: 8px;
+            margin: 6px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        section {
+            border: 1px solid #ddd;
+            padding: 16px;
+            border-radius: 10px;
+            margin: 16px 0;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ok {
+            color: #0a0;
+        }
+
+        .err {
+            color: #a00;
+            white-space: pre-wrap;
+        }
+
+        pre {
+            background: #111;
+            color: #0f0;
+            padding: 12px;
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        .half {
+            max-width: 220px;
+        }
+    </style>
 </head>
 <body onload="init()">
-  <h1>StudentNest – Auth & Admin API Tester (Dev)</h1>
+<h1>StudentNest – Auth & Admin API Tester (Dev)</h1>
 
-  <!-- HEALTH -->
-  <section>
+<!-- HEALTH -->
+<section>
     <h2>Health</h2>
     <button onclick="ping()">GET /auth/tryagain</button>
     <div id="healthMsg"></div>
-  </section>
+</section>
 
-  <!-- REGISTER -->
-  <section>
+<!-- REGISTER -->
+<section>
     <h2>Register</h2>
     <div class="row">
-      <div><label>First name</label><input id="r_fn" value="Tony"></div>
-      <div><label>Last name</label><input id="r_ln" value="Adhikari"></div>
+        <div><label>First name</label><input id="r_fn" value="Tony"></div>
+        <div><label>Last name</label><input id="r_ln" value="Adhikari"></div>
     </div>
     <label>Email</label><input id="r_em" value="tony@example.com">
     <label>Password</label><input id="r_pw" type="password" value="secret123">
     <label>Role</label>
     <select id="r_role" onchange="toggleRegisterFields()">
-      <option value="student" selected>Student</option>
-      <option value="professor">Professor</option>
-      <option value="chair">Department Chair</option>
-      <!-- Admin intentionally not here (blocked on backend) -->
+        <option value="student" selected>Student</option>
+        <option value="professor">Professor</option>
+        <option value="chair">Department Chair</option>
+        <!-- Admin intentionally not here (blocked on backend) -->
     </select>
     <div id="r_student">
-      <label>Major</label><input id="r_major" value="COMPUTER_SCIENCE">
-      <label>Enrollment Year</label><input id="r_year" type="number" value="2025">
+        <label>Major</label><input id="r_major" value="COMPUTER_SCIENCE">
+        <label>Enrollment Year</label><input id="r_year" type="number" value="2025">
     </div>
     <div id="r_chair" style="display:none;">
-      <label>Building</label><input id="r_building" value="Engineering 2">
-      <label>Room Number</label><input id="r_room" value="E-214">
-      <label>Contact Email</label><input id="r_contact" value="cecs@csulb.edu">
-      <label>Phone Number</label><input id="r_phone" value="562-985-1234">
+        <label>Building</label><input id="r_building" value="Engineering 2">
+        <label>Room Number</label><input id="r_room" value="E-214">
+        <label>Contact Email</label><input id="r_contact" value="cecs@csulb.edu">
+        <label>Phone Number</label><input id="r_phone" value="562-985-1234">
     </div>
     <button onclick="register()">POST /auth/register</button>
     <div id="regMsg"></div>
-  </section>
+</section>
 
-  <!-- LOGIN -->
-  <section>
+<!-- LOGIN -->
+<section>
     <h2>Login</h2>
     <label>Email</label><input id="l_em" value="tony@example.com">
     <label>Password</label><input id="l_pw" type="password" value="secret123">
     <button onclick="login()">POST /auth/login</button>
     <div id="loginMsg"></div>
-  </section>
+</section>
 
-  <!-- USER LOOKUP + EDIT/DELETE (dev-open /api/users/**) -->
-  <section>
+<!-- USER LOOKUP + EDIT/DELETE (dev-open /api/users/**) -->
+<section>
     <h2>Users API (dev-open)</h2>
     <div class="actions">
-      <input id="u_id" placeholder="User ID (e.g., 8)" class="half">
-      <button onclick="loadUser()">GET /api/users/{id}</button>
-      <button onclick="listUsers()">GET /api/users</button>
+        <input id="u_id" placeholder="User ID (e.g., 8)" class="half">
+        <button onclick="loadUser()">GET /api/users/{id}</button>
+        <button onclick="listUsers()">GET /api/users</button>
     </div>
     <div id="userStatus" class="err"></div>
 
     <div id="userCard" style="display:none;">
-      <div class="row">
-        <div><label>First name</label><input id="u_fn" disabled></div>
-        <div><label>Last name</label><input id="u_ln" disabled></div>
-      </div>
-      <label>Email</label><input id="u_em" disabled>
-      <label>Status</label>
-      <select id="u_st" disabled>
-        <option value="ACTIVE">ACTIVE</option>
-        <option value="INACTIVE">INACTIVE</option>
-        <option value="LOCKED">LOCKED</option>
-      </select>
+        <div class="row">
+            <div><label>First name</label><input id="u_fn" disabled></div>
+            <div><label>Last name</label><input id="u_ln" disabled></div>
+        </div>
+        <label>Email</label><input id="u_em" disabled>
+        <label>Status</label>
+        <select id="u_st" disabled>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="INACTIVE">INACTIVE</option>
+            <option value="LOCKED">LOCKED</option>
+        </select>
 
-      <div class="actions" style="margin-top:10px;">
-        <button id="editBtn" onclick="toggleEdit(true)">Edit</button>
-        <button id="saveBtn" onclick="saveUser()" style="display:none;">Save</button>
-        <button id="cancelBtn" onclick="toggleEdit(false)" style="display:none;">Cancel</button>
-        <button onclick="deleteUser()" style="margin-left:auto;background:#fee;border:1px solid #f88;">Delete</button>
-      </div>
+        <div class="actions" style="margin-top:10px;">
+            <button id="editBtn" onclick="toggleEdit(true)">Edit</button>
+            <button id="saveBtn" onclick="saveUser()" style="display:none;">Save</button>
+            <button id="cancelBtn" onclick="toggleEdit(false)" style="display:none;">Cancel</button>
+            <button onclick="deleteUser()" style="margin-left:auto;background:#fee;border:1px solid #f88;">Delete
+            </button>
+        </div>
 
-      <h3>Raw JSON</h3>
-      <pre id="u_raw"></pre>
-      <div id="u_msg"></div>
+        <h3>Raw JSON</h3>
+        <pre id="u_raw"></pre>
+        <div id="u_msg"></div>
     </div>
-  </section>
-  
-  <section>
+</section>
+
+<section>
     <h2>Department Management</h2>
 
     <!-- Create -->
-	<h3>Create Department</h3>
-	  <label>Department Name</label><input id="d_name" placeholder="e.g. Computer Science"><br>
-	  <label>Description</label><input id="d_desc" placeholder="e.g. CECS Department"><br>
-	  <button onclick="createDepartment()">POST /api/departments</button><br><br>
+    <h3>Create Department</h3>
+    <label>Department Name</label><input id="d_name" placeholder="e.g. Computer Science"><br>
+    <label>Description</label><input id="d_desc" placeholder="e.g. CECS Department"><br>
+    <button onclick="createDepartment()">POST /api/departments</button>
+    <br><br>
 
     <hr/>
-	
-	<h3>List All Departments</h3>
-	  <button onclick="listDepartments()">GET /api/departments</button><br><br>
+
+    <h3>List All Departments</h3>
+    <button onclick="listDepartments()">GET /api/departments</button>
+    <br><br>
 
     <!-- List / Get -->
     <div class="row">
-      <div>
-        <h3>List All</h3>
-        <button onclick="deptList()">GET /api/departments</button>
-      </div>
-      <div>
-        <h3>Get One</h3>
-        <label>Department ID</label>
-        <input id="d_id_get" placeholder="e.g., 1">
-        <button onclick="deptGet()">GET /api/departments/{id}</button>
-      </div>
+        <div>
+            <h3>List All</h3>
+            <button onclick="deptList()">GET /api/departments</button>
+        </div>
+        <div>
+            <h3>Get One</h3>
+            <label>Department ID</label>
+            <input id="d_id_get" placeholder="e.g., 1">
+            <button onclick="deptGet()">GET /api/departments/{id}</button>
+        </div>
     </div>
 
     <hr/>
@@ -132,8 +179,8 @@
     <!-- Update -->
     <h3>Update Department</h3>
     <div class="row">
-      <div><label>ID</label><input id="d_id_patch" placeholder="e.g., 1"></div>
-      <div><label>New Name</label><input id="d_name_patch" placeholder="Optional"></div>
+        <div><label>ID</label><input id="d_id_patch" placeholder="e.g., 1"></div>
+        <div><label>New Name</label><input id="d_name_patch" placeholder="Optional"></div>
     </div>
     <label>New Description</label>
     <input id="d_desc_patch" placeholder="Optional">
@@ -144,8 +191,9 @@
     <!-- Assign Chair -->
     <h3>Assign Chair</h3>
     <div class="row">
-      <div><label>Department ID</label><input id="d_id_chair" placeholder="e.g., 1"></div>
-      <div><label>Chair User ID</label><input id="d_chair_user" placeholder="e.g., 12 (must be DepartmentChair)"></div>
+        <div><label>Department ID</label><input id="d_id_chair" placeholder="e.g., 1"></div>
+        <div><label>Chair User ID</label><input id="d_chair_user" placeholder="e.g., 12 (must be DepartmentChair)">
+        </div>
     </div>
     <button onclick="deptAssignChair()">PUT /api/departments/{id}/chair?chairUserId=</button>
 
@@ -154,314 +202,450 @@
     <!-- Delete -->
     <h3>Delete Department</h3>
     <div class="row">
-      <div><label>Department ID</label><input id="d_id_del" placeholder="e.g., 1"></div>
+        <div><label>Department ID</label><input id="d_id_del" placeholder="e.g., 1"></div>
     </div>
     <button onclick="deptDelete()" style="background:#fee;border:1px solid #f88;">DELETE /api/departments/{id}</button>
-  </section>
+</section>
 
-  <script>
-	
-	<h3>Assign or Remove Department Chair</h3>
-	  <label>Department ID</label><input id="dept_id" placeholder="e.g. 1"><br>
-	  <label>Chair User ID</label><input id="chair_uid" placeholder="e.g. 11"><br>
-	  <button onclick="assignChair()">PUT /api/departments/{id}/chair?chairUserId=</button>
-	  <button onclick="removeChair()">DELETE /api/departments/{id}/chair?chairUserId=</button>
-	  <div id="deptMsg"></div>
-	</section>
-  // ---------- Departments ----------
-  async function deptCreate() {
-    const body = {
-      name: document.getElementById('d_name').value.trim(),
-      description: document.getElementById('d_desc').value.trim()
-    };
-    const r = await fetch(`${API}/api/departments`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(body)
-    });
-    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
-    showOut({status:r.status, data:j});
-  }
+<section>
+    <h3>Assign or Remove Department Chair</h3>
+    <label>Department ID</label>
+    <input id="dept_id" placeholder="e.g. 1"><br>
+    <label>Chair User ID</label><input id="chair_uid" placeholder="e.g. 11"><br>
+    <button onclick="assignChair()">PUT /api/departments/{id}/chair?chairUserId=</button>
+    <button onclick="removeChair()">DELETE /api/departments/{id}/chair?chairUserId=</button>
+    <div id="deptMsg"></div>
+</section>
 
-  async function deptList() {
-    const r = await fetch(`${API}/api/departments`);
-    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
-    showOut({status:r.status, data:j});
-  }
-
-  async function deptGet() {
-    const id = document.getElementById('d_id_get').value.trim();
-    if (!id) return showOut('Enter Department ID.');
-    const r = await fetch(`${API}/api/departments/${id}`);
-    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
-    showOut({status:r.status, data:j});
-  }
-
-  async function deptUpdate() {
-    const id   = document.getElementById('d_id_patch').value.trim();
-    const name = document.getElementById('d_name_patch').value.trim();
-    const desc = document.getElementById('d_desc_patch').value.trim();
-    if (!id) return showOut('Enter Department ID.');
-
-    const payload = {};
-    if (name) payload.name = name;
-    if (desc) payload.description = desc;
-
-    const r = await fetch(`${API}/api/departments/${id}`, {
-      method: 'PATCH',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
-    showOut({status:r.status, data:j});
-  }
-
-  async function deptAssignChair() {
-    const id = document.getElementById('d_id_chair').value.trim();
-    const chairUserId = document.getElementById('d_chair_user').value.trim();
-    if (!id || !chairUserId) return showOut('Enter Department ID and Chair User ID.');
-
-    // Adjust if your controller uses a different route (e.g., /assign-chair or path variable)
-    const r = await fetch(`${API}/api/departments/${id}/chair?chairUserId=${encodeURIComponent(chairUserId)}`, {
-      method: 'PUT'
-    });
-    const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
-    showOut({status:r.status, data:j});
-  }
-
-  async function deptDelete() {
-    const id = document.getElementById('d_id_del').value.trim();
-    if (!id) return showOut('Enter Department ID.');
-    if (!confirm(`Delete department #${id}?`)) return;
-
-    const r = await fetch(`${API}/api/departments/${id}`, { method: 'DELETE' });
-    if (r.status === 204) {
-      showOut({status:r.status, data:'Deleted'});
-    } else {
-      const t = await r.text(); let j; try { j = JSON.parse(t); } catch { j = t; }
-      showOut({status:r.status, data:j});
+<script>
+    // ---------- Departments ----------
+    async function deptCreate() {
+        const body = {
+            name: document.getElementById('d_name').value.trim(),
+            description: document.getElementById('d_desc').value.trim()
+        };
+        const r = await fetch(`${API}/api/departments`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        });
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        showOut({status: r.status, data: j});
     }
-  }
-  </script>
+
+    async function deptList() {
+        const r = await fetch(`${API}/api/departments`);
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        showOut({status: r.status, data: j});
+    }
+
+    async function deptGet() {
+        const id = document.getElementById('d_id_get').value.trim();
+        if (!id) return showOut('Enter Department ID.');
+        const r = await fetch(`${API}/api/departments/${id}`);
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        showOut({status: r.status, data: j});
+    }
+
+    async function deptUpdate() {
+        const id = document.getElementById('d_id_patch').value.trim();
+        const name = document.getElementById('d_name_patch').value.trim();
+        const desc = document.getElementById('d_desc_patch').value.trim();
+        if (!id) return showOut('Enter Department ID.');
+
+        const payload = {};
+        if (name) payload.name = name;
+        if (desc) payload.description = desc;
+
+        const r = await fetch(`${API}/api/departments/${id}`, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        showOut({status: r.status, data: j});
+    }
+
+    async function deptAssignChair() {
+        const id = document.getElementById('d_id_chair').value.trim();
+        const chairUserId = document.getElementById('d_chair_user').value.trim();
+        if (!id || !chairUserId) return showOut('Enter Department ID and Chair User ID.');
+
+        // Adjust if your controller uses a different route (e.g., /assign-chair or path variable)
+        const r = await fetch(`${API}/api/departments/${id}/chair?chairUserId=${encodeURIComponent(chairUserId)}`, {
+            method: 'PUT'
+        });
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        showOut({status: r.status, data: j});
+    }
+
+    async function deptDelete() {
+        const id = document.getElementById('d_id_del').value.trim();
+        if (!id) return showOut('Enter Department ID.');
+        if (!confirm(`Delete department #${id}?`)) return;
+
+        const r = await fetch(`${API}/api/departments/${id}`, {method: 'DELETE'});
+        if (r.status === 204) {
+            showOut({status: r.status, data: 'Deleted'});
+        } else {
+            const t = await r.text();
+            let j;
+            try {
+                j = JSON.parse(t);
+            } catch {
+                j = t;
+            }
+            showOut({status: r.status, data: j});
+        }
+    }
+</script>
 
 
-  <!-- ADMIN MANAGEMENT (secured /api/admin/** via Basic Auth) -->
-  <section>
+<!-- ADMIN MANAGEMENT (secured /api/admin/** via Basic Auth) -->
+<section>
     <h2>Admin Management (secured)</h2>
     <div class="row">
-      <div><label>Admin Username</label><input id="a_user" value="admin"></div>
-      <div><label>Admin Password</label><input id="a_pass" type="password" value="admin123"></div>
+        <div><label>Admin Username</label><input id="a_user" value="admin"></div>
+        <div><label>Admin Password</label><input id="a_pass" type="password" value="admin123"></div>
     </div>
 
     <div class="actions">
-      <button onclick="adminList()">GET /api/admin/users</button>
-      <input id="a_id" placeholder="User ID (e.g., 8)" class="half">
-      <button onclick="adminGet()">GET /api/admin/users/{id}</button>
+        <button onclick="adminList()">GET /api/admin/users</button>
+        <input id="a_id" placeholder="User ID (e.g., 8)" class="half">
+        <button onclick="adminGet()">GET /api/admin/users/{id}</button>
     </div>
 
     <div class="row">
-      <div>
-        <label>PATCH body (JSON)</label>
-        <textarea id="a_patch" rows="6" placeholder='{"firstName":"Tony","lastName":"A."}'></textarea>
-        <button onclick="adminPatch()">PATCH /api/admin/users/{id}</button>
-      </div>
-      <div>
-        <label>Delete user by ID</label>
-        <input id="a_del" placeholder="User ID">
-        <button onclick="adminDelete()">DELETE /api/admin/users/{id}</button>
-      </div>
+        <div>
+            <label>PATCH body (JSON)</label>
+            <textarea id="a_patch" rows="6" placeholder='{"firstName":"Tony","lastName":"A."}'></textarea>
+            <button onclick="adminPatch()">PATCH /api/admin/users/{id}</button>
+        </div>
+        <div>
+            <label>Delete user by ID</label>
+            <input id="a_del" placeholder="User ID">
+            <button onclick="adminDelete()">DELETE /api/admin/users/{id}</button>
+        </div>
     </div>
     <div id="adminMsg"></div>
-  </section>
+</section>
 
-  <h2>Response (last request)</h2>
-  <pre id="out">Waiting…</pre>
+<h2>Response (last request)</h2>
+<pre id="out">Waiting…</pre>
 
 <script>
-const API = 'http://localhost:8080';
-const OUT = document.getElementById('out');
+    const API = 'https://puggu.dev';
+    const OUT = document.getElementById('out');
 
-function init(){ toggleRegisterFields(); }
-function showOut(obj){ OUT.textContent = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2); }
-function setText(id, text, ok=false){ const el = document.getElementById(id); el.className = ok?'ok':'err'; el.textContent=text; }
+    function init() {
+        toggleRegisterFields();
+    }
 
-// Unicode-safe Base64 for Basic Auth
-function b64(s){ return window.btoa(unescape(encodeURIComponent(s))); }
-function adminHeaders(){
-  const u = document.getElementById('a_user').value;
-  const p = document.getElementById('a_pass').value;
-  return { 'Authorization': 'Basic ' + b64(`${u}:${p}`) };
-}
+    function showOut(obj) {
+        OUT.textContent = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2);
+    }
 
-/* -------- HEALTH -------- */
-async function ping(){
-  const r = await fetch(`${API}/auth/tryagain`);
-  const j = await r.json(); setText('healthMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok);
-  showOut({status:r.status, data:j});
-}
+    function setText(id, text, ok = false) {
+        const el = document.getElementById(id);
+        el.className = ok ? 'ok' : 'err';
+        el.textContent = text;
+    }
 
-/* -------- REGISTER -------- */
-function toggleRegisterFields(){
-  const role = document.getElementById('r_role').value;
-  document.getElementById('r_student').style.display = role==='student' ? 'block' : 'none';
-  document.getElementById('r_chair').style.display   = role==='chair'   ? 'block' : 'none';
-}
-async function register(){
-  const role = document.getElementById('r_role').value.toLowerCase();
-  const body = {
-    firstName: document.getElementById('r_fn').value,
-    lastName:  document.getElementById('r_ln').value,
-    email:     document.getElementById('r_em').value,
-    password:  document.getElementById('r_pw').value,
-    role
-  };
-  if(role==='student'){
-    body.major = document.getElementById('r_major').value;
-    body.enrollmentYear = parseInt(document.getElementById('r_year').value || '0', 10);
-  }
-  if(role==='chair'){
-    body.building     = document.getElementById('r_building').value;
-    body.roomNumber   = document.getElementById('r_room').value;
-    body.contactEmail = document.getElementById('r_contact').value;
-    body.phoneNumber  = document.getElementById('r_phone').value;
-  }
-  const r = await fetch(`${API}/auth/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
-  const j = await r.json().catch(()=> ({}));
-  setText('regMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok || r.status===201);
-  showOut({status:r.status, data:j});
-}
+    // Unicode-safe Base64 for Basic Auth
+    function b64(s) {
+        return window.btoa(unescape(encodeURIComponent(s)));
+    }
 
-/* -------- LOGIN -------- */
-async function login(){
-  const body = { email: document.getElementById('l_em').value, password: document.getElementById('l_pw').value };
-  const r = await fetch(`${API}/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
-  const j = await r.json().catch(()=> ({}));
-  setText('loginMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok);
-  showOut({status:r.status, data:j});
-}
+    function adminHeaders() {
+        const u = document.getElementById('a_user').value;
+        const p = document.getElementById('a_pass').value;
+        return {'Authorization': 'Basic ' + b64(`${u}:${p}`)};
+    }
 
-/* -------- USERS (dev-open) -------- */
-const els = {
-  userCard: document.getElementById('userCard'),
-  status:   document.getElementById('userStatus'),
-  fn:       document.getElementById('u_fn'),
-  ln:       document.getElementById('u_ln'),
-  em:       document.getElementById('u_em'),
-  st:       document.getElementById('u_st'),
-  raw:      document.getElementById('u_raw'),
-  msg:      document.getElementById('u_msg'),
-  id:       document.getElementById('u_id')
-};
-let originalUser = null;
+    /* -------- HEALTH -------- */
+    async function ping() {
+        const r = await fetch(`${API}/auth/tryagain`);
+        const j = await r.json();
+        setText('healthMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok);
+        showOut({status: r.status, data: j});
+    }
 
-function setDisabled(dis){ els.fn.disabled = els.ln.disabled = els.em.disabled = els.st.disabled = dis; }
-function toggleEdit(edit){
-  setDisabled(!edit);
-  document.getElementById('editBtn').style.display   = edit ? 'none' : 'inline-block';
-  document.getElementById('saveBtn').style.display   = edit ? 'inline-block' : 'none';
-  document.getElementById('cancelBtn').style.display = edit ? 'inline-block' : 'none';
-  els.msg.textContent='';
-  if(!edit && originalUser) fillForm(originalUser);
-}
-function fillForm(u){
-  els.fn.value=u.firstName||'';
-  els.ln.value=u.lastName||'';
-  els.em.value=u.email||'';
-  els.st.value=(u.status||'ACTIVE').toUpperCase();
-  els.raw.textContent=JSON.stringify(u,null,2);
-}
+    /* -------- REGISTER -------- */
+    function toggleRegisterFields() {
+        const role = document.getElementById('r_role').value;
+        document.getElementById('r_student').style.display = role === 'student' ? 'block' : 'none';
+        document.getElementById('r_chair').style.display = role === 'chair' ? 'block' : 'none';
+    }
 
-async function listUsers(){
-  const r = await fetch(`${API}/api/users`);
-  const j = await r.json();
-  showOut({status:r.status, data:j});
-}
+    async function register() {
+        const role = document.getElementById('r_role').value.toLowerCase();
+        const body = {
+            firstName: document.getElementById('r_fn').value,
+            lastName: document.getElementById('r_ln').value,
+            email: document.getElementById('r_em').value,
+            password: document.getElementById('r_pw').value,
+            role
+        };
+        if (role === 'student') {
+            body.major = document.getElementById('r_major').value;
+            body.enrollmentYear = parseInt(document.getElementById('r_year').value || '0', 10);
+        }
+        if (role === 'chair') {
+            body.building = document.getElementById('r_building').value;
+            body.roomNumber = document.getElementById('r_room').value;
+            body.contactEmail = document.getElementById('r_contact').value;
+            body.phoneNumber = document.getElementById('r_phone').value;
+        }
+        const r = await fetch(`${API}/auth/register`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        });
+        const j = await r.json().catch(() => ({}));
+        setText('regMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok || r.status === 201);
+        showOut({status: r.status, data: j});
+    }
 
-async function loadUser(){
-  const id = (els.id.value||'').trim(); if(!id){ els.status.textContent='Enter a user id.'; return; }
-  els.status.textContent='Loading…';
-  const r = await fetch(`${API}/api/users/${id}`);
-  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
-  if(r.status===403){ els.status.textContent='403 Forbidden: backend blocking /api/users/**'; els.userCard.style.display='none'; return; }
-  if(r.ok){
-    originalUser=j; fillForm(j); setDisabled(true); toggleEdit(false);
-    els.userCard.style.display='block'; els.status.textContent=`Loaded user #${id}`;
-  }else{
-    els.userCard.style.display='none'; els.status.textContent=`GET ${r.status}: ${typeof j==='string'?j:JSON.stringify(j)}`;
-  }
-  showOut({status:r.status, data:j});
-}
+    /* -------- LOGIN -------- */
+    async function login() {
+        const body = {email: document.getElementById('l_em').value, password: document.getElementById('l_pw').value};
+        const r = await fetch(`${API}/auth/login`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        });
+        const j = await r.json().catch(() => ({}));
+        setText('loginMsg', `Status ${r.status}: ${JSON.stringify(j)}`, r.ok);
+        showOut({status: r.status, data: j});
+    }
 
-async function saveUser(){
-  const id = (els.id.value||'').trim();
-  const p = {};
-  if(els.fn.value!==originalUser.firstName) p.firstName=els.fn.value;
-  if(els.ln.value!==originalUser.lastName)  p.lastName =els.ln.value;
-  if(els.em.value!==originalUser.email)     p.email    =els.em.value;
-  if((els.st.value||'').toUpperCase()!==(originalUser.status||'').toUpperCase()) p.status=els.st.value.toUpperCase();
-  if(Object.keys(p).length===0){ els.msg.textContent='Nothing to update.'; toggleEdit(false); return; }
-  const r = await fetch(`${API}/api/users/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(p)});
-  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
-  if(r.ok){ originalUser=j; fillForm(j); toggleEdit(false); els.msg.textContent='Updated successfully.'; els.msg.className='ok'; }
-  else { els.msg.textContent=`PATCH ${r.status}: ${typeof j==='string'?j:JSON.stringify(j)}`; els.msg.className='err'; }
-  showOut({status:r.status, data:j});
-}
+    /* -------- USERS (dev-open) -------- */
+    const els = {
+        userCard: document.getElementById('userCard'),
+        status: document.getElementById('userStatus'),
+        fn: document.getElementById('u_fn'),
+        ln: document.getElementById('u_ln'),
+        em: document.getElementById('u_em'),
+        st: document.getElementById('u_st'),
+        raw: document.getElementById('u_raw'),
+        msg: document.getElementById('u_msg'),
+        id: document.getElementById('u_id')
+    };
+    let originalUser = null;
 
-async function deleteUser(){
-  const id = (els.id.value||'').trim();
-  if(!confirm(`Delete user #${id}?`)) return;
-  const r = await fetch(`${API}/api/users/${id}`, { method:'DELETE' });
-  if(r.status===204){ els.userCard.style.display='none'; els.status.textContent=`Deleted user #${id}`; els.msg.textContent=''; }
-  else { const t=await r.text(); els.msg.textContent=`DELETE ${r.status}: ${t}`; els.msg.className='err'; }
-  showOut({status:r.status, data: r.status===204 ? 'Deleted' : undefined});
-}
+    function setDisabled(dis) {
+        els.fn.disabled = els.ln.disabled = els.em.disabled = els.st.disabled = dis;
+    }
 
-/* -------- ADMIN (secured) -------- */
-function setAdminMsg(msg, ok=false){ setText('adminMsg', msg, ok); }
+    function toggleEdit(edit) {
+        setDisabled(!edit);
+        document.getElementById('editBtn').style.display = edit ? 'none' : 'inline-block';
+        document.getElementById('saveBtn').style.display = edit ? 'inline-block' : 'none';
+        document.getElementById('cancelBtn').style.display = edit ? 'inline-block' : 'none';
+        els.msg.textContent = '';
+        if (!edit && originalUser) fillForm(originalUser);
+    }
 
-async function adminList(){
-  const r = await fetch(`${API}/api/admin/users`, { headers: { ...adminHeaders() } });
-  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
-  setAdminMsg(`Status ${r.status}`, r.ok);
-  showOut({status:r.status, data:j});
-}
+    function fillForm(u) {
+        els.fn.value = u.firstName || '';
+        els.ln.value = u.lastName || '';
+        els.em.value = u.email || '';
+        els.st.value = (u.status || 'ACTIVE').toUpperCase();
+        els.raw.textContent = JSON.stringify(u, null, 2);
+    }
 
-async function adminGet(){
-  const id = (document.getElementById('a_id').value||'').trim();
-  if(!id) return setAdminMsg('Enter a user id.');
-  const r = await fetch(`${API}/api/admin/users/${id}`, { headers: { ...adminHeaders() } });
-  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
-  setAdminMsg(`GET ${r.status}`, r.ok);
-  showOut({status:r.status, data:j});
-}
+    async function listUsers() {
+        const r = await fetch(`${API}/api/users`);
+        const j = await r.json();
+        showOut({status: r.status, data: j});
+    }
 
-async function adminPatch(){
-  const id = (document.getElementById('a_id').value||'').trim();
-  if(!id) return setAdminMsg('Enter a user id.');
-  let payload;
-  try { payload = JSON.parse(document.getElementById('a_patch').value || '{}'); }
-  catch { return setAdminMsg('Invalid JSON in PATCH body'); }
-  const r = await fetch(`${API}/api/admin/users/${id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type':'application/json', ...adminHeaders() },
-    body: JSON.stringify(payload)
-  });
-  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
-  setAdminMsg(`PATCH ${r.status}`, r.ok);
-  showOut({status:r.status, data:j});
-}
+    async function loadUser() {
+        const id = (els.id.value || '').trim();
+        if (!id) {
+            els.status.textContent = 'Enter a user id.';
+            return;
+        }
+        els.status.textContent = 'Loading…';
+        const r = await fetch(`${API}/api/users/${id}`);
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        if (r.status === 403) {
+            els.status.textContent = '403 Forbidden: backend blocking /api/users/**';
+            els.userCard.style.display = 'none';
+            return;
+        }
+        if (r.ok) {
+            originalUser = j;
+            fillForm(j);
+            setDisabled(true);
+            toggleEdit(false);
+            els.userCard.style.display = 'block';
+            els.status.textContent = `Loaded user #${id}`;
+        } else {
+            els.userCard.style.display = 'none';
+            els.status.textContent = `GET ${r.status}: ${typeof j === 'string' ? j : JSON.stringify(j)}`;
+        }
+        showOut({status: r.status, data: j});
+    }
 
-async function adminDelete(){
-  const id = (document.getElementById('a_del').value||'').trim();
-  if(!id) return setAdminMsg('Enter a user id to delete');
-  if(!confirm(`Delete user #${id} as ADMIN?`)) return;
-  const r = await fetch(`${API}/api/admin/users/${id}`, {
-    method: 'DELETE',
-    headers: { ...adminHeaders() }
-  });
-  setAdminMsg(`DELETE ${r.status}`, r.status===204);
-  showOut({status:r.status, data: r.status===204 ? 'Deleted' : undefined});
-}
+    async function saveUser() {
+        const id = (els.id.value || '').trim();
+        const p = {};
+        if (els.fn.value !== originalUser.firstName) p.firstName = els.fn.value;
+        if (els.ln.value !== originalUser.lastName) p.lastName = els.ln.value;
+        if (els.em.value !== originalUser.email) p.email = els.em.value;
+        if ((els.st.value || '').toUpperCase() !== (originalUser.status || '').toUpperCase()) p.status = els.st.value.toUpperCase();
+        if (Object.keys(p).length === 0) {
+            els.msg.textContent = 'Nothing to update.';
+            toggleEdit(false);
+            return;
+        }
+        const r = await fetch(`${API}/api/users/${id}`, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(p)
+        });
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        if (r.ok) {
+            originalUser = j;
+            fillForm(j);
+            toggleEdit(false);
+            els.msg.textContent = 'Updated successfully.';
+            els.msg.className = 'ok';
+        } else {
+            els.msg.textContent = `PATCH ${r.status}: ${typeof j === 'string' ? j : JSON.stringify(j)}`;
+            els.msg.className = 'err';
+        }
+        showOut({status: r.status, data: j});
+    }
+
+    async function deleteUser() {
+        const id = (els.id.value || '').trim();
+        if (!confirm(`Delete user #${id}?`)) return;
+        const r = await fetch(`${API}/api/users/${id}`, {method: 'DELETE'});
+        if (r.status === 204) {
+            els.userCard.style.display = 'none';
+            els.status.textContent = `Deleted user #${id}`;
+            els.msg.textContent = '';
+        } else {
+            const t = await r.text();
+            els.msg.textContent = `DELETE ${r.status}: ${t}`;
+            els.msg.className = 'err';
+        }
+        showOut({status: r.status, data: r.status === 204 ? 'Deleted' : undefined});
+    }
+
+    /* -------- ADMIN (secured) -------- */
+    function setAdminMsg(msg, ok = false) {
+        setText('adminMsg', msg, ok);
+    }
+
+    async function adminList() {
+        const r = await fetch(`${API}/api/admin/users`, {headers: {...adminHeaders()}});
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        setAdminMsg(`Status ${r.status}`, r.ok);
+        showOut({status: r.status, data: j});
+    }
+
+    async function adminGet() {
+        const id = (document.getElementById('a_id').value || '').trim();
+        if (!id) return setAdminMsg('Enter a user id.');
+        const r = await fetch(`${API}/api/admin/users/${id}`, {headers: {...adminHeaders()}});
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        setAdminMsg(`GET ${r.status}`, r.ok);
+        showOut({status: r.status, data: j});
+    }
+
+    async function adminPatch() {
+        const id = (document.getElementById('a_id').value || '').trim();
+        if (!id) return setAdminMsg('Enter a user id.');
+        let payload;
+        try {
+            payload = JSON.parse(document.getElementById('a_patch').value || '{}');
+        } catch {
+            return setAdminMsg('Invalid JSON in PATCH body');
+        }
+        const r = await fetch(`${API}/api/admin/users/${id}`, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json', ...adminHeaders()},
+            body: JSON.stringify(payload)
+        });
+        const t = await r.text();
+        let j;
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = t;
+        }
+        setAdminMsg(`PATCH ${r.status}`, r.ok);
+        showOut({status: r.status, data: j});
+    }
+
+    async function adminDelete() {
+        const id = (document.getElementById('a_del').value || '').trim();
+        if (!id) return setAdminMsg('Enter a user id to delete');
+        if (!confirm(`Delete user #${id} as ADMIN?`)) return;
+        const r = await fetch(`${API}/api/admin/users/${id}`, {
+            method: 'DELETE',
+            headers: {...adminHeaders()}
+        });
+        setAdminMsg(`DELETE ${r.status}`, r.status === 204);
+        showOut({status: r.status, data: r.status === 204 ? 'Deleted' : undefined});
+    }
 </script>
 </body>
 </html>

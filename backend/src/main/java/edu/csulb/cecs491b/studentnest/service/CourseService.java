@@ -49,8 +49,10 @@ public class CourseService {
         return CourseResponse.build(HttpStatus.OK, course);
     }
 
-    public List<Course> getCourse(String dept_abbv) {
+    public List<Course> getCourse(String department_abbreviation) {
         // TODO: Finish 1st
+//        Department department = departmentRepository.findByName()
+//        List<Course> courses = courseRepository.findAllByDepartment();
         return null;
     }
 

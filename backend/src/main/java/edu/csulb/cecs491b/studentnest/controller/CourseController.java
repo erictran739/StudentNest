@@ -4,6 +4,7 @@ import edu.csulb.cecs491b.studentnest.controller.dto.course.AddSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.course.CreateCourseRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.course.DeleteSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
+import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.service.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +28,9 @@ public class CourseController {
     }
 
     @GetMapping("/{department_abbreviation}")
-    public ResponseEntity<?> get(@PathVariable String department_abbreviation) {
-        // TODO: Finish 1st
+    public List<Course> get(@PathVariable String department_abbreviation) {
         return null;
+//        return courseService.getCourse(department_abbreviation);
     }
 
     @GetMapping("/get/{id}")

@@ -14,15 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class Professor extends User {
 
-    @Column(length = 100)
-    private String department;
-
     @Column(length = 50)
     private String office;
 
     @OneToMany(mappedBy = "professor")
-    private List<Course> courses;
-
-    @OneToMany(mappedBy = "professor_id")
     private List<Section> sections;
 }

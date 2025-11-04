@@ -22,11 +22,7 @@ public class Course {
     private List<Section> sections;
 
     @ManyToOne
-    @JoinColumn(name="professor")
-    private Professor professor;
-
-    @ManyToOne
-    @JoinColumn(name="department")
+    @JoinColumn(name="department_id")
     private Department department;
 
     private String name;

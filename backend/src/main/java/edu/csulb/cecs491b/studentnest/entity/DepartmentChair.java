@@ -13,9 +13,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DepartmentChair extends Admin {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id",
-            foreignKey = @ForeignKey(name = "fk_departmentchair_department"))
+    @ManyToOne
+    @JoinColumn(name = "department_id")
     private Department department;     // the department the chair leads
 
     @Column(length = 100)
