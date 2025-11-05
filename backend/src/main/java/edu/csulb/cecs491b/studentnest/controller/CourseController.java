@@ -1,11 +1,7 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.course.AddSectionRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.course.CourseResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.course.CreateCourseRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.course.DeleteSectionRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.course.*;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
-import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.service.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +24,29 @@ public class CourseController {
         return courseService.create(request);
     }
 
-    @GetMapping("/{department_abbreviation}")
-    public List<CourseResponse> get(@PathVariable String department_abbreviation) {
-        return courseService.getCourses(department_abbreviation);
+    @GetMapping("/get/dept_abbr/{department_abbreviation}")
+    public List<CourseResponse> getByDeptAbbr(@PathVariable String department_abbreviation) {
+        return courseService.getCoursesByDeptAbbr(department_abbreviation);
+    }
+
+    @GetMapping("/get/dept_name/{name}")
+    public List<CourseResponse> getByName(@PathVariable String name) {
+        return courseService.getCoursesByDeptName(name);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<?> get(@PathVariable int id) {
-        return courseService.get(id);
+    public ResponseEntity<?> getById(@PathVariable int id) {
+        return courseService.getById(id);
+    }
+
+    /**
+     * This is supposed to serve as a catch-all. The request can contain a mix of several
+     * different attributes and return back the intersection between all the attributes
+     * TODO: Low Priority
+     */
+    @GetMapping("/get")
+    public List<CourseResponse> get(@RequestBody CourseRequest request) {
+        return courseService.getCourses(request);
     }
 
     @PostMapping("/add/section")

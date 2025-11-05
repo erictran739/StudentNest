@@ -2,7 +2,6 @@ package edu.csulb.cecs491b.studentnest.controller;
 
 import java.util.Map;
 
-import com.sun.net.httpserver.HttpsServer;
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.entity.enums.Major;
 import org.springframework.http.HttpStatus;
@@ -83,7 +82,7 @@ public class AuthController {
         users.save(newUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("status", "registered", "id",
-                newUser.getUserID(),     // 👈 return id
+                newUser.getUserID(),     // 👈 return course_id
                 "email", req.getEmail()
         ));
     }

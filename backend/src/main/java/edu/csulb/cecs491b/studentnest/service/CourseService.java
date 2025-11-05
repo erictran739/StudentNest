@@ -1,10 +1,7 @@
 package edu.csulb.cecs491b.studentnest.service;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.course.AddSectionRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.course.CourseResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.course.CreateCourseRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.course.DeleteSectionRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.course.*;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
 import edu.csulb.cecs491b.studentnest.entity.Course;
 import edu.csulb.cecs491b.studentnest.entity.Enrollment;
@@ -17,9 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -44,19 +41,56 @@ public class CourseService {
         this.departmentRepository = departmentRepository;
     }
 
-    public ResponseEntity<?> get(int id) {
+    public ResponseEntity<?> getById(int id) {
         Course course = getCourse(id);
 
         return CourseResponse.build(HttpStatus.OK, course);
     }
 
-    public List<CourseResponse> getCourses(String department_abbreviation) {
+    public ResponseEntity<?> getByName(String name) {
+        Course course = getCourse(name);
+        return CourseResponse.build(HttpStatus.OK, course);
+    }
+
+    public List<CourseResponse> getCoursesByDeptAbbr(String department_abbreviation) {
         Department department = departmentRepository.findByAbbreviation(department_abbreviation).orElseThrow(
                 () -> new NoSuchElementException("Department with abbreviation [" + department_abbreviation + "] does not exists")
         );
 
         return courseRepository.findAllByDepartmentIs(department)
                 .stream().map(CourseResponse::build).toList();
+    }
+
+    public List<CourseResponse> getCoursesByDeptName(String department_name) {
+        Department department = departmentRepository.findByName(department_name).orElseThrow(
+                () -> new NoSuchElementException("Department with name [" + department_name + "] does not exists")
+        );
+
+        return courseRepository.findAllByDepartmentIs(department)
+                .stream().map(CourseResponse::build).toList();
+    }
+
+
+    public List<CourseResponse> getCourses(CourseRequest request) {
+        List<CourseResponse> courses = new ArrayList<>();
+
+        if (request.department_abbreviation() != null){
+            courses.addAll(getCoursesByDeptAbbr(request.department_abbreviation()));
+        }
+
+        if (request.department_name() != null){
+            courses.addAll(getCoursesByDeptName(request.department_name()));
+        }
+
+        if (request.course_name() != null){
+            courses.add(CourseResponse.build(getCourse(request.course_name())));
+        }
+
+        if (request.course_id() > 0) {
+            courses.add(CourseResponse.build(getCourse(request.course_id())));
+        }
+
+        return courses;
     }
 
     public ResponseEntity<?> create(CreateCourseRequest request) {
@@ -139,13 +173,19 @@ public class CourseService {
     // Helper functions
     public Course getCourse(int id) {
         return courseRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("Course with id [" + id + "] does not exist")
+                () -> new NoSuchElementException("Course with course_id [" + id + "] does not exist")
+        );
+    }
+
+    public Course getCourse(String name) {
+        return courseRepository.findByName(name).orElseThrow(
+                () -> new NoSuchElementException("Course with course_name [" + name + "] does not exist")
         );
     }
 
     public Section getSection(int id) {
         return sectionRepository.findById(id).orElseThrow(
-                () -> new NoSuchElementException("Section with id [" + id + "] does not exist")
+                () -> new NoSuchElementException("Section with course_id [" + id + "] does not exist")
         );
     }
 }
