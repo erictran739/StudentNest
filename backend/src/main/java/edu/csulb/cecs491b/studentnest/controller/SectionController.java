@@ -1,12 +1,8 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.course.AddSectionRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.course.CreateCourseRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
 import edu.csulb.cecs491b.studentnest.service.CourseService;
 import edu.csulb.cecs491b.studentnest.service.SectionService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

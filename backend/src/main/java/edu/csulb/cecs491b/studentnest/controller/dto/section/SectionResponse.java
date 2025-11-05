@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 public class SectionResponse extends GenericResponse {
     private int courseID;
     private int sectionID;
-    private Department department;
+    private String department_abbreviation;
 
     // int professorID
     // int capacity
@@ -33,9 +33,17 @@ public class SectionResponse extends GenericResponse {
         SectionResponse sectionResponse = new SectionResponse(
                 section.getCourse().getCourseID(),
                 section.getSectionID(),
-                section.getDepartment()
+                section.getDepartment().getAbbreviation()
         );
 
         return GenericResponse.build(status, sectionResponse);
+    }
+
+    public static SectionResponse build(Section section) {
+        return new SectionResponse(
+                section.getCourse().getCourseID(),
+                section.getSectionID(),
+                section.getDepartment().getAbbreviation()
+        );
     }
 }

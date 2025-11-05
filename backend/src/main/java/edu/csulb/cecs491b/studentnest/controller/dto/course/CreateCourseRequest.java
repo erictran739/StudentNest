@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 public record CreateCourseRequest(
         @NotNull @NotBlank String name,
         @NotNull @NotBlank String description,
-        @NotNull @NotBlank String department,
-        @NotNull @NotBlank int credits
+        @NotNull @NotBlank String department_abbreviation,
+        int credits
 ) {
 }

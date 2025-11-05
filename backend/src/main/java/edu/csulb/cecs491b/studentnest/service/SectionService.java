@@ -30,7 +30,7 @@ public class SectionService {
                 section -> new SectionResponse(
                         section.getCourse().getCourseID(),
                         section.getSectionID(),
-                        section.getDepartment()
+                        section.getDepartment().getAbbreviation()
                 )
         ).toList();
     }

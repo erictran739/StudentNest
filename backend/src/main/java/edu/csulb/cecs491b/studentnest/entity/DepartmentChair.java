@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DepartmentChair extends Admin {
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "department_id")
     private Department department;     // the department the chair leads
 

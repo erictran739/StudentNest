@@ -3,6 +3,8 @@ package edu.csulb.cecs491b.studentnest.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Time;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,7 +19,7 @@ public class Section {
     private int sectionID;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @ManyToOne
@@ -27,13 +29,23 @@ public class Section {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
-//        int capacity,
-//        int enrollCount,
-//        String startTime,
-//        String endTime,
-//        String building,
-//        String roomNumber,
-//        String type,        //Lab, Lecture, etc
-//        String term,        // Winter/Spring/Summer/Fall
-//        String date         // MM/DD/YY
+    int capacity;
+    int enrollCount;
+
+    String building;
+    String roomNumber;
+
+    //Lab, Lecture, etc (enum?)
+    String type;
+
+    // Winter/Spring/Summer/Fall (enum?)
+    String term;
+
+    // MM/dd/yyyy
+    String startDate;
+    String endDate;
+
+    // HH:mm
+    String startTime;
+    String endTime;
 }

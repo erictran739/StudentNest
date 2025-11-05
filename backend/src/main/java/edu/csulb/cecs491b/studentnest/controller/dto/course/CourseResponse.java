@@ -14,10 +14,10 @@ import org.springframework.http.ResponseEntity;
 
 @AllArgsConstructor
 public class CourseResponse extends GenericResponse {
-    private int courseID;
+    private int course_id;
     private String name;
     private String description;
-    private Department department;
+    private String department_abbreviation;
     private int credits;
 
     public static ResponseEntity<?> build(HttpStatus status, Course course) {
@@ -25,10 +25,20 @@ public class CourseResponse extends GenericResponse {
                 course.getCourseID(),
                 course.getName(),
                 course.getDescription(),
-                course.getDepartment(),
+                course.getDepartment().getAbbreviation(),
                 course.getCredits()
         );
 
         return GenericResponse.build(status, courseResponse);
+    }
+
+    public static CourseResponse build(Course course){
+       return new CourseResponse(
+                course.getCourseID(),
+                course.getName(),
+                course.getDescription(),
+                course.getDepartment().getAbbreviation(),
+                course.getCredits()
+        );
     }
 }

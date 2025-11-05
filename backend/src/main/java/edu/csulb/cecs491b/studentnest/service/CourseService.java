@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -49,11 +50,13 @@ public class CourseService {
         return CourseResponse.build(HttpStatus.OK, course);
     }
 
-    public List<Course> getCourse(String department_abbreviation) {
-        // TODO: Finish 1st
-//        Department department = departmentRepository.findByName()
-//        List<Course> courses = courseRepository.findAllByDepartment();
-        return null;
+    public List<CourseResponse> getCourses(String department_abbreviation) {
+        Department department = departmentRepository.findByAbbreviation(department_abbreviation).orElseThrow(
+                () -> new NoSuchElementException("Department with abbreviation [" + department_abbreviation + "] does not exists")
+        );
+
+        return courseRepository.findAllByDepartmentIs(department)
+                .stream().map(CourseResponse::build).toList();
     }
 
     public ResponseEntity<?> create(CreateCourseRequest request) {
@@ -64,19 +67,21 @@ public class CourseService {
         course.setCredits(request.credits());
 
         // Check to see if department exists
-        Department department =  departmentRepository.findByName(request.department()).orElseThrow(
-                () -> new NoSuchElementException("Department with name" + request.name() + "does not exist")
+        Department department = departmentRepository.findByAbbreviation(request.department_abbreviation()).orElseThrow(
+                () -> new NoSuchElementException("Department with abbreviation [" + request.department_abbreviation() + "] does not exists")
         );
 
         course.setDepartment(department);
 
         // Save course
+        courseRepository.save(course);
+
         return CourseResponse.build(HttpStatus.OK, course);
     }
 
     public ResponseEntity<?> addSection(AddSectionRequest request) {
         // Verify course exists
-        Course course = getCourse(request.courseID());
+        Course course = getCourse(request.course_id());
 
         // Create section for this course and save
 //        Section section = AddSectionRequest.fromRequest(request, courseOptional.get());
@@ -127,13 +132,8 @@ public class CourseService {
 
     public List<SectionResponse> listSections(int courseId) {
         Course course = getCourse(courseId);
-        return sectionRepository.findAllByCourseIs(course).stream().map(
-                section -> new SectionResponse(
-                        section.getCourse().getCourseID(),
-                        section.getSectionID(),
-                        section.getDepartment()
-                )
-        ).toList();
+        return sectionRepository.findAllByCourseIs(course)
+                .stream().map(SectionResponse::build).toList();
     }
 
     // Helper functions

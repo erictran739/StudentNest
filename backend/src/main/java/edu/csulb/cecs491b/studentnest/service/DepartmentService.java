@@ -44,6 +44,7 @@ public class DepartmentService {
 
         Department d = new Department();
         d.setName(r.name().trim());
+        d.setAbbreviation(r.abbreviation());
         d.setDescription(r.description());
         return toResponse(departments.save(d));
     }

@@ -1,6 +1,7 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.course.AddSectionRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.course.CourseResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.course.CreateCourseRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.course.DeleteSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
@@ -28,9 +29,8 @@ public class CourseController {
     }
 
     @GetMapping("/{department_abbreviation}")
-    public List<Course> get(@PathVariable String department_abbreviation) {
-        return null;
-//        return courseService.getCourse(department_abbreviation);
+    public List<CourseResponse> get(@PathVariable String department_abbreviation) {
+        return courseService.getCourses(department_abbreviation);
     }
 
     @GetMapping("/get/{id}")

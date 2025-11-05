@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,14 +20,15 @@ public class Department {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(nullable = false)
+    private String abbreviation;
+
     @Column(length = 150)
     private String description;
 
-    // Relationship with DepartmentChair
     @OneToOne(mappedBy = "department")
     private DepartmentChair chair;
 
-    // Relationship with courses
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
-    private List<Course> courses = new ArrayList<>();
+    @OneToMany(mappedBy = "department")
+    private List<Course> courses;
 }
