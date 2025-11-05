@@ -2,6 +2,7 @@ package edu.csulb.cecs491b.studentnest.controller;
 
 import java.util.Map;
 
+import com.sun.net.httpserver.HttpsServer;
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.entity.enums.Major;
 import org.springframework.http.HttpStatus;
@@ -72,7 +73,6 @@ public class AuthController {
                 return GenericResponse.build(HttpStatus.BAD_REQUEST, "Role could not be determined");
         }
 
-
         // Common fields for all user types
         newUser.setFirstName(req.getFirstName());
         newUser.setLastName(req.getLastName());
@@ -82,24 +82,10 @@ public class AuthController {
 
         users.save(newUser);
 
-
-        //create a student as the concrete subtype
-//        Student s = new Student();
-//        s.setFirstName(req.getFirstName());
-//        s.setLastName(req.getLastName());
-//        s.setEmail(req.getEmail());
-//        s.setPassword(passwordEncoder.encode(req.getPassword()));
-//        s.setStatus(UserStatus.ACTIVE);
-//        
-        //this line we will add after 
-        //s.setMajor(Major.UNDECLARED);
-        //s.setEnrollmentYear(2025);
-//        users.save(s);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("status", "registered", "id",
                 newUser.getUserID(),     // 👈 return id
                 "email", req.getEmail()
         ));
-//        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse("registered", req.getEmail()));
     }
 
     @PostMapping("/login")
