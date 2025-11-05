@@ -2,6 +2,7 @@ package edu.csulb.cecs491b.studentnest.controller;
 
 import java.util.Map;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.entity.enums.Major;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,23 +33,20 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
         if (users.findByEmail(req.getEmail()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse("error", "Email already exists"));
+            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Email already in use");
         }
 
         // Block raw Admin signup (Admin is a base type, not a public signup)
-        String role = req.getRole() == null ? "" : req.getRole().toLowerCase();
-        if ("admin".equals(role)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(new AuthResponse("error", "Admin must be created by an existing admin."));
+        if (req.getRole().equalsIgnoreCase("admin")) {
+            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Admin can only be created by another admin");
         }
 
         //this is pick the concrete subtype
         User newUser;
-        switch (role) {
+        switch (req.getRole().toLowerCase()) {
             case "professor":
                 newUser = new Professor();
                 break;
-
             case "chair":
             case "departmentchair":
                 DepartmentChair chair = new DepartmentChair();
@@ -58,33 +56,20 @@ public class AuthController {
                 chair.setPhoneNumber(req.getPhoneNumber());
                 newUser = chair;
                 break;
+            case "student":
+                Student student = new Student();
+                Major major = Major.fromString(req.getMajor());
+                major = (major == null) ? Major.UNDECLARED : major;
 
+                student.setMajor(major);
+                student.setEnrollmentStatus("active");
+                student.setGpa(0.0f);
+                student.setEnrollmentYear(2025);
 
-            default:
-                // This block handles STUDENT registration
-                Student s = new Student();
-                if (req.getMajor() != null) {
-                    try {
-                        s.setMajor(Major.valueOf(
-                                req.getMajor().toUpperCase()
-                        ));
-                    } catch (IllegalArgumentException e) {
-                        s.setMajor(Major.UNDECLARED);
-                    }
-                } else {
-                    s.setMajor(Major.UNDECLARED);
-                }
-
-//                // set enrollment year if provided, otherwise default
-//                if (req.getEnrollmentYear() > 0) {
-//                    s.setEnrollmentYear(req.getEnrollmentYear());
-//                } else {
-//                    s.setEnrollmentYear(2025);
-//                }
-                s.setEnrollmentYear(req.getEnrollmentYear() > 0 ? req.getEnrollmentYear() : 2025);
-
-                newUser = s;
+                newUser = student;
                 break;
+            default:
+                return GenericResponse.build(HttpStatus.BAD_REQUEST, "Role could not be determined");
         }
 
 
