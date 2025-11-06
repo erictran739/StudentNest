@@ -170,6 +170,10 @@ public class CourseService {
                 .stream().map(SectionResponse::build).toList();
     }
 
+    public List<CourseResponse> listAll() {
+        return courseRepository.findAll().stream().map(CourseResponse::build).toList();
+    }
+
     // Helper functions
     public Course getCourse(int id) {
         return courseRepository.findById(id).orElseThrow(

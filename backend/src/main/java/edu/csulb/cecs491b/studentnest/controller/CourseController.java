@@ -24,6 +24,11 @@ public class CourseController {
         return courseService.create(request);
     }
 
+    @GetMapping
+    public List<CourseResponse> list() {
+        return courseService.listAll();
+    }
+
     @GetMapping("/get/dept_abbr/{department_abbreviation}")
     public List<CourseResponse> getByDeptAbbr(@PathVariable String department_abbreviation) {
         return courseService.getCoursesByDeptAbbr(department_abbreviation);
