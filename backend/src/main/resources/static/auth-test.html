@@ -149,15 +149,16 @@
 
     <!-- Create -->
     <h3>Create Department</h3>
-    <label>Department Name</label><input id="d_name" placeholder="e.g. Computer Science"><br>
-    <label>Description</label><input id="d_desc" placeholder="e.g. CECS Department"><br>
-    <button onclick="createDepartment()">POST /api/departments</button>
+    <label>Department Name</label><input id="d_name" placeholder="e.g. Computer Engineering and Computer Science"><br>
+    <label>Department Abbreviation</label><input id="d_abbr" placeholder="e.g. CECS"><br>
+    <label>Description</label><input id="d_desc" placeholder="e.g. Description for CECS Department"><br>
+    <button onclick="deptCreate()">POST /api/departments</button>
     <br><br>
 
     <hr/>
 
     <h3>List All Departments</h3>
-    <button onclick="listDepartments()">GET /api/departments</button>
+    <button onclick="deptList()">GET /api/departments</button>
     <br><br>
 
     <!-- List / Get -->
@@ -222,6 +223,7 @@
     async function deptCreate() {
         const body = {
             name: document.getElementById('d_name').value.trim(),
+            abbreviation: document.getElementById('d_abbr').value.trim(),
             description: document.getElementById('d_desc').value.trim()
         };
         const r = await fetch(`${API}/api/departments`, {
