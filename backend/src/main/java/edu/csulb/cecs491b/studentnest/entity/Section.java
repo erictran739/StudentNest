@@ -26,6 +26,8 @@ public class Section {
     private Professor professor = null;
 
     private int capacity = 0;
+    private int enrollCount = 0;
+
     private String building = null;
     private String roomNumber = null;
 

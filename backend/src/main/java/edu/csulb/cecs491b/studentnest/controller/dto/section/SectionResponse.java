@@ -1,11 +1,8 @@
 package edu.csulb.cecs491b.studentnest.controller.dto.section;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
-import edu.csulb.cecs491b.studentnest.entity.Department;
 import edu.csulb.cecs491b.studentnest.entity.Section;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -16,24 +13,34 @@ import org.springframework.http.ResponseEntity;
 public class SectionResponse extends GenericResponse {
     private int courseID;
     private int sectionID;
-    private String department_abbreviation;
 
-    // int professorID
-    // int capacity
-    // int enrollCount
-    // String startTime
-    // String endTime
-    // String building
-    // String roomNumber
-    // String type        //Lab, Lecture, etc.
-    // String term        // Winter/Spring/Summer/Fall
-    // String date         // MM/DD/YY
+    int professor_id;
+    int capacity;
+    int enroll_count;
+    String start_time;
+    String end_time;
+    String building;
+    String room_number;
+    String type;        //Lab, Lecture, etc.
+    String term;        // Winter/Spring/Summer/Fall
+    String start_date;         // MM/DD/YY
+    String end_date;         // MM/DD/YY
 
     public static ResponseEntity<?> build(HttpStatus status, Section section) {
         SectionResponse sectionResponse = new SectionResponse(
                 section.getCourse().getCourseID(),
                 section.getSectionID(),
-                section.getDepartment().getAbbreviation()
+                section.getProfessor().getUserID(),
+                section.getCapacity(),
+                section.getEnrollCount(),
+                section.getStartTime(),
+                section.getEndTime(),
+                section.getBuilding(),
+                section.getRoomNumber(),
+                section.getType(),
+                section.getTerm(),
+                section.getStartDate(),
+                section.getEndDate()
         );
 
         return GenericResponse.build(status, sectionResponse);
@@ -43,7 +50,17 @@ public class SectionResponse extends GenericResponse {
         return new SectionResponse(
                 section.getCourse().getCourseID(),
                 section.getSectionID(),
-                section.getDepartment().getAbbreviation()
+                section.getProfessor().getUserID(),
+                section.getCapacity(),
+                section.getEnrollCount(),
+                section.getStartTime(),
+                section.getEndTime(),
+                section.getBuilding(),
+                section.getRoomNumber(),
+                section.getType(),
+                section.getTerm(),
+                section.getStartDate(),
+                section.getEndDate()
         );
     }
 }
