@@ -43,4 +43,18 @@ public class StudentResponse extends GenericResponse {
 
         return GenericResponse.build(status, studentResponse);
     }
+
+    public static StudentResponse build(Student student){
+        return new StudentResponse(
+                student.getUserID(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getEmail(),
+                student.getStatus().toString(),
+                student.getMajor().toString(),
+                student.getEnrollmentStatus(),
+                student.getGpa(),
+                student.getEnrollmentYear()
+        );
+    }
 }
