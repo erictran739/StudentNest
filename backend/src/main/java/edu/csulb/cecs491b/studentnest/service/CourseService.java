@@ -127,7 +127,7 @@ public class CourseService {
 //            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Course could not be created: unknown reason");
 //        }
 
-        return GenericResponse.build(HttpStatus.OK, "Section successfully added to course");
+        return SectionResponse.build(HttpStatus.OK, section);
     }
 
     public ResponseEntity<?> deleteSection(DeleteSectionRequest request) {
