@@ -23,15 +23,8 @@ public class SectionService {
         this.sectionRepository = sectionRepo;
     }
 
-
     // I prefer to return ResponseEntity's but in this case I'd rather use the map() function
     public List<SectionResponse> listSections() {
-        return sectionRepository.findAll().stream().map(
-                section -> new SectionResponse(
-                        section.getCourse().getCourseID(),
-                        section.getSectionID(),
-                        section.getDepartment().getAbbreviation()
-                )
-        ).toList();
+        return sectionRepository.findAll().stream().map(SectionResponse::build).toList();
     }
 }

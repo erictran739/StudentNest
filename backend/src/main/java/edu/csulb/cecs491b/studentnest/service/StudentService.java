@@ -53,7 +53,7 @@ public class StudentService {
     }
 
     public List<StudentResponse> list() {
-        return studentRepository.findAll().stream().map(StudentResponse::fromStudent).toList();
+        return studentRepository.findAll().stream().map(StudentResponse::build).toList();
     }
 
     public ResponseEntity<?> update(UpdateStudentRequest request) {
