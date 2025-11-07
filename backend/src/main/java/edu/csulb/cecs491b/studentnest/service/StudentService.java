@@ -1,5 +1,7 @@
 package edu.csulb.cecs491b.studentnest.service;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.enrollment.EnrollmentResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.CourseHistoryRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.ErrorResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollResponse;
@@ -9,22 +11,18 @@ import edu.csulb.cecs491b.studentnest.entity.Enrollment;
 import edu.csulb.cecs491b.studentnest.entity.EnrollmentID;
 import edu.csulb.cecs491b.studentnest.entity.Section;
 import edu.csulb.cecs491b.studentnest.entity.Student;
-import edu.csulb.cecs491b.studentnest.entity.enums.Major;
 import edu.csulb.cecs491b.studentnest.repository.EnrollmentRepository;
 import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
 import edu.csulb.cecs491b.studentnest.repository.StudentRepository;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -55,20 +53,7 @@ public class StudentService {
     }
 
     public List<StudentResponse> list() {
-        return studentRepository.findAll().stream()
-                .map(student ->
-                        new StudentResponse(
-                                student.getUserID(),
-                                student.getFirstName(),
-                                student.getLastName(),
-                                student.getEmail(),
-                                student.getStatus().toString(),
-                                student.getMajor().toString(),
-                                student.getEnrollmentStatus(),
-                                student.getGpa(),
-                                student.getEnrollmentYear()
-                        )
-                ).toList();
+        return studentRepository.findAll().stream().map(StudentResponse::fromStudent).toList();
     }
 
     public ResponseEntity<?> update(UpdateStudentRequest request) {
@@ -109,15 +94,12 @@ public class StudentService {
 
     public ResponseEntity<?> enroll(int userId, int sectionId) {
         // Get Student
-        Student student = studentRepository.findById(userId).orElseThrow(
-                () -> new NoSuchElementException("Student not found")
-        );
+        Student student = getStudent(userId);
 
         // Get Section
-        Section section = sectionRepository.findById(sectionId).orElseThrow(
-                () -> new NoSuchElementException("Section not found")
-        );
+        Section section = getSection(sectionId);
 
+        // Check if already enrolled
         EnrollmentID enrollmentID = new EnrollmentID(userId, sectionId);
         boolean exists = enrollmentRepository.existsById(enrollmentID);
         if (exists){
@@ -137,14 +119,12 @@ public class StudentService {
 
     public ResponseEntity<?> drop(int studentID, int sectionID) {
         // Get Student
-        Student student = studentRepository.findById(studentID).orElseThrow(
-                () -> new NoSuchElementException("Student not found")
-        );
+        getStudent(studentID);
 
         // Get Section
-        Section section = sectionRepository.findById(sectionID).orElseThrow(
-                () -> new NoSuchElementException("Section not found")
-        );
+        getSection(sectionID);
+
+        // Check if student enrolled in section
         EnrollmentID enrollmentID = new EnrollmentID(studentID, sectionID);
         Optional<Enrollment> optionalEnrollment = enrollmentRepository.findById(enrollmentID);
         if (optionalEnrollment.isEmpty()) {
@@ -156,4 +136,22 @@ public class StudentService {
         return GenericResponse.build(HttpStatus.OK, "Dropped student");
     }
 
+    public List<EnrollmentResponse> getCourseHistory(CourseHistoryRequest request){
+        getStudent(request.student_id());
+        return enrollmentRepository.findAllByEnrollmentID_UserID(request.student_id()).stream().map(
+                (enrollment) -> EnrollmentResponse.build(enrollment, enrollment.getSection())
+        ).toList();
+    }
+
+    // Helper functions
+    Student getStudent(int userId){
+        return studentRepository.findById(userId).orElseThrow(
+                () -> new NoSuchElementException("Student with id [" + userId + "] not found")
+        );
+    }
+    Section getSection(int sectionId){
+        return sectionRepository.findById(sectionId).orElseThrow(
+        () -> new NoSuchElementException("Section with id [" + sectionId + "] not found")
+        );
+    }
 }

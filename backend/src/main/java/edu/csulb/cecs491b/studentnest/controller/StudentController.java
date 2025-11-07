@@ -1,9 +1,12 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.enrollment.EnrollmentResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.DropSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollSectionRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.CourseHistoryRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.StudentResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.UpdateStudentRequest;
+import edu.csulb.cecs491b.studentnest.entity.Enrollment;
 import edu.csulb.cecs491b.studentnest.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +31,11 @@ public class StudentController {
     @GetMapping
     public List<StudentResponse> list() {
         return studentService.list();
+    }
+
+    @GetMapping("/history")
+    public List<EnrollmentResponse> getCourseHistory(@RequestBody CourseHistoryRequest request){
+        return studentService.getCourseHistory(request);
     }
 
     @PatchMapping("/update")

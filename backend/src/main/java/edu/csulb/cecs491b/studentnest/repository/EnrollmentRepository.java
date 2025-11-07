@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, EnrollmentID> {
     List<Enrollment> findAllBySectionIs(Section section);
+
+    List<Enrollment> findAllByEnrollmentID_UserID(int studentId);
 }
