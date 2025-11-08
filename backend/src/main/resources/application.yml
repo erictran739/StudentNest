@@ -2,8 +2,8 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/student_nest?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root           # <-- your local DB user
-    password: 123456789      # <-- your local DB password
+    username: root           
+    password: 123456789      
   jpa:
     hibernate:
       ddl-auto: update       # dev only; use migrations later

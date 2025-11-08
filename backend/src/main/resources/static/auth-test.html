@@ -148,16 +148,24 @@
     <h2>Department Management</h2>
 
     <!-- Create -->
-    <h3>Create Department</h3>
-    <label>Department Name</label><input id="d_name" placeholder="e.g. Computer Science"><br>
-    <label>Description</label><input id="d_desc" placeholder="e.g. CECS Department"><br>
-    <button onclick="createDepartment()">POST /api/departments</button>
+	<h3>Create Department</h3>
+	<label>Department Name</label>
+	<input id="d_name" placeholder="e.g. Computer Engineering & Computer Science"><br>
+
+	<label>Abbreviation</label>
+	<input id="d_abbr" placeholder="e.g., CECS"><br>
+
+	<label>Description</label>
+	<input id="d_desc" placeholder="e.g. CECS Department"><br>
+
+	<button onclick="deptCreate()">POST /api/departments</button>
+
     <br><br>
 
     <hr/>
 
     <h3>List All Departments</h3>
-    <button onclick="listDepartments()">GET /api/departments</button>
+	<button onclick="listDepartments()">GET /api/departments</button>
     <br><br>
 
     <!-- List / Get -->
@@ -176,17 +184,29 @@
 
     <hr/>
 
-    <!-- Update -->
-    <h3>Update Department</h3>
-    <div class="row">
-        <div><label>ID</label><input id="d_id_patch" placeholder="e.g., 1"></div>
-        <div><label>New Name</label><input id="d_name_patch" placeholder="Optional"></div>
-    </div>
-    <label>New Description</label>
-    <input id="d_desc_patch" placeholder="Optional">
-    <button onclick="deptUpdate()">PATCH /api/departments/{id}</button>
+	<!-- Update -->
+	<h3>Update Department</h3>
+	<div class="row">
+	  <div>
+	    <label>ID</label>
+	    <div class="actions">
+	      <input id="d_id_patch" placeholder="e.g., 1" class="half">
+	      <button onclick="deptLoadForEdit()">Load</button>
+	    </div>
+	  </div>
+	  <div>
+	    <label>New Name</label>
+	    <input id="d_name_patch" placeholder="Optional">
+	  </div>
+	</div>
+	<label>New Abbreviation</label>
+	<input id="d_abbr_patch" placeholder="Optional (e.g., CECS)">
+	<label>New Description</label>
+	<input id="d_desc_patch" placeholder="Optional">
+	<div id="d_update_status" class="err"></div>
+	<button onclick="deptUpdate()">PATCH /api/departments/{id}</button>
+	<hr/>
 
-    <hr/>
 
     <!-- Assign Chair -->
     <h3>Assign Chair</h3>
@@ -219,25 +239,82 @@
 
 <script>
     // ---------- Departments ----------
-    async function deptCreate() {
-        const body = {
-            name: document.getElementById('d_name').value.trim(),
-            description: document.getElementById('d_desc').value.trim()
-        };
-        const r = await fetch(`${API}/api/departments`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(body)
-        });
-        const t = await r.text();
-        let j;
-        try {
-            j = JSON.parse(t);
-        } catch {
-            j = t;
-        }
-        showOut({status: r.status, data: j});
-    }
+	async function deptCreate(){
+	  const body = {
+	    name: document.getElementById('d_name').value.trim(),
+	    abbreviation: document.getElementById('d_abbr').value.trim(),
+	    description: document.getElementById('d_desc').value.trim()
+	  };
+	  const r = await fetch(`${API}/api/departments`, {
+	    method: 'POST',
+	    headers: {'Content-Type': 'application/json'},
+	    body: JSON.stringify(body)
+	  });
+	  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+	  showOut({status:r.status, data:j});
+	}
+
+
+	function listDepartments(){ return deptList(); }
+
+	async function deptLoadForEdit(){
+	  const id = document.getElementById('d_id_patch').value.trim();
+	  if(!id){
+	    return showOut('Enter Department ID to load for editing.');
+	  }
+	  const r = await fetch(`${API}/api/departments/${id}`);
+	  const t = await r.text(); let j; try{ j = JSON.parse(t); } catch { j = t; }
+
+	  if(!r.ok){
+	    document.getElementById('d_update_status').textContent = `GET ${r.status}: ${typeof j==='string'? j : JSON.stringify(j)}`;
+	    return showOut({status:r.status, data:j});
+	  }
+
+	  // Prefill inputs with current values
+	  document.getElementById('d_name_patch').value = j.name || '';
+	  document.getElementById('d_abbr_patch').value = j.abbreviation || '';
+	  document.getElementById('d_desc_patch').value = j.description || '';
+	  document.getElementById('d_update_status').textContent = 'Loaded current values.';
+	  document.getElementById('d_update_status').className = 'ok';
+	  showOut({status:r.status, data:j});
+	}
+
+	async function deptUpdate(){
+	  const id = document.getElementById('d_id_patch').value.trim();
+	  if(!id) return showOut('Enter Department ID.');
+
+	  const name = document.getElementById('d_name_patch').value.trim();
+	  const abbr = document.getElementById('d_abbr_patch').value.trim();
+	  const desc = document.getElementById('d_desc_patch').value.trim();
+
+	  const payload = {};
+	  if(name) payload.name = name;
+	  if(abbr) payload.abbreviation = abbr;
+	  if(desc) payload.description = desc;
+
+	  if(Object.keys(payload).length === 0){
+	    document.getElementById('d_update_status').textContent = 'Nothing to update.';
+	    document.getElementById('d_update_status').className = 'err';
+	    return;
+	  }
+
+	  const r = await fetch(`${API}/api/departments/${id}`, {
+	    method: 'PATCH',
+	    headers: {'Content-Type': 'application/json'},
+	    body: JSON.stringify(payload)
+	  });
+	  const t = await r.text(); let j; try{ j = JSON.parse(t); } catch { j = t; }
+
+	  if(r.ok){
+	    document.getElementById('d_update_status').textContent = 'Updated successfully.';
+	    document.getElementById('d_update_status').className = 'ok';
+	  }else{
+	    document.getElementById('d_update_status').textContent = `PATCH ${r.status}: ${typeof j==='string'? j : JSON.stringify(j)}`;
+	    document.getElementById('d_update_status').className = 'err';
+	  }
+	  showOut({status:r.status, data:j});
+	}
+
 
     async function deptList() {
         const r = await fetch(`${API}/api/departments`);
@@ -265,30 +342,29 @@
         showOut({status: r.status, data: j});
     }
 
-    async function deptUpdate() {
-        const id = document.getElementById('d_id_patch').value.trim();
-        const name = document.getElementById('d_name_patch').value.trim();
-        const desc = document.getElementById('d_desc_patch').value.trim();
-        if (!id) return showOut('Enter Department ID.');
+	async function deptUpdate(){
+	  const id   = document.getElementById('d_id_patch').value.trim(); // <-- missing
+	  if(!id) return showOut('Enter Department ID.');
 
-        const payload = {};
-        if (name) payload.name = name;
-        if (desc) payload.description = desc;
+	  const payload = {};
+	  const name = document.getElementById('d_name_patch').value.trim();
+	  const abbr = document.getElementById('d_abbr_patch').value.trim();
+	  const desc = document.getElementById('d_desc_patch').value.trim();
 
-        const r = await fetch(`${API}/api/departments/${id}`, {
-            method: 'PATCH',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
-        });
-        const t = await r.text();
-        let j;
-        try {
-            j = JSON.parse(t);
-        } catch {
-            j = t;
-        }
-        showOut({status: r.status, data: j});
-    }
+	  if (name) payload.name = name;
+	  if (abbr) payload.abbreviation = abbr;
+	  if (desc) payload.description = desc;
+
+	  const r = await fetch(`${API}/api/departments/${id}`, {
+	    method: 'PATCH',
+	    headers: {'Content-Type': 'application/json'},
+	    body: JSON.stringify(payload)
+	  });
+	  const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+	  showOut({status:r.status, data:j});
+	}
+
+	
 
     async function deptAssignChair() {
         const id = document.getElementById('d_id_chair').value.trim();
@@ -308,6 +384,35 @@
         }
         showOut({status: r.status, data: j});
     }
+	
+	function assignChair(){
+	  // mirror deptAssignChair UI fields
+	  return deptAssignChair();
+	}
+	function removeChair(){
+	  const id = document.getElementById('d_id_chair').value.trim();
+	  const chairUserId = document.getElementById('d_chair_user').value.trim();
+	  if(!id || !chairUserId) return showOut('Enter Department ID and Chair User ID.');
+	  return fetch(`${API}/api/departments/${id}/chair?chairUserId=${encodeURIComponent(chairUserId)}`, {
+	    method:'DELETE'
+	  }).then(async r=>{
+	    const t=await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+	    showOut({status:r.status, data:j});
+	  });
+	}
+	
+	async function safeFetch(url, opts){
+	  try{
+	    const r = await fetch(url, opts);
+	    const t = await r.text(); let j; try{ j=JSON.parse(t);}catch{ j=t; }
+	    showOut({status:r.status, data:j});
+	    return r;
+	  }catch(e){
+	    showOut({status:'NETWORK_ERROR', error:String(e)});
+	  }
+	}
+
+
 
     async function deptDelete() {
         const id = document.getElementById('d_id_del').value.trim();
@@ -364,7 +469,13 @@
 <pre id="out">Waiting…</pre>
 
 <script>
-    const API = 'https://puggu.dev';
+    //const API = 'https://puggu.dev' ;
+	// this why i change--- "mode" to either 'local' or 'remote'
+	const mode = 'local';
+	const API = mode === 'local'
+	  ? 'http://localhost:8080'
+	  : 'https://puggu.dev';
+
     const OUT = document.getElementById('out');
 
     function init() {
