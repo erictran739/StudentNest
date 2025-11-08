@@ -5,5 +5,6 @@ package edu.csulb.cecs491b.studentnest.controller.dto;
  */
 public record UpdateDepartmentRequest(
         String name,
-        String description
+        String description,
+        String abbreviation
 ) {}
