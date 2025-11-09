@@ -1,28 +1,40 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Entity
+import java.util.List;
+
 @Getter
 @Setter
 @Table(name = "courses")
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Data
 public class Course {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name="course_id")
+    private int courseID;
 
-    @Column(nullable = false, unique = true, length = 16)
-    private String code;
+    @OneToMany(mappedBy = "course")
+    private List<Section> sections;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id",
+    foreignKey = @ForeignKey(name = "fk_course_department"))
+    private Department department;
 
     @Column(nullable = false, length = 120)
-    private String title;
+    private String name;
+    
+    @Column(length = 500)
+    private String description;
+    
+    
+    private int credits;
 
-    private int credits = 3;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
-    private Department department;
+    // TODO: Prerequisites
 }

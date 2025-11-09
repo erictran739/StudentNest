@@ -1,8 +1,8 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
-import edu.csulb.cecs491b.studentnest.controller.dto.CreateUserRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.UpdateUserRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.UserResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.CreateUserRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.UpdateUserRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.UserResponse;
 import edu.csulb.cecs491b.studentnest.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +45,6 @@ public class UserController {
     	return service.partialUpdate(id, req);
     }
     
-    
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {
         try {
@@ -56,5 +54,4 @@ public class UserController {
             return ResponseEntity.status(404).body(e.getMessage()); // "User not found: X"
         }
     }
-
 }

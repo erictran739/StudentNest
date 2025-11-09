@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of("Bad request", ex.getMessage()));
+                .body(ErrorResponse.of(ex.getMessage()));
     }
 
     // bean validation on @Valid DTOs
@@ -50,11 +50,11 @@ public class GlobalExceptionHandler {
         if (constraintName != null && constraintName.equalsIgnoreCase("uk_users_email") ||
             (root != null && root.getMessage() != null && root.getMessage().contains("uk_users_email"))) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(ErrorResponse.of("Duplicate email", "Email already exists"));
+                    .body(ErrorResponse.of("Email already exists"));
         }
 
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(ErrorResponse.of("Data integrity error",
+                .body(ErrorResponse.of(
                         root != null && root.getMessage() != null ? root.getMessage() : ex.getMessage()));
     }
 
@@ -62,6 +62,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAny(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.of("Server error", ex.getMessage()));
+                .body(ErrorResponse.of(ex.getMessage()));
     }
 }

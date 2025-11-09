@@ -8,16 +8,14 @@ import lombok.Setter;
 @Entity
 @Table(name = "department_chairs")
 @DiscriminatorValue("DEPARTMENT_CHAIR")
-@Getter
-@Setter
-@NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class DepartmentChair extends Admin {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id",
-                foreignKey = @ForeignKey(name = "fk_departmentchair_department"))
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", unique = true,
+    foreignKey = @ForeignKey(name = "fk_chair_department"))
     private Department department;     // the department the chair leads
-
+    
     @Column(length = 100)
     private String building;           // building where office is located
 
