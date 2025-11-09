@@ -12,6 +12,16 @@ export const getSectionOfCourse = (courseId, sectionId) =>
   fetch(`/api/courses/${courseId}/section/${sectionId}`).then(j);
 
 // Optional (admin flows)
+// --- existing helpers above ---
+
+// Preferred endpoint (see backend step below):
+export const getCoursesByDepartment = async (dept) => {
+  const res = await fetch(`/api/courses/by-department/${dept}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || data.error || res.statusText);
+  return data; // expect an array of courses
+};
+
 export const createCourse = (payload) =>
   fetch(`/api/courses/create`, {
     method: "POST",
