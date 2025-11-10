@@ -9,8 +9,8 @@ export default function Register() {
   const [email,     setEmail]     = useState("");
   const [password,  setPassword]  = useState("");
   const [confirm,   setConfirm]   = useState("");
+  const [role,      setRole]      = useState("student"); // student | professor | department chair
   const [status,    setStatus]    = useState("");
-  const [role,      setRole]      = useState("student");
   const [busy,      setBusy]      = useState(false);
 
   // Simple, reliable email check
@@ -32,39 +32,48 @@ export default function Register() {
 
     setBusy(true);
     setStatus("Creating your account...");
-    try {
-      const payload = {
-        firstName: firstName.trim(),
-        lastName:  lastName.trim(),
-        email:     email.trim(),
-        // Consider not trimming passwords; keep as-is if you prefer:
-        password:  password.trim(),
-        role, // "student" | "professor" | "admin"
-      };
 
+    try {
+      // ---- IMPORTANT: correct endpoint and payload ----
       const res = await fetch("/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          firstName: firstName.trim(),
+          lastName:  lastName.trim(),
+          email:     email.trim(),
+          password,                         // do not trim password unless you want to
+          role                                // "student" | "professor" | "department chair"
+        })
       });
 
-      // Be robust to non-JSON responses (prevents crash/black screen)
+      // Never allow res.json() to crash the app → prevents the “black screen”
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         const msg = data.message || data.error || "Registration failed";
-        navigate(
-          `/account-failure?status=${encodeURIComponent(String(res.status))}&msg=${encodeURIComponent(msg)}`
-        );
+        // If your router doesn't have /account-failure mounted yet, we still show an error
+        try {
+          navigate(`/account-failure?status=${encodeURIComponent(String(res.status))}&msg=${encodeURIComponent(msg)}`);
+        } catch {
+          setStatus(`Registration failed (${res.status}): ${msg}`);
+        }
         return;
       }
 
       if (data && data.token) localStorage.setItem("authToken", data.token);
-      navigate("/account-success?next=/login");
+
+      try {
+        navigate("/account-success?next=/login");
+      } catch {
+        setStatus("Account created! You can now log in.");
+      }
     } catch (e2) {
-      navigate(
-        `/account-failure?status=network&msg=${encodeURIComponent(e2.message || "Network error")}`
-      );
+      try {
+        navigate(`/account-failure?status=network&msg=${encodeURIComponent(e2.message || "Network error")}`);
+      } catch {
+        setStatus(`Network error: ${e2.message || "Unknown error"}`);
+      }
     } finally {
       setBusy(false);
     }
@@ -112,14 +121,12 @@ export default function Register() {
           onChange={(e) => setConfirm(e.target.value)}
         />
 
+        {/* Role selector: student | professor | department chair */}
         <fieldset className="role-group" disabled={busy}>
           <legend className="role-legend">I am a…</legend>
           <div className="role-options">
-            {["student", "professor", "admin"].map((opt) => (
-              <label
-                key={opt}
-                className={`role-chip ${role === opt ? "selected" : ""}`}
-              >
+            {["student", "professor", "department chair"].map((opt) => (
+              <label key={opt} className={`role-chip ${role === opt ? "selected" : ""}`}>
                 <input
                   type="radio"
                   name="role"
@@ -128,7 +135,7 @@ export default function Register() {
                   onChange={(e) => setRole(e.target.value)}
                 />
                 <span className="role-label">
-                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                  {opt.split(" ").map(s => s[0].toUpperCase()+s.slice(1)).join(" ")}
                 </span>
               </label>
             ))}
