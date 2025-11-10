@@ -8,6 +8,7 @@ import edu.csulb.cecs491b.studentnest.controller.dto.student.StudentResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.UpdateStudentRequest;
 import edu.csulb.cecs491b.studentnest.entity.Enrollment;
 import edu.csulb.cecs491b.studentnest.service.StudentService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +16,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
+
+@AllArgsConstructor
 public class StudentController {
 
     private final StudentService studentService;
-
-    public StudentController(StudentService service) {
-        this.studentService = service;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getStudent(@PathVariable int id) {

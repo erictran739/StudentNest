@@ -5,6 +5,7 @@ import edu.csulb.cecs491b.studentnest.entity.Section;
 import edu.csulb.cecs491b.studentnest.repository.CourseRepository;
 import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,10 @@ import java.util.List;
 @Transactional
 
 @Getter
+@AllArgsConstructor
 public class SectionService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
-
-    SectionService(CourseRepository courseRepo, SectionRepository sectionRepo) {
-        this.courseRepository = courseRepo;
-        this.sectionRepository = sectionRepo;
-    }
 
     // I prefer to return ResponseEntity's but in this case I'd rather use the map() function
     public List<SectionResponse> listSections() {

@@ -15,6 +15,7 @@ import edu.csulb.cecs491b.studentnest.repository.EnrollmentRepository;
 import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
 import edu.csulb.cecs491b.studentnest.repository.StudentRepository;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ import java.util.Optional;
 
 @Service
 @Transactional
+
+@AllArgsConstructor
 public class StudentService {
 
     private final UserRepository userRepository;
@@ -34,14 +37,6 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
 //    private final PasswordEncoder; // Will use when passwords must be passed and checked
-
-    public StudentService(UserRepository userRepository, SectionRepository sectionRepository, EnrollmentRepository enrollmentRepository, StudentRepository studentRepository) {
-        this.userRepository = userRepository;
-        this.sectionRepository = sectionRepository;
-        this.enrollmentRepository = enrollmentRepository;
-        this.studentRepository = studentRepository;
-    }
-
 
     public ResponseEntity<?> get(int id) {
         Optional<Student> optionalStudent = studentRepository.findById(id);

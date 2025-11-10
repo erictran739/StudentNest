@@ -9,6 +9,7 @@ import edu.csulb.cecs491b.studentnest.entity.Section;
 import edu.csulb.cecs491b.studentnest.entity.Department;
 import edu.csulb.cecs491b.studentnest.repository.*;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.NoSuchElementException;
 @Transactional
 
 @Getter
+@AllArgsConstructor
 public class CourseService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
@@ -29,17 +31,6 @@ public class CourseService {
     private final EnrollmentRepository enrollmentRepository;
     private final DepartmentRepository departmentRepository;
 
-    CourseService(CourseRepository courseRepo,
-                  SectionRepository sectionRepo,
-                  StudentRepository studentRepository,
-                  EnrollmentRepository enrollmentRepository,
-                  DepartmentRepository departmentRepository) {
-        this.courseRepository = courseRepo;
-        this.sectionRepository = sectionRepo;
-        this.studentRepository = studentRepository;
-        this.enrollmentRepository = enrollmentRepository;
-        this.departmentRepository = departmentRepository;
-    }
 
     public ResponseEntity<?> getById(int id) {
         Course course = getCourse(id);

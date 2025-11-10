@@ -5,6 +5,7 @@ import edu.csulb.cecs491b.studentnest.controller.dto.CreateDepartmentRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.UpdateDepartmentRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.DepartmentResponse;
 import edu.csulb.cecs491b.studentnest.service.DepartmentService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,15 +14,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/departments")
+
+@AllArgsConstructor
 public class DepartmentController {
 
     private final DepartmentService service;
 
-    public DepartmentController(DepartmentService service) {
-        this.service = service;
-    }
-
-    
     @GetMapping
     public List<DepartmentResponse> list() {
         return service.list();
@@ -57,16 +55,15 @@ public class DepartmentController {
                                           @RequestParam("chairUserId") Integer chairUserId) {
         return service.assignChair(id, chairUserId);
     }
-    
-    
+
 
     @DeleteMapping("/{id}/chair")
     public DepartmentResponse removeChair(@PathVariable Long id,
                                           @RequestParam("chairUserId") Integer chairUserId) {
         return service.removeChair(id, chairUserId);
     }
-    
- // Professors
+
+    // Professors
     @PutMapping("/{id}/professors/{profUserId}")
     public DepartmentResponse addProfessor(@PathVariable Long id, @PathVariable Integer profUserId) {
         return service.addProfessor(id, profUserId);
@@ -84,7 +81,7 @@ public class DepartmentController {
         return service.addCourse(id, courseId);
     }
 
-    @DeleteMapping("/{id}/courses/{courseId}") 
+    @DeleteMapping("/{id}/courses/{courseId}")
     public DepartmentResponse removeCourse(@PathVariable Long id, @PathVariable Integer courseId) {
         return service.removeCourse(id, courseId);
     }

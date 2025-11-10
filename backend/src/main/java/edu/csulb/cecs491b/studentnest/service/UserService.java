@@ -9,6 +9,7 @@ import edu.csulb.cecs491b.studentnest.repository.EnrollmentRepository;
 import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
 import edu.csulb.cecs491b.studentnest.repository.StudentRepository;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,8 @@ import java.util.List;
 
 @Service
 @Transactional
+
+@AllArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -25,17 +28,6 @@ public class UserService {
     private final StudentRepository studentRepository;
 
 //    private final PasswordEncoder; // Will use when passwords must be passed and checked
-
-    public UserService(UserRepository userRepository,
-     SectionRepository sectionRepository,
-     EnrollmentRepository enrollmentRepository,
-     StudentRepository studentRepository
-     ) {
-        this.userRepository = userRepository;
-        this.sectionRepository = sectionRepository;
-        this.enrollmentRepository = enrollmentRepository;
-        this.studentRepository = studentRepository;
-    }
 
     public List<UserResponse> list() {
         return userRepository.findAll().stream().map(this::toResponse).toList();

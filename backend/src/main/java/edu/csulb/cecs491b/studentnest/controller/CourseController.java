@@ -4,6 +4,7 @@ import edu.csulb.cecs491b.studentnest.controller.dto.course.*;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
 import edu.csulb.cecs491b.studentnest.service.CourseService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,13 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
+
+@AllArgsConstructor
 public class CourseController {
 
     private final CourseService courseService;
-
-    public CourseController(CourseService service) {
-        this.courseService = service;
-    }
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody CreateCourseRequest request) {
