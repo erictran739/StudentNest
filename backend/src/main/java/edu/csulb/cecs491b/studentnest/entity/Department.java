@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,7 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Department {
 
-    @Id
+	@OneToOne(mappedBy = "department", fetch = FetchType.LAZY)
+	private DepartmentChair chair;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -26,9 +31,11 @@ public class Department {
     @Column(length = 150)
     private String description;
 
-    @OneToOne(mappedBy = "department")
-    private DepartmentChair chair;
+    // Professors in this department
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    private List<Professor> professors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "department")
-    private List<Course> courses;
+    // Courses offered by this department
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    private List<Course> courses = new ArrayList<>();
 }

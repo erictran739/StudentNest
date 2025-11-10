@@ -57,10 +57,36 @@ public class DepartmentController {
                                           @RequestParam("chairUserId") Integer chairUserId) {
         return service.assignChair(id, chairUserId);
     }
+    
+    
 
     @DeleteMapping("/{id}/chair")
     public DepartmentResponse removeChair(@PathVariable Long id,
                                           @RequestParam("chairUserId") Integer chairUserId) {
         return service.removeChair(id, chairUserId);
     }
+    
+ // Professors
+    @PutMapping("/{id}/professors/{profUserId}")
+    public DepartmentResponse addProfessor(@PathVariable Long id, @PathVariable Integer profUserId) {
+        return service.addProfessor(id, profUserId);
+    }
+
+    @DeleteMapping("/{id}/professors/{profUserId}")
+    public DepartmentResponse removeProfessor(@PathVariable Long id, @PathVariable Integer profUserId) {
+        return service.removeProfessor(id, profUserId);
+    }
+
+    // Courses // rest logic /api/departments/{deptId}/courses/{courseId} this mean
+    //modify the department's course list
+    @PutMapping("/{id}/courses/{courseId}")
+    public DepartmentResponse addCourse(@PathVariable Long id, @PathVariable Integer courseId) {
+        return service.addCourse(id, courseId);
+    }
+
+    @DeleteMapping("/{id}/courses/{courseId}") 
+    public DepartmentResponse removeCourse(@PathVariable Long id, @PathVariable Integer courseId) {
+        return service.removeCourse(id, courseId);
+    }
 }
+

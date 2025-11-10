@@ -14,7 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Professor extends User {
 
-    @Column(length = 50)
+    
+	 @ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name = "department_id",
+	      foreignKey = @ForeignKey(name = "fk_professor_department"))
+	private Department department;
+	
+	@Column(length = 50)
     private String office;
 
     @OneToMany(mappedBy = "professor")

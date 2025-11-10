@@ -8,9 +8,9 @@ import java.util.List;
 
 @Getter
 @Setter
+@Table(name = "courses")
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Data
 public class Course {
@@ -23,11 +23,17 @@ public class Course {
     private List<Section> sections;
 
     @ManyToOne
-    @JoinColumn(name="department_id")
+    @JoinColumn(name = "department_id",
+    foreignKey = @ForeignKey(name = "fk_course_department"))
     private Department department;
 
+    @Column(nullable = false, length = 120)
     private String name;
+    
+    @Column(length = 500)
     private String description;
+    
+    
     private int credits;
 
     // TODO: Prerequisites
