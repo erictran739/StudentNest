@@ -4,3 +4,11 @@
 /backend/.settings
 
 .idea
+/backend/student_nest.iml
+/backend/app.pid
+/backend/stop.sh
+/backend/run.sh
+/backend/restart.sh
+/backend/package-lock.json
+/backend/app.log
+/backend/build_react.sh
