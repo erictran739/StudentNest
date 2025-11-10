@@ -9,11 +9,20 @@ export default function Register() {
   const [email,     setEmail]     = useState("");
   const [password,  setPassword]  = useState("");
   const [confirm,   setConfirm]   = useState("");
+  const [studentId, setStudentId] = useState("");
   const [role,      setRole]      = useState("student"); // student | professor | department chair
   const [status,    setStatus]    = useState("");
   const [busy,      setBusy]      = useState(false);
 
-  // Simple, reliable email check
+  // map UI labels to backend values
+  const roleMap = {
+    student: "student",
+    professor: "professor",
+    "department chair": "department_chair",
+  };
+  const roleValue = roleMap[role] || "student";
+
+  // email validation
   const validEmail = (v) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
 
   const validate = () => {
@@ -22,6 +31,8 @@ export default function Register() {
     if (!validEmail(email)) return "Please enter a valid email.";
     if (password.length < 8) return "Password must be at least 8 characters.";
     if (password !== confirm) return "Passwords do not match.";
+    if (roleValue === "student" && !studentId.trim())
+      return "Student ID is required for students.";
     return null;
   };
 
@@ -34,46 +45,37 @@ export default function Register() {
     setStatus("Creating your account...");
 
     try {
-      // ---- IMPORTANT: correct endpoint and payload ----
+      const body = {
+        firstName: firstName.trim(),
+        lastName:  lastName.trim(),
+        email:     email.trim(),
+        password,                  // don't trim password
+        role: roleValue,
+      };
+      if (roleValue === "student") body.student_id = studentId.trim();
+
       const res = await fetch("/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: firstName.trim(),
-          lastName:  lastName.trim(),
-          email:     email.trim(),
-          password,                         // do not trim password unless you want to
-          role                                // "student" | "professor" | "department chair"
-        })
+        body: JSON.stringify(body),
       });
 
-      // Never allow res.json() to crash the app → prevents the “black screen”
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         const msg = data.message || data.error || "Registration failed";
-        // If your router doesn't have /account-failure mounted yet, we still show an error
-        try {
-          navigate(`/account-failure?status=${encodeURIComponent(String(res.status))}&msg=${encodeURIComponent(msg)}`);
-        } catch {
-          setStatus(`Registration failed (${res.status}): ${msg}`);
-        }
+        navigate(
+          `/account-failure?status=${encodeURIComponent(String(res.status))}&msg=${encodeURIComponent(msg)}`
+        );
         return;
       }
 
-      if (data && data.token) localStorage.setItem("authToken", data.token);
-
-      try {
-        navigate("/account-success?next=/login");
-      } catch {
-        setStatus("Account created! You can now log in.");
-      }
+      if (data?.token) localStorage.setItem("authToken", data.token);
+      navigate("/account-success?next=/login");
     } catch (e2) {
-      try {
-        navigate(`/account-failure?status=network&msg=${encodeURIComponent(e2.message || "Network error")}`);
-      } catch {
-        setStatus(`Network error: ${e2.message || "Unknown error"}`);
-      }
+      navigate(
+        `/account-failure?status=network&msg=${encodeURIComponent(e2.message || "Network error")}`
+      );
     } finally {
       setBusy(false);
     }
@@ -106,7 +108,7 @@ export default function Register() {
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          key="password" // keeps your remount behavior if needed
+          key="password"
           type="password"
           placeholder="Password (min 8 chars)"
           required
@@ -121,7 +123,18 @@ export default function Register() {
           onChange={(e) => setConfirm(e.target.value)}
         />
 
-        {/* Role selector: student | professor | department chair */}
+        {/* Student ID field appears only for students */}
+        {role === "student" && (
+          <input
+            type="text"
+            placeholder="Student ID"
+            required
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+          />
+        )}
+
+        {/* Role selector */}
         <fieldset className="role-group" disabled={busy}>
           <legend className="role-legend">I am a…</legend>
           <div className="role-options">
