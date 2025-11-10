@@ -4,7 +4,7 @@ import edu.csulb.cecs491b.studentnest.controller.dto.enrollment.EnrollmentRespon
 import edu.csulb.cecs491b.studentnest.controller.dto.student.CourseHistoryRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.ErrorResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollResponse;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.EnrollResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.StudentResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.UpdateStudentRequest;
 import edu.csulb.cecs491b.studentnest.entity.Enrollment;

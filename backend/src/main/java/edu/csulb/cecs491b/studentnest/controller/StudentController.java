@@ -1,12 +1,11 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.enrollment.EnrollmentResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.section.DropSectionRequest;
-import edu.csulb.cecs491b.studentnest.controller.dto.section.EnrollSectionRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.DropSectionRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.student.EnrollSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.CourseHistoryRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.StudentResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.student.UpdateStudentRequest;
-import edu.csulb.cecs491b.studentnest.entity.Enrollment;
 import edu.csulb.cecs491b.studentnest.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
