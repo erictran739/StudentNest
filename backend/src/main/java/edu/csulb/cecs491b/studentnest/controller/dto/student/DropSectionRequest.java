@@ -1,4 +1,4 @@
-package edu.csulb.cecs491b.studentnest.controller.dto.section;
+package edu.csulb.cecs491b.studentnest.controller.dto.student;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

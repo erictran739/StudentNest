@@ -1,12 +1,10 @@
-package edu.csulb.cecs491b.studentnest.controller.dto.section;
+package edu.csulb.cecs491b.studentnest.controller.dto.student;
 
 
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Optional;
 
 @Getter
 @Setter
