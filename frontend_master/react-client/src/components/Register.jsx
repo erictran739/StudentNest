@@ -26,11 +26,11 @@ export default function Register() {
   const [status, setStatus] = useState("");
   const [busy,   setBusy]   = useState(false);
 
-  // Map UI role labels -> backend-friendly values
+  // Map UI labels -> backend values
   const roleMap = {
     student: "student",
     professor: "professor",
-    "department chair": "department_chair",
+    "department chair": "chair", // <-- backend expects "chair"
   };
   const roleValue = roleMap[role] || "student";
 
@@ -54,7 +54,7 @@ export default function Register() {
       if (!isYear(enrollmentYear)) return "Enter a valid enrollment year (e.g., 2025).";
     }
 
-    if (roleValue === "department_chair") {
+    if (roleValue === "chair") {
       if (!building.trim()) return "Building is required for Department Chair.";
       if (!roomNumber.trim()) return "Room Number is required for Department Chair.";
       if (!isEmail(contactEmail)) return "Enter a valid contact email for Department Chair.";
@@ -76,14 +76,14 @@ export default function Register() {
       firstName: firstName.trim(),
       lastName:  lastName.trim(),
       email:     email.trim(),
-      password,                  // keep as typed
-      role:      roleValue,
+      password,          // keep as typed
+      role: roleValue,   // "student" | "professor" | "chair"
     };
 
     if (roleValue === "student") {
       body.major = major.trim();
       body.enrollmentYear = Number(enrollmentYear);
-    } else if (roleValue === "department_chair") {
+    } else if (roleValue === "chair") {
       body.building     = building.trim();
       body.roomNumber   = roomNumber.trim();
       body.contactEmail = contactEmail.trim();
@@ -91,7 +91,7 @@ export default function Register() {
     }
 
     try {
-      const res  = await fetch("/auth/register", {
+      const res = await fetch("/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -188,7 +188,7 @@ export default function Register() {
               onChange={(e) => setMajor(e.target.value)}
             />
             <input
-              type="text"                     // keep theme styling
+              type="text" // styled to match theme
               placeholder="Enrollment Year (e.g., 2025)"
               required
               value={enrollmentYear}
@@ -225,7 +225,7 @@ export default function Register() {
               onChange={(e) => setContactEmail(e.target.value)}
             />
             <input
-              type="text"                     // keep theme styling
+              type="text" // styled to match theme
               placeholder="Phone Number"
               required
               value={phone}
