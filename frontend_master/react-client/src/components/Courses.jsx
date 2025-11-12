@@ -1,8 +1,9 @@
 // src/components/Courses.jsx
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { getCourse, getSectionOfCourse, getCoursesByDepartment } from "../api/courses";
 
-const DEPARTMENTS = ["CECS", "MATH", "ENG"];
+const DEPARTMENTS = ["CECS", "MATH", "ENGL"];
 
 export default function Courses() {
   // ---- Department search state ----
@@ -148,14 +149,25 @@ export default function Courses() {
                     </tr>
                   </thead>
                   <tbody>
-                    {deptCourses.map((c) => (
-                      <tr key={c.courseID ?? c.id}>
-                        <td>{c.courseID ?? c.id}</td>
-                        <td>{c.name}</td>
-                        <td>{c.credits}</td>
-                        <td>{c.description}</td>
-                      </tr>
-                    ))}
+                    {deptCourses.map((c) => {
+                      const id = c.courseID ?? c.id;
+                      return (
+                        <tr key={id}>
+                          <td>{id}</td>
+                          <td>
+                            <Link
+                              to={`/courses/${id}`}
+                              state={{ course: c }} // pass the row payload for instant render
+                              style={{ textDecoration: "none" }}
+                            >
+                              {c.name}
+                            </Link>
+                          </td>
+                          <td>{c.credits}</td>
+                          <td>{c.description}</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

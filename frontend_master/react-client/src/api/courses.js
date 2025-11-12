@@ -16,7 +16,7 @@ export const getSectionOfCourse = (courseId, sectionId) =>
 
 // Preferred endpoint (see backend step below):
 export const getCoursesByDepartment = async (dept) => {
-  const res = await fetch(`/api/courses/by-department/${dept}`);
+  const res = await fetch(`/api/courses/get/dept_abbr/${dept}`);
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.message || data.error || res.statusText);
   return data; // expect an array of courses
