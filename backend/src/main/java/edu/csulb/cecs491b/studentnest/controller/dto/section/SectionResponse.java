@@ -14,7 +14,7 @@ public class SectionResponse extends GenericResponse {
     private int courseID;
     private int sectionID;
 
-    int professor_id;
+//    int professor_id;
     int capacity;
     int enroll_count;
     String start_time;
@@ -30,7 +30,7 @@ public class SectionResponse extends GenericResponse {
         SectionResponse sectionResponse = new SectionResponse(
                 section.getCourse().getCourseID(),
                 section.getSectionID(),
-                section.getProfessor().getUserID(),
+//                section.getProfessor().getUserID(),
                 section.getCapacity(),
                 section.getEnrollCount(),
                 section.getStartTime(),
@@ -50,7 +50,7 @@ public class SectionResponse extends GenericResponse {
         return new SectionResponse(
                 section.getCourse().getCourseID(),
                 section.getSectionID(),
-                section.getProfessor().getUserID(),
+//                section.getProfessor().getUserID(),
                 section.getCapacity(),
                 section.getEnrollCount(),
                 section.getStartTime(),
