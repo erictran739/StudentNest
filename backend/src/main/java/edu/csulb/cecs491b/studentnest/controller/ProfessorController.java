@@ -3,8 +3,8 @@ package edu.csulb.cecs491b.studentnest.controller;
 import edu.csulb.cecs491b.studentnest.controller.dto.professor.AssignSectionRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.professor.ProfessorResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
-import edu.csulb.cecs491b.studentnest.controller.dto.student.UpdateStudentRequest;
 import edu.csulb.cecs491b.studentnest.service.ProfessorService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,15 +34,9 @@ public class ProfessorController {
         return professorService.getSections(id);
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<?> updateProfessor(@RequestBody UpdateStudentRequest request) {
-        return null;
-    }
-
     @PostMapping("/assign")
-    public ResponseEntity<?> assignSection(@RequestBody AssignSectionRequest request){
-
-        return null;
+    public ResponseEntity<?> assignSection(@Valid @RequestBody AssignSectionRequest request){
+        return professorService.assignSection(request.professor_id(), request.section_id());
     }
 
 //    @PostMapping("/enroll")

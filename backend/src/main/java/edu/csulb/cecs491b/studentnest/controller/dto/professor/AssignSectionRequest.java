@@ -1,8 +1,8 @@
 package edu.csulb.cecs491b.studentnest.controller.dto.professor;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 public record AssignSectionRequest(
-        @NotBlank int professor_id,
-        @NotBlank int section_id) {
+        @Positive int professor_id,
+        @Positive int section_id) {
 }

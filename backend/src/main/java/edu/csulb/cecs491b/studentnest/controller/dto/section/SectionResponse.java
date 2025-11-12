@@ -32,12 +32,19 @@ public class SectionResponse extends GenericResponse {
     private String end_date;         // MM/DD/YY
 
     public static ResponseEntity<?> build(HttpStatus status, Section section) {
+
+        SectionResponse sectionResponse = SectionResponse.build(section);
+
+        return GenericResponse.build(status, sectionResponse);
+    }
+
+    public static SectionResponse build(Section section) {
         int professorId = (section.getProfessor() == null) ? -1 : section.getProfessor().getUserID();
         String professorName = (section.getProfessor() == null) ?
-        "TBD" :
-        section.getProfessor().getFirstName() + " " + section.getProfessor().getLastName();
+                "TBD" :
+                section.getProfessor().getFirstName() + " " + section.getProfessor().getLastName();
 
-        SectionResponse sectionResponse = new SectionResponse(
+        return new SectionResponse(
                 section.getSectionID(),
 
                 section.getCourse().getCourseID(),
@@ -45,31 +52,6 @@ public class SectionResponse extends GenericResponse {
 
                 professorId,
                 professorName,
-
-                section.getCapacity(),
-                section.getEnrollCount(),
-                section.getStartTime(),
-                section.getEndTime(),
-                section.getBuilding(),
-                section.getRoomNumber(),
-                section.getType(),
-                section.getTerm(),
-                section.getStartDate(),
-                section.getEndDate()
-        );
-
-        return GenericResponse.build(status, sectionResponse);
-    }
-
-    public static SectionResponse build(Section section) {
-        return new SectionResponse(
-                section.getSectionID(),
-
-                section.getCourse().getCourseID(),
-                section.getCourse().getName(),
-
-                section.getProfessor().getUserID(),
-                section.getProfessor().getFirstName(),
 
                 section.getCapacity(),
                 section.getEnrollCount(),

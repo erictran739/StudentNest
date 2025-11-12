@@ -1,6 +1,5 @@
 package edu.csulb.cecs491b.studentnest.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -35,6 +35,7 @@ public class SecurityConfig {
                                 "/api/courses/**",
                                 "/api/sections/**",
                                 "/api/students/**",
+                                "/api/professors/**",
                                 "/api/departments/**",
                                 // Web controller endpoints
                                 "/",
