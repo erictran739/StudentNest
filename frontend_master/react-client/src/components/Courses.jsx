@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { getCourse, getSectionOfCourse, getCoursesByDepartment } from "../api/courses";
 
-const DEPARTMENTS = ["CECS", "MATH", "ENG"];
+const DEPARTMENTS = ["CECS", "MATH", "ENGL"];
 
 export default function Courses() {
   // ---- Department search state ----
