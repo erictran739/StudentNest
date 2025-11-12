@@ -11,6 +11,7 @@ import FAQ from "./components/FAQ";
 import NotFound from "./components/NotFound";
 import ForgotPassword from "./components/ForgotPassword";
 import Courses from "./components/Courses";
+import CourseDetails from "./components/CourseDetails";
 
 function CenteredLayout({ children }) {
   return <div className="auth-page">{children}</div>;
@@ -22,6 +23,7 @@ export default function App() {
       {/* App pages */}
       <Route path="/home" element={<Home />} />
       <Route path="/courses" element={<Courses />} />
+      <Route path="/courses/:courseId" element={<CourseDetails />} />
       <Route path="/downtime" element={<Downtime />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/faq" element={<FAQ />} />
