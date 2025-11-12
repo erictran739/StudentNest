@@ -3,10 +3,7 @@ package edu.csulb.cecs491b.studentnest.service;
 import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.course.*;
 import edu.csulb.cecs491b.studentnest.controller.dto.section.SectionResponse;
-import edu.csulb.cecs491b.studentnest.entity.Course;
-import edu.csulb.cecs491b.studentnest.entity.Enrollment;
-import edu.csulb.cecs491b.studentnest.entity.Section;
-import edu.csulb.cecs491b.studentnest.entity.Department;
+import edu.csulb.cecs491b.studentnest.entity.*;
 import edu.csulb.cecs491b.studentnest.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,6 +28,7 @@ public class CourseService {
     private final StudentRepository studentRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final DepartmentRepository departmentRepository;
+    private final ProfessorRepository professorRepository;
 
 
     public ResponseEntity<?> getById(int id) {
@@ -108,10 +107,25 @@ public class CourseService {
         // Verify course exists
         Course course = getCourse(request.course_id());
 
+        // Get optional professor
+        Optional<Professor> professorOptional = professorRepository.findById(request.professor_id());
+
+
         // Create section for this course and save
-//        Section section = AddSectionRequest.fromRequest(request, courseOptional.get());
         Section section = new Section();
         section.setCourse(course);
+
+        professorOptional.ifPresent(section::setProfessor);
+
+        section.setCapacity(request.capacity());
+        section.setBuilding(request.building());
+        section.setRoomNumber(request.roomNumber());
+        section.setType(request.type());
+        section.setStartDate(request.startDate());
+        section.setEndDate(request.endDate());
+        section.setStartTime(request.startTime());
+        section.setEndTime(request.endTime());
+
         sectionRepository.save(section);
 
 //        if (sectionRepository.findById(section.getSectionID()).isEmpty()){
@@ -181,6 +195,12 @@ public class CourseService {
     public Section getSection(int id) {
         return sectionRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Section with course_id [" + id + "] does not exist")
+        );
+    }
+
+    public Professor getProfessor(int id) {
+        return professorRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Professor with id [" + id + "] does not exist")
         );
     }
 }

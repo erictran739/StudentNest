@@ -11,26 +11,41 @@ import org.springframework.http.ResponseEntity;
 
 @AllArgsConstructor
 public class SectionResponse extends GenericResponse {
-    private int courseID;
-    private int sectionID;
+    private int section_id;
 
-//    int professor_id;
-    int capacity;
-    int enroll_count;
-    String start_time;
-    String end_time;
-    String building;
-    String room_number;
-    String type;        //Lab, Lecture, etc.
-    String term;        // Winter/Spring/Summer/Fall
-    String start_date;         // MM/DD/YY
-    String end_date;         // MM/DD/YY
+    private int course_id;
+    private String course_name;
+
+
+    private int professor_id;
+    private String professor_name;
+
+    private int capacity;
+    private int enroll_count;
+    private String start_time;
+    private String end_time;
+    private String building;
+    private String room_number;
+    private String type;        //Lab, Lecture, etc.
+    private String term;        // Winter/Spring/Summer/Fall
+    private String start_date;         // MM/DD/YY
+    private String end_date;         // MM/DD/YY
 
     public static ResponseEntity<?> build(HttpStatus status, Section section) {
+        int professorId = (section.getProfessor() == null) ? -1 : section.getProfessor().getUserID();
+        String professorName = (section.getProfessor() == null) ?
+        "TBD" :
+        section.getProfessor().getFirstName() + " " + section.getProfessor().getLastName();
+
         SectionResponse sectionResponse = new SectionResponse(
-                section.getCourse().getCourseID(),
                 section.getSectionID(),
-//                section.getProfessor().getUserID(),
+
+                section.getCourse().getCourseID(),
+                section.getCourse().getName(),
+
+                professorId,
+                professorName,
+
                 section.getCapacity(),
                 section.getEnrollCount(),
                 section.getStartTime(),
@@ -48,9 +63,14 @@ public class SectionResponse extends GenericResponse {
 
     public static SectionResponse build(Section section) {
         return new SectionResponse(
-                section.getCourse().getCourseID(),
                 section.getSectionID(),
-//                section.getProfessor().getUserID(),
+
+                section.getCourse().getCourseID(),
+                section.getCourse().getName(),
+
+                section.getProfessor().getUserID(),
+                section.getProfessor().getFirstName(),
+
                 section.getCapacity(),
                 section.getEnrollCount(),
                 section.getStartTime(),
