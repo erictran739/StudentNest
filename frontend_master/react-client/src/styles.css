@@ -29,6 +29,220 @@ body:has(.home-page) {
   justify-content: unset;
   align-items: unset;
 }
+:root {
+  --sn-blue: #003366;   /* navy */
+  --sn-gold: #ffc72c;   /* gold */
+  --sn-bg: #f5f5f5;
+  --sn-border: #d0d4da;
+  --sn-text: #111827;
+  --sn-muted: #6b7280;
+}
+
+/* Page layout */
+.sn-page {
+  min-height: 100vh;
+  background: var(--sn-bg);
+  color: var(--sn-text);
+  padding: 24px;
+}
+
+.sn-header {
+  background: linear-gradient(135deg, var(--sn-blue) 60%, var(--sn-gold) 60%);
+  color: white;
+  padding: 20px 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.sn-header h1 {
+  margin: 0 0 4px;
+}
+
+.sn-header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Two-column layout */
+.sn-content {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 20px;
+}
+
+@media (max-width: 960px) {
+  .sn-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards */
+.sn-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--sn-border);
+}
+
+.sn-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Table */
+.sn-table-wrapper {
+  max-height: 420px;
+  overflow: auto;
+}
+
+.sn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.sn-table thead {
+  background: #e5e7eb;
+}
+
+.sn-table th,
+.sn-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.sn-table tbody tr:nth-child(odd) {
+  background: #f9fafb;
+}
+
+.sn-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* Buttons */
+.sn-btn {
+  font-size: 0.85rem;
+  border-radius: 999px;
+  padding: 6px 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sn-btn-xs {
+  padding: 4px 10px;
+  font-size: 0.78rem;
+}
+
+.sn-btn-primary {
+  background-color: var(--sn-gold);
+  color: var(--sn-blue);
+}
+
+.sn-btn-primary:hover {
+  filter: brightness(0.95);
+}
+
+.sn-btn-outline {
+  background: white;
+  border: 1px solid var(--sn-blue);
+  color: var(--sn-blue);
+}
+
+.sn-btn-outline:hover {
+  background: rgba(0, 51, 102, 0.08);
+}
+
+.sn-btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.sn-btn-danger:hover {
+  background: #fecaca;
+}
+
+.sn-btn-ghost {
+  background: transparent;
+  color: var(--sn-muted);
+}
+
+.sn-btn-ghost:hover {
+  background: #f3f4f6;
+}
+
+/* Forms */
+.sn-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sn-form-inline label {
+  width: 100%;
+}
+
+.sn-form label {
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sn-form input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.9rem;
+}
+
+.sn-form input:focus {
+  outline: 2px solid var(--sn-gold);
+  outline-offset: 1px;
+}
+
+.sn-form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* Alerts */
+.sn-alert {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.sn-alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.sn-alert-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.sn-muted {
+  color: var(--sn-muted);
+}
+
+.sn-divider {
+  margin: 18px 0 12px;
+  border: none;
+  border-top: 1px dashed #e5e7eb;
+}
+
 
 /* ===== Centered Login Container (from user's CSS) ===== */
 .login {
