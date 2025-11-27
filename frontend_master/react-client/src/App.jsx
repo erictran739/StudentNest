@@ -12,10 +12,12 @@ import NotFound from "./components/NotFound";
 import ForgotPassword from "./components/ForgotPassword";
 import Courses from "./components/Courses";
 import CourseDetails from "./components/CourseDetails";
+import Services from "./components/Services";
+
 
 function CenteredLayout({ children }) {
   return <div className="auth-page">{children}</div>;
-}
+}ç
 
 export default function App() {
   return (
@@ -27,6 +29,7 @@ export default function App() {
       <Route path="/downtime" element={<Downtime />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/faq" element={<FAQ />} />
+      <Route path="/services" element={<Services />} />
 
       {/* Auth pages (centered on bg image) */}
       <Route path="/" element={<CenteredLayout><Login /></CenteredLayout>} />
