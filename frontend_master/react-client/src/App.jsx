@@ -12,8 +12,10 @@ import NotFound from "./components/NotFound";
 import ForgotPassword from "./components/ForgotPassword";
 import Courses from "./components/Courses";
 import CourseDetails from "./components/CourseDetails";
-
 import Services from "./components/Services";
+import Colleges from "./components/Colleges";
+import CollegeDetails from "./components/CollegeDetails";
+
 
 
 function CenteredLayout({ children }) {
@@ -28,9 +30,12 @@ export default function App() {
       <Route path="/courses" element={<Courses />} />
       <Route path="/courses/:courseId" element={<CourseDetails />} />
       <Route path="/downtime" element={<Downtime />} />
-        <Route path="/services" element={<Services />} /> 
+      <Route path="/services" element={<Services />} /> 
       <Route path="/contact" element={<Contact />} />
       <Route path="/faq" element={<FAQ />} />
+      <Route path="/colleges" element={<Colleges />} />
+      <Route path="/colleges/:collegeId" element={<CollegeDetails />} />
+
 
       {/* Auth pages (centered on bg image) */}
       <Route path="/" element={<CenteredLayout><Login /></CenteredLayout>} />

@@ -113,10 +113,11 @@ export default function Home() {
               <div className="home-shortcut-text">Transcript</div>
             </button>
 
-            <button className="home-shortcut" onClick={() => nav("/degree")} aria-label="Degree">
-              <div className="home-shortcut-icon">🎓</div>
-              <div className="home-shortcut-text">Degree</div>
+            <button className="home-shortcut" onClick={() => nav("/colleges")} aria-label="Colleges">
+              <div className="home-shortcut-icon">🏫</div>
+              <div className="home-shortcut-text">Colleges</div>
             </button>
+
 
             <button className="home-shortcut" onClick={() => nav("/services")} aria-label="Services">
               <div className="home-shortcut-icon">🧰</div>
