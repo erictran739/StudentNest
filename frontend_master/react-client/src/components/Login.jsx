@@ -35,6 +35,14 @@ export default function Login() {
         return;
       }
 
+      // NEW: grab the user id from the response and cache it
+      const userId = data.id || data.userId || data.uid || data.user_id;
+      if (userId) {
+        try {
+          localStorage.setItem("authUserId", String(userId));
+        } catch {}
+      }
+
       const tokenFromApi = getToken(data);
       const userFromApi  = getUser(data);
 
