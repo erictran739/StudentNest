@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser, getCurrentUserId } from "../api/session";
 
 const MOCK_SCHEDULE = [
   { id: "CECS 428-02", name: "Analysis of Algorithms",                   room: "ECS 416", time: "9:30 AM – 10:45 AM", days: "Mon/Wed" },
@@ -10,10 +11,23 @@ const MOCK_SCHEDULE = [
 
 export default function Home() {
   const nav = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);   // keeps your left menu state
+  const [menuOpen, setMenuOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const logout = () => { try { localStorage.removeItem("authToken"); } catch {} ; nav("/"); };
+  const logout = () => {
+    try {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("authUser");
+    } catch {}
+    nav("/");
+  };
+
+  useEffect(() => {
+    const user = getCurrentUser();
+    const userId = getCurrentUserId();
+    console.log("DEBUG currentUser:", user);
+    console.log("DEBUG currentUserId:", userId);
+  }, []);
 
   return (
     <div className="home-page">
