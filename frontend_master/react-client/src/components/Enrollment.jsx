@@ -1,93 +1,125 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  getEnrollments,
+  enrollStudent,
+  dropStudent
+} from "../api/enrollment";
+
 import "./Enrollment.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ClipLoader from "react-spinners/ClipLoader";
 
 export default function Enrollment() {
-  const [student, setStudent] = useState(null);
-  const [sectionEnroll, setSectionEnroll] = useState("");
-  const [sectionDrop, setSectionDrop] = useState("");
-  const [message, setMessage] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [sectionId, setSectionId] = useState("");
+  const [enrollments, setEnrollments] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("authUser") || "{}");
-  const userId = user?.user_id || user?.id || user?.userID;
-
+  // Auto-fill student ID from login storage
   useEffect(() => {
-    fetch(`/api/students/${userId}`)
-      .then((res) => res.json())
-      .then(setStudent)
-      .catch(() => setMessage("Failed to load student info."));
-  }, [userId]);
+    const data = JSON.parse(localStorage.getItem("user"));
+    if (data?.id) setStudentId(data.id);
+  }, []);
 
-  const enroll = async () => {
-    setMessage("Enrolling...");
-    const res = await fetch(`/api/students/enroll`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        student_id: userId,
-        section_id: Number(sectionEnroll),
-      }),
-    });
-
-    const data = await res.json();
-    if (!res.ok) return setMessage(data.message || "Failed to enroll");
-    setMessage(`✅ Successfully enrolled in section ${sectionEnroll}`);
+  const loadEnrollments = async () => {
+    try {
+      setLoading(true);
+      const res = await getEnrollments(studentId);
+      setEnrollments(res.data);
+      toast.success("Enrollments loaded");
+    } catch (err) {
+      toast.error("Failed to load enrollments");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const drop = async () => {
-    setMessage("Dropping...");
-    const res = await fetch(`/api/students/drop`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        student_id: userId,
-        section_id: Number(sectionDrop),
-      }),
-    });
+  const handleEnroll = async () => {
+    try {
+      setLoading(true);
+      await enrollStudent(studentId, sectionId);
+      toast.success("Enrolled successfully");
+      loadEnrollments();
+    } catch (err) {
+      toast.error("Error enrolling student");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const data = await res.json();
-    if (!res.ok) return setMessage(data.message || "Failed to drop course");
-    setMessage(`🗑️ Dropped section ${sectionDrop}`);
+  const handleDrop = async () => {
+    try {
+      setLoading(true);
+      await dropStudent(studentId, sectionId);
+      toast.success("Dropped section");
+      loadEnrollments();
+    } catch (err) {
+      toast.error("Error dropping section");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="enrollment-container">
-      <h1 className="title">Enrollment Center</h1>
+    <div className="enroll-container">
+      <h2>Enrollment</h2>
 
-      {student && (
-        <div className="student-card">
-          <h2>{student.firstName} {student.lastName}</h2>
-          <p><b>Email:</b> {student.email}</p>
-          <p><b>Major:</b> {student.major}</p>
-          <p><b>GPA:</b> {student.gpa}</p>
-          <p><b>Enrollment Year:</b> {student.enrollmentYe}</p>
+      <input
+        placeholder="Student ID"
+        value={studentId}
+        onChange={(e) => setStudentId(e.target.value)}
+      />
+
+      <button className="load-btn" onClick={loadEnrollments}>
+        Load Enrollments
+      </button>
+
+      <input
+        placeholder="Section ID"
+        value={sectionId}
+        onChange={(e) => setSectionId(e.target.value)}
+      />
+
+      <div className="button-row">
+        <button className="enroll-btn" onClick={handleEnroll}>
+          Enroll
+        </button>
+
+        <button className="drop-btn" onClick={handleDrop}>
+          Drop
+        </button>
+      </div>
+
+      {loading && (
+        <div className="loader">
+          <ClipLoader size={45} color="#444" />
         </div>
       )}
 
-      <div className="actions">
-        <div className="card enroll">
-          <h3>📚 Enroll in a Class</h3>
-          <input
-            type="number"
-            placeholder="Enter Section ID"
-            value={sectionEnroll}
-            onChange={(e) => setSectionEnroll(e.target.value)}
-          />
-          <button onClick={enroll}>Enroll</button>
-        </div>
+      <table className="enroll-table">
+        <thead>
+          <tr>
+            <th>Section</th>
+            <th>Class Name</th>
+            <th>Enrolled On</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
 
-        <div className="card drop">
-          <h3>🗑️ Drop a Class</h3>
-          <input
-            type="number"
-            placeholder="Enter Section ID"
-            value={sectionDrop}
-            onChange={(e) => setSectionDrop(e.target.value)}
-          />
-          <button onClick={drop}>Drop</button>
-        </div>
-      </div>
+        <tbody>
+          {enrollments.map((e, idx) => (
+            <tr key={idx}>
+              <td>{e.section_id}</td>
+              <td>{e.className}</td>
+              <td>{e.enrollmentDate}</td>
+              <td>{e.grade}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      {message && <div className="message">{message}</div>}
+      <ToastContainer position="bottom-right" />
     </div>
   );
 }
