@@ -1,10 +1,7 @@
 .enrollment-page {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 40px 32px;
-  background: #fffaf3;
-  border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  min-height: 100vh;
+  background: #f8f2e7;
+  padding: 40px 80px;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     sans-serif;
 }
@@ -13,103 +10,148 @@
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 24px;
-  color: #3b2b1f;
+  color: #333;
 }
 
-.enrollment-input-row {
+.enrollment-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px 32px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
+}
+
+.enrollment-row {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 16px;
 }
 
-.enrollment-input,
-.enrollment-select {
-  flex: 1;
-  padding: 10px 14px;
+.term-year-row {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.enrollment-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.enrollment-input {
   border-radius: 999px;
-  border: 1px solid #e6dccf;
-  background: #fbf5eb;
-  outline: none;
+  border: 1px solid #e0e0e0;
+  padding: 10px 16px;
   font-size: 14px;
+  outline: none;
+  width: 100%;
+  background: #fafafa;
 }
 
-.enrollment-input.small {
-  max-width: 120px;
+.enrollment-input:focus {
+  border-color: #f6a623;
+  background: #fff;
 }
 
-.enrollment-input:focus,
-.enrollment-select:focus {
-  border-color: #f4a623;
-  box-shadow: 0 0 0 2px rgba(244, 166, 35, 0.3);
+.enrollment-section-row {
+  display: flex;
+  gap: 12px;
 }
 
-.enrollment-btn {
-  border: none;
+.section-dropdown {
+  max-width: 320px;
+}
+
+.buttons-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.enrollment-button {
+  flex: 1;
   border-radius: 999px;
-  padding: 12px 24px;
+  border: none;
+  padding: 12px 18px;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  color: white;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+  transition: transform 0.08s ease, box-shadow 0.08s ease,
+    opacity 0.08s ease;
 }
 
-.enrollment-btn:disabled {
+.enrollment-button.enroll {
+  background: linear-gradient(90deg, #ffa726, #fb8c00);
+  color: white;
+}
+
+.enrollment-button.drop {
+  background: linear-gradient(90deg, #7f0000, #b71c1c);
+  color: white;
+}
+
+.enrollment-button.secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.enrollment-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+}
+
+.enrollment-button:disabled {
   opacity: 0.6;
   cursor: default;
+  box-shadow: none;
 }
 
-.load-btn {
-  width: 100%;
-  margin-bottom: 24px;
-  background: linear-gradient(90deg, #d8d2c7, #c7c0b3);
-  color: #3b2b1f;
-}
-
-.enrollment-actions-row {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.enroll-btn {
-  flex: 1;
-  background: linear-gradient(90deg, #ff9f1c, #ff6a00);
-}
-
-.drop-btn {
-  flex: 1;
-  background: linear-gradient(90deg, #8b0000, #cc0000);
-}
-
-.enrollment-btn:not(:disabled):hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+.enrollment-table-wrapper {
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.04);
+  padding: 16px 24px;
 }
 
 .enrollment-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
   font-size: 14px;
-}
-
-.enrollment-table thead {
-  background: #f5ede1;
 }
 
 .enrollment-table th,
 .enrollment-table td {
-  padding: 10px 12px;
+  padding: 10px 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.enrollment-table th {
   text-align: left;
+  font-weight: 600;
+  color: #555;
 }
 
-.enrollment-table tbody tr:nth-child(even) {
-  background: #fbf6ee;
-}
-
-.enrollment-empty {
+.center-cell {
   text-align: center;
-  padding: 18px 0;
-  color: #8e8070;
+  padding: 18px 8px;
+  color: #777;
+}
+
+/* Simple spinner */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: rgba(0, 0, 0, 0.55);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

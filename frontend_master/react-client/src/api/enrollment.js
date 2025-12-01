@@ -1,33 +1,42 @@
 // src/api/enrollment.js
 import axios from "axios";
 
-// Adjust base URL if your backend is different in production
-const BASE_URL = "http://localhost:8080";
+const API = "https://puggu.dev/auth-test"; // or your local base URL
 
-// ---- HISTORY ----
-// POST /api/student/history
-export const fetchCourseHistory = async (studentId, term, year) => {
-  return axios.post(`${BASE_URL}/api/student/history`, {
+// Get enrollment history for a student
+// backend DTO: CourseHistoryRequest(student_id, term, year)
+export const getEnrollments = (studentId, term = "FALL", year = 2024) => {
+  return axios.post(`${API}/api/student/history`, {
     student_id: Number(studentId),
     term,
-    year: Number(year),
+    year,
   });
 };
 
-// ---- ENROLL ----
-// POST /api/students/enroll
-export const enrollStudent = async (studentId, sectionId) => {
-  return axios.post(`${BASE_URL}/api/students/enroll`, {
+// Enroll student in a section
+// backend DTO: EnrollSectionRequest(student_id, section_id)
+export const enrollStudent = (studentId, sectionId) => {
+  return axios.post(`${API}/api/students/enroll`, {
     student_id: Number(studentId),
     section_id: Number(sectionId),
   });
 };
 
-// ---- DROP ----
-// POST /api/students/drop
-export const dropStudent = async (studentId, sectionId) => {
-  return axios.post(`${BASE_URL}/api/students/drop`, {
+// Drop student from a section
+// backend DTO: DropSectionRequest(student_id, section_id, reason)
+export const dropStudent = (studentId, sectionId, reason = "Dropped from UI") => {
+  return axios.post(`${API}/api/students/drop`, {
     student_id: Number(studentId),
     section_id: Number(sectionId),
+    reason,
   });
+};
+
+// Optional helper – list sections this student can still enroll in
+// (update the endpoint to whatever your backend uses)
+export const getAvailableSections = (studentId, term = "FALL", year = 2024) => {
+  // TEMP: example path – change to real one if different
+  return axios.get(
+    `${API}/api/sections/available?student_id=${studentId}&term=${term}&year=${year}`
+  );
 };

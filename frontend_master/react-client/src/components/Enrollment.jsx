@@ -1,210 +1,251 @@
-// src/components/Enrollment.jsx
 import React, { useEffect, useState } from "react";
-import "./Enrollment.css";
-
 import {
-  fetchCourseHistory,
+  getEnrollments,
   enrollStudent,
   dropStudent,
+  getAvailableSections,
 } from "../api/enrollment";
-
-// If your friend added this helper, use it.
-// Otherwise, swap this import to whatever you use to read the current user.
-import { getCurrentUser } from "../api/session"; // or "../api/authHelpers"
-
+import { getAuthUser } from "../api/authHelpers";
+import "./Enrollment.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Enrollment() {
-  const [studentId, setStudentId] = useState("");
+  // --- auth / student ID from JWT ---
+  const auth = getAuthUser(); // whatever your helper returns
+  const loggedInStudentId = auth?.user?.userID; // adjust if field name is slightly different
+
+  const [studentId, setStudentId] = useState(loggedInStudentId ?? "");
   const [sectionId, setSectionId] = useState("");
-  const [term, setTerm] = useState("Fall");
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [term, setTerm] = useState("FALL");
+  const [year, setYear] = useState(2024);
+
   const [enrollments, setEnrollments] = useState([]);
+  const [availableSections, setAvailableSections] = useState([]);
 
-  const [loadingHistory, setLoadingHistory] = useState(false);
-  const [loadingEnroll, setLoadingEnroll] = useState(false);
-  const [loadingDrop, setLoadingDrop] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
+  const [enrolling, setEnrolling] = useState(false);
+  const [dropping, setDropping] = useState(false);
 
-  // ---------- Auto-fill student from login ----------
+  // Auto-load on page load when user is a student
   useEffect(() => {
-    try {
-      const user = getCurrentUser && getCurrentUser();
-      // Adjust this depending on your actual user object shape
-      if (user) {
-        // some backends use user.id, some use user.student_id
-        const id = user.student_id || user.id;
-        if (id) {
-          setStudentId(String(id));
-        }
-      }
-    } catch (e) {
-      console.warn("Could not load current user:", e);
-    }
-  }, []);
-
-  // ---------- Load history ----------
-  const handleLoadHistory = async () => {
-    if (!studentId) {
-      toast.error("Please enter a student ID");
+    if (!loggedInStudentId) {
+      console.warn("No logged-in student; make sure you are logged in.");
       return;
     }
+    loadData(loggedInStudentId);
+  }, [loggedInStudentId, term, year]);
 
-    setLoadingHistory(true);
+  const loadData = async (sid) => {
+    const idToUse = sid || studentId;
+    if (!idToUse) return;
+
     try {
-      const response = await fetchCourseHistory(studentId, term, year);
-      // adjust if your backend wraps data differently
-      setEnrollments(response.data || []);
+      setLoadingTable(true);
+
+      const [historyRes, availableRes] = await Promise.all([
+        getEnrollments(idToUse, term, year),
+        getAvailableSections(idToUse, term, year).catch(() => ({ data: [] })), // don't block if this 404s
+      ]);
+
+      // most of your APIs look like { status: 200, data: [...] }
+      const history = historyRes.data?.data ?? historyRes.data ?? [];
+      const available = availableRes.data?.data ?? availableRes.data ?? [];
+
+      setEnrollments(history);
+      setAvailableSections(available);
+
       toast.success("Enrollments loaded");
-    } catch (error) {
-      console.error("Error loading enrollments:", error);
+    } catch (err) {
+      console.error("Error loading enrollments", err);
       toast.error("Failed to load enrollments");
     } finally {
-      setLoadingHistory(false);
+      setLoadingTable(false);
     }
   };
 
-  // ---------- Enroll ----------
   const handleEnroll = async () => {
     if (!studentId || !sectionId) {
-      toast.error("Please enter both student ID and section ID");
+      toast.error("Please enter a section to enroll");
       return;
     }
-
-    setLoadingEnroll(true);
     try {
-      await enrollStudent(studentId, sectionId);
-      toast.success("Enrolled successfully");
-      // reload history to show the new class
-      await handleLoadHistory();
-    } catch (error) {
-      console.error("Error enrolling student:", error);
-      toast.error("Error enrolling student");
+      setEnrolling(true);
+      const res = await enrollStudent(studentId, sectionId);
+      const msg = res.data?.message ?? "Enrolled successfully";
+      toast.success(msg);
+      await loadData();
+      setSectionId("");
+    } catch (err) {
+      console.error("Enroll error", err);
+      const msg =
+        err.response?.data?.message ??
+        err.response?.data?.error ??
+        "Error enrolling student";
+      toast.error(msg);
     } finally {
-      setLoadingEnroll(false);
+      setEnrolling(false);
     }
   };
 
-  // ---------- Drop ----------
   const handleDrop = async () => {
     if (!studentId || !sectionId) {
-      toast.error("Please enter both student ID and section ID");
+      toast.error("Please enter a section to drop");
       return;
     }
-
-    setLoadingDrop(true);
     try {
-      await dropStudent(studentId, sectionId);
-      toast.success("Dropped successfully");
-      // reload history to reflect changes
-      await handleLoadHistory();
-    } catch (error) {
-      console.error("Error dropping student:", error);
-      toast.error("Error dropping student");
+      setDropping(true);
+      const res = await dropStudent(studentId, sectionId);
+      const msg = res.data?.message ?? "Dropped successfully";
+      toast.success(msg);
+      await loadData();
+      setSectionId("");
+    } catch (err) {
+      console.error("Drop error", err);
+      const msg =
+        err.response?.data?.message ??
+        err.response?.data?.error ??
+        "Error dropping class";
+      toast.error(msg);
     } finally {
-      setLoadingDrop(false);
+      setDropping(false);
     }
+  };
+
+  const handleSelectAvailable = (e) => {
+    const value = e.target.value;
+    setSectionId(value);
   };
 
   return (
     <div className="enrollment-page">
-      <ToastContainer position="bottom-right" />
+      <ToastContainer position="bottom-right" autoClose={2500} />
 
       <h1 className="enrollment-title">Enrollment</h1>
 
-      {/* Top inputs */}
-      <div className="enrollment-input-row">
-        <input
-          className="enrollment-input"
-          placeholder="Student ID"
-          value={studentId}
-          onChange={(e) => setStudentId(e.target.value)}
-        />
+      <div className="enrollment-card">
+        <div className="enrollment-row">
+          <label className="enrollment-label">Student ID</label>
+          <input
+            className="enrollment-input"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+            placeholder="Student ID"
+          />
+        </div>
 
-        <select
-          className="enrollment-select"
-          value={term}
-          onChange={(e) => setTerm(e.target.value)}
-        >
-          <option value="Spring">Spring</option>
-          <option value="Summer">Summer</option>
-          <option value="Fall">Fall</option>
-        </select>
+        <div className="enrollment-row term-year-row">
+          <div>
+            <label className="enrollment-label">Term</label>
+            <select
+              className="enrollment-input"
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
+            >
+              <option value="FALL">Fall</option>
+              <option value="SPRING">Spring</option>
+              <option value="SUMMER">Summer</option>
+            </select>
+          </div>
+          <div>
+            <label className="enrollment-label">Year</label>
+            <input
+              className="enrollment-input"
+              type="number"
+              value={year}
+              onChange={(e) => setYear(Number(e.target.value))}
+            />
+          </div>
 
-        <input
-          className="enrollment-input small"
-          type="number"
-          placeholder="Year"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-        />
+          <button
+            className="enrollment-button secondary"
+            onClick={() => loadData()}
+            disabled={loadingTable}
+          >
+            {loadingTable ? <span className="spinner" /> : "Load Enrollments"}
+          </button>
+        </div>
+
+        <div className="enrollment-row">
+          <label className="enrollment-label">Section to enroll / drop</label>
+          <div className="enrollment-section-row">
+            <input
+              className="enrollment-input"
+              value={sectionId}
+              onChange={(e) => setSectionId(e.target.value)}
+              placeholder="Section ID"
+            />
+
+            <select
+              className="enrollment-input section-dropdown"
+              value={sectionId || ""}
+              onChange={handleSelectAvailable}
+            >
+              <option value="">Select from available sections…</option>
+              {availableSections.map((sec) => (
+                <option key={sec.sectionID} value={sec.sectionID}>
+                  {sec.sectionID} – {sec.courseCode ?? sec.courseName}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="enrollment-row buttons-row">
+          <button
+            className="enrollment-button enroll"
+            onClick={handleEnroll}
+            disabled={enrolling}
+          >
+            {enrolling ? <span className="spinner" /> : "Enroll"}
+          </button>
+
+          <button
+            className="enrollment-button drop"
+            onClick={handleDrop}
+            disabled={dropping}
+          >
+            {dropping ? <span className="spinner" /> : "Drop"}
+          </button>
+        </div>
       </div>
 
-      <button
-        className="enrollment-btn load-btn"
-        onClick={handleLoadHistory}
-        disabled={loadingHistory}
-      >
-        {loadingHistory ? "Loading..." : "Load Enrollments"}
-      </button>
-
-      {/* Section input + Enroll / Drop */}
-      <div className="enrollment-input-row">
-        <input
-          className="enrollment-input"
-          placeholder="Section ID"
-          value={sectionId}
-          onChange={(e) => setSectionId(e.target.value)}
-        />
-      </div>
-
-      <div className="enrollment-actions-row">
-        <button
-          className="enrollment-btn enroll-btn"
-          onClick={handleEnroll}
-          disabled={loadingEnroll}
-        >
-          {loadingEnroll ? "Enrolling..." : "Enroll"}
-        </button>
-
-        <button
-          className="enrollment-btn drop-btn"
-          onClick={handleDrop}
-          disabled={loadingDrop}
-        >
-          {loadingDrop ? "Dropping..." : "Drop"}
-        </button>
-      </div>
-
-      {/* Table */}
-      <table className="enrollment-table">
-        <thead>
-          <tr>
-            <th>Section</th>
-            <th>Class Name</th>
-            <th>Enrolled On</th>
-            <th>Grade</th>
-          </tr>
-        </thead>
-        <tbody>
-          {enrollments.length === 0 ? (
+      <div className="enrollment-table-wrapper">
+        <table className="enrollment-table">
+          <thead>
             <tr>
-              <td colSpan="4" className="enrollment-empty">
-                No enrollments to show
-              </td>
+              <th>Section</th>
+              <th>Class Name</th>
+              <th>Enrolled On</th>
+              <th>Grade</th>
             </tr>
-          ) : (
-            enrollments.map((row) => (
-              <tr key={row.section_id || `${row.section}-${row.name}`}>
-                <td>{row.section || row.section_id}</td>
-                <td>{row.className || row.course_name}</td>
-                <td>{row.enrolledOn || row.enrolled_date}</td>
-                <td>{row.grade ?? "-"}</td>
+          </thead>
+          <tbody>
+            {loadingTable ? (
+              <tr>
+                <td colSpan="4" className="center-cell">
+                  <span className="spinner" /> Loading…
+                </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : enrollments.length === 0 ? (
+              <tr>
+                <td colSpan="4" className="center-cell">
+                  No enrollments for this term/year.
+                </td>
+              </tr>
+            ) : (
+              enrollments.map((enr) => (
+                <tr key={enr.sectionID ?? enr.section_id}>
+                  <td>{enr.sectionID ?? enr.section_id}</td>
+                  <td>{enr.className ?? enr.courseName}</td>
+                  <td>{enr.enrolledOn ?? enr.enrolled_on}</td>
+                  <td>{enr.grade ?? "-"}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
