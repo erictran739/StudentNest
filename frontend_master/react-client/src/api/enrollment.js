@@ -1,23 +1,33 @@
+// src/api/enrollment.js
 import axios from "axios";
 
-const API = "https://puggu.dev/auth-test/api/students";
+// Adjust base URL if your backend is different in production
+const BASE_URL = "http://localhost:8080";
 
-// GET ALL enrolled classes
-export const getEnrollments = (studentId) =>
-  axios.get(`${API}/history`, {
-    params: { student_id: studentId }
+// ---- HISTORY ----
+// POST /api/student/history
+export const fetchCourseHistory = async (studentId, term, year) => {
+  return axios.post(`${BASE_URL}/api/student/history`, {
+    student_id: Number(studentId),
+    term,
+    year: Number(year),
   });
+};
 
-// ENROLL student
-export const enrollStudent = (studentId, sectionId) =>
-  axios.post(`${API}/enroll`, {
-    student_id: studentId,
-    section_id: sectionId
+// ---- ENROLL ----
+// POST /api/students/enroll
+export const enrollStudent = async (studentId, sectionId) => {
+  return axios.post(`${BASE_URL}/api/students/enroll`, {
+    student_id: Number(studentId),
+    section_id: Number(sectionId),
   });
+};
 
-// DROP student
-export const dropStudent = (studentId, sectionId) =>
-  axios.post(`${API}/drop`, {
-    student_id: studentId,
-    section_id: sectionId
+// ---- DROP ----
+// POST /api/students/drop
+export const dropStudent = async (studentId, sectionId) => {
+  return axios.post(`${BASE_URL}/api/students/drop`, {
+    student_id: Number(studentId),
+    section_id: Number(sectionId),
   });
+};
