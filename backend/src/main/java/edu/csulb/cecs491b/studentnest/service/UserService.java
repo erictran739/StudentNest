@@ -1,5 +1,6 @@
 package edu.csulb.cecs491b.studentnest.service;
 
+import edu.csulb.cecs491b.studentnest.controller.dto.GenericResponse;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.CreateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UpdateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UserResponse;
@@ -10,11 +11,16 @@ import edu.csulb.cecs491b.studentnest.repository.SectionRepository;
 import edu.csulb.cecs491b.studentnest.repository.StudentRepository;
 import edu.csulb.cecs491b.studentnest.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -27,7 +33,7 @@ public class UserService {
     private final EnrollmentRepository enrollmentRepository;
     private final StudentRepository studentRepository;
 
-//    private final PasswordEncoder; // Will use when passwords must be passed and checked
+    private final PasswordEncoder passwordEncoder; // Will use when passwords must be passed and checked
 
     public List<UserResponse> list() {
         return userRepository.findAll().stream().map(this::toResponse).toList();
@@ -36,6 +42,27 @@ public class UserService {
     public UserResponse get(int id) {
         return userRepository.findById(id).map(this::toResponse)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+    }
+
+    public ResponseEntity<?> get(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()){
+            return GenericResponse.build(HttpStatus.BAD_REQUEST, "User with email " + email + " not found");
+        }
+
+        boolean valid = passwordEncoder.matches(password, userOptional.get().getPassword());
+
+        if (!valid) {
+            return GenericResponse.build(HttpStatus.BAD_REQUEST, "Password incorrect");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "user_id", userOptional.get().getUserID(),
+                "first_name",  userOptional.get().getFirstName(),
+                "last_name",  userOptional.get().getLastName(),
+                "email",  userOptional.get().getEmail()
+        ));
     }
 
     public UserResponse create(CreateUserRequest r) {
@@ -72,8 +99,6 @@ public class UserService {
 
 
     // Helper Functions
-
-
     private UserResponse toResponse(User u) {
         //if UserResponse expects string for status, pass name()
         return new UserResponse(

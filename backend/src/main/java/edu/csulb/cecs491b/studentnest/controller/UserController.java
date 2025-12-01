@@ -1,6 +1,7 @@
 package edu.csulb.cecs491b.studentnest.controller;
 
 import edu.csulb.cecs491b.studentnest.controller.dto.user.CreateUserRequest;
+import edu.csulb.cecs491b.studentnest.controller.dto.user.LoginRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UpdateUserRequest;
 import edu.csulb.cecs491b.studentnest.controller.dto.user.UserResponse;
 import edu.csulb.cecs491b.studentnest.service.UserService;
@@ -21,6 +22,11 @@ public class UserController {
 
     @GetMapping
     public List<UserResponse> list() { return service.list(); }
+
+    @GetMapping("/id")
+    public ResponseEntity<?> getFromCredentials(@Valid @RequestBody LoginRequest request) {
+        return service.get(request.getEmail(), request.getPassword());
+    }
 
     @GetMapping("/{id}")
 //    public UserResponse get(@PathVariable int id) { return service.get(id); }
