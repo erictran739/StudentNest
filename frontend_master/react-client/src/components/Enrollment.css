@@ -1,63 +1,157 @@
-.enroll-container {
-  padding: 25px;
-  max-width: 900px;
-  margin: auto;
+.enrollment-page {
+  min-height: 100vh;
+  background: #f8f2e7;
+  padding: 40px 80px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    sans-serif;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 16px;
+.enrollment-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #333;
 }
 
-.load-btn {
-  width: 100%;
-  padding: 14px;
-  background: #e5e5e5;
-  border-radius: 10px;
-  font-size: 16px;
-  margin-bottom: 20px;
+.enrollment-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px 32px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
 }
 
-.button-row {
+.enrollment-row {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.enroll-btn {
-  flex: 1;
-  background: linear-gradient(to right, #f9a825, #ef6c00);
-  padding: 15px;
-  font-size: 18px;
-  border-radius: 20px;
+.term-year-row {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 16px;
 }
 
-.drop-btn {
+.enrollment-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.enrollment-input {
+  border-radius: 999px;
+  border: 1px solid #e0e0e0;
+  padding: 10px 16px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  background: #fafafa;
+}
+
+.enrollment-input:focus {
+  border-color: #f6a623;
+  background: #fff;
+}
+
+.enrollment-section-row {
+  display: flex;
+  gap: 12px;
+}
+
+.section-dropdown {
+  max-width: 320px;
+}
+
+.buttons-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.enrollment-button {
   flex: 1;
-  background: linear-gradient(to right, #8b0000, #400000);
-  padding: 15px;
-  font-size: 18px;
-  border-radius: 20px;
+  border-radius: 999px;
+  border: none;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease,
+    opacity 0.08s ease;
+}
+
+.enrollment-button.enroll {
+  background: linear-gradient(90deg, #ffa726, #fb8c00);
   color: white;
 }
 
-.enroll-table {
+.enrollment-button.drop {
+  background: linear-gradient(90deg, #7f0000, #b71c1c);
+  color: white;
+}
+
+.enrollment-button.secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.enrollment-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+}
+
+.enrollment-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+}
+
+.enrollment-table-wrapper {
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.04);
+  padding: 16px 24px;
+}
+
+.enrollment-table {
   width: 100%;
-  margin-top: 25px;
   border-collapse: collapse;
+  font-size: 14px;
 }
 
-.enroll-table th,
-.enroll-table td {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
+.enrollment-table th,
+.enrollment-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.loader {
-  display: flex;
-  justify-content: center;
-  margin: 15px 0;
+.enrollment-table th {
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+}
+
+.center-cell {
+  text-align: center;
+  padding: 18px 8px;
+  color: #777;
+}
+
+/* Simple spinner */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: rgba(0, 0, 0, 0.55);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

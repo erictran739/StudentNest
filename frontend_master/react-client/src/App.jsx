@@ -16,6 +16,7 @@ import Services from "./components/Services";
 import Colleges from "./components/Colleges";
 import CollegeDetails from "./components/CollegeDetails";
 import Enrollment from "./components/Enrollment.jsx";
+import Sections from "./components/Sections";
 
 function CenteredLayout({ children }) {
   return <div className="auth-page">{children}</div>;
@@ -35,6 +36,7 @@ export default function App() {
       <Route path="/colleges" element={<Colleges />} />
       <Route path="/colleges/:collegeId" element={<CollegeDetails />} />
       <Route path="/enrollment" element={<Enrollment />} />
+      <Route path="/sections" element={<Sections />} />
 
 
       {/* Auth pages (centered on bg image) */}
