@@ -64,23 +64,38 @@ export default function Login() {
           position: relative;
         }
         .auth-root .ring {
-          position: relative; /* keep in normal flow */
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
           width: 100%;
-          max-width: 520px;   /* limit width so it doesn't hug the right edge */
+          max-width: 520px;
           margin: 0 auto;
         }
         .auth-root .login {
-          position: static;   /* disable any absolute rules from theme */
+          position: static;
           display: block;
           width: 100%;
         }
         .auth-root .login-box {
-          margin: 0 auto;     /* center the card itself */
+          margin: 0 auto;
           width: 100%;
           max-width: 520px;
+        }
+        .forgot-row {
+          display: flex;
+          justify-content: flex-end;
+          margin-top: 4px;
+          margin-bottom: 8px;
+          font-size: 0.9rem;
+        }
+        .forgot-link {
+          border: none;
+          background: none;
+          padding: 0;
+          color: #ff6ec7;
+          cursor: pointer;
+          text-decoration: underline;
         }
       `}</style>
 
@@ -106,6 +121,17 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+
+              {/* Forgot password link */}
+              <div className="forgot-row">
+                <button
+                  type="button"
+                  className="forgot-link"
+                  onClick={() => navigate("/forgot-password")}
+                >
+                  Forgot password?
+                </button>
+              </div>
 
               <button type="submit" className="login-btn">Login</button>
 
