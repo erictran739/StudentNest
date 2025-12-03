@@ -31,7 +31,7 @@ public class StudentController {
         return studentService.list();
     }
 
-    @GetMapping("/history")
+    @PostMapping("/history")
     public List<EnrollmentResponse> getCourseHistory(@RequestBody CourseHistoryRequest request){
         return studentService.getCourseHistory(request);
     }
@@ -43,7 +43,7 @@ public class StudentController {
 
     @PostMapping("/enroll")
     public ResponseEntity<?> enroll(@RequestBody EnrollSectionRequest req){
-        return studentService.enroll(req.student_id(), req.section_id());
+        return studentService.enroll(req.student_id(), req.section_id(), req.enrollment_date());
     }
 
     @PostMapping("/drop")

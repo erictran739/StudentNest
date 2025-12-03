@@ -30,6 +30,7 @@ public class EnrollmentResponse extends GenericResponse {
     private String department_abbreviation;
 
     private char grade;
+    private String enrollment_date;
 
     public static EnrollmentResponse build(Enrollment enrollment) {
         return null;
@@ -52,6 +53,7 @@ public class EnrollmentResponse extends GenericResponse {
                 section.getCourse().getDepartment().getName(),
                 section.getCourse().getDepartment().getAbbreviation(),
 
-                enrollment.getGrade());
+                enrollment.getGrade(),
+                enrollment.getEnrollmentDate());
     }
 }

@@ -101,12 +101,26 @@ public class UserService {
     // Helper Functions
     private UserResponse toResponse(User u) {
         //if UserResponse expects string for status, pass name()
+        String role = "undefined";
+
+        if (u instanceof Student){
+            role = "student";
+        }
+
+        if (u instanceof Professor){
+            role = "professor";
+        }
+
+        if (u instanceof DepartmentChair){
+            role = "department chair";
+        }
         return new UserResponse(
                 u.getUserID(),
                 u.getFirstName(),
                 u.getLastName(),
                 u.getEmail(),
-                u.getStatus().name()
+                u.getStatus().name(),
+                role
         );
     }
 

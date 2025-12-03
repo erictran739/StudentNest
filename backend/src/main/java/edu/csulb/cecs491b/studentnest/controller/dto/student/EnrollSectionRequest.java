@@ -4,5 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record EnrollSectionRequest(
         @NotBlank int student_id,
-        @NotBlank int section_id) {
+        @NotBlank int section_id,
+        String enrollment_date
+        ) {
 }

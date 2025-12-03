@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -87,7 +88,7 @@ public class StudentService {
         return StudentResponse.build(HttpStatus.OK, student);
     }
 
-    public ResponseEntity<?> enroll(int userId, int sectionId) {
+    public ResponseEntity<?> enroll(int userId, int sectionId, String enrollmentDate) {
         // Get Student
         Student student = getStudent(userId);
 
@@ -106,6 +107,8 @@ public class StudentService {
         enrollment.setStudent(student);
         enrollment.setSection(section);
         enrollment.setEnrollmentID(enrollmentID);
+
+        enrollment.setEnrollmentDate(Objects.requireNonNullElse(enrollmentDate, "unspecified"));
 
         enrollmentRepository.save(enrollment);
 
