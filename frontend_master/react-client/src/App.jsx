@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Register from "./components/Register";
@@ -17,7 +17,8 @@ import Colleges from "./components/Colleges";
 import CollegeDetails from "./components/CollegeDetails";
 import Enrollment from "./components/Enrollment.jsx";
 import Sections from "./components/Sections";
-import AppShell from "./components/AppShell"; // ⬅️ new
+import AppShell from "./components/AppShell";
+import ProtectedRoute from "./components/ProtectedRoute"; // ⬅️ add this
 
 function CenteredLayout({ children }) {
   return <div className="auth-page">{children}</div>;
@@ -26,7 +27,7 @@ function CenteredLayout({ children }) {
 export default function App() {
   return (
     <Routes>
-      {/* Auth pages (centered on bg image) */}
+      {/* Auth pages (public) */}
       <Route
         path="/"
         element={
@@ -76,8 +77,14 @@ export default function App() {
         }
       />
 
-      {/* Main app (all pages that should share the left bar / header) */}
-      <Route element={<AppShell />}>
+      {/* Protected main app (everything inside AppShell) */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <AppShell />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/home" element={<Home />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/courses/:courseId" element={<CourseDetails />} />
