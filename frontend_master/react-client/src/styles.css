@@ -10,61 +10,239 @@
   box-sizing: border-box;
   font-family: "Quicksand", sans-serif;
 }
+ /* testing */
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background: #111; /* dark stage for neon ring */
+  margin: 0;
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;  /* allow normal scroll */
+  overflow-y: auto;
+  background: var(--home-bg); /* beige by default; Home keeps this */
+  display: block;             /* cancel global flex-centering */
 }
 
-/* ===== Organic Ring Animation (from user's CSS) ===== */
-.ring {
-  position: relative;
-  width: 500px;
-  height: 500px;
+body:has(.home-page) {
+  display: block;
+  background: var(--home-bg);
+  overflow-x: hidden;
+  justify-content: unset;
+  align-items: unset;
+}
+:root {
+  --sn-blue: #003366;   /* navy */
+  --sn-gold: #ffc72c;   /* gold */
+  --sn-bg: #f5f5f5;
+  --sn-border: #d0d4da;
+  --sn-text: #111827;
+  --sn-muted: #6b7280;
+}
+
+/* Page layout */
+.sn-page {
+  min-height: 100vh;
+  background: var(--sn-bg);
+  color: var(--sn-text);
+  padding: 24px;
+}
+
+.sn-header {
+  background: linear-gradient(135deg, var(--sn-blue) 60%, var(--sn-gold) 60%);
+  color: white;
+  padding: 20px 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.sn-header h1 {
+  margin: 0 0 4px;
+}
+
+.sn-header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Two-column layout */
+.sn-content {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 20px;
+}
+
+@media (max-width: 960px) {
+  .sn-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards */
+.sn-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--sn-border);
+}
+
+.sn-card-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 12px;
 }
 
-.ring i {
-  position: absolute;
-  inset: 0;
-  border: 2px solid #fff;
-  transition: 0.5s;
+/* Table */
+.sn-table-wrapper {
+  max-height: 420px;
+  overflow: auto;
 }
 
-.ring i:nth-child(1) {
-  border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-  animation: animate 6s linear infinite;
-}
-.ring i:nth-child(2) {
-  border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
-  animation: animate 4s linear infinite;
-}
-.ring i:nth-child(3) {
-  border-radius: 41% 44% 56% 59%/38% 62% 63% 37%;
-  animation: animate2 10s linear infinite;
+.sn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
 }
 
-.ring:hover i {
-  border: 6px solid var(--clr);
-  filter: drop-shadow(0 0 20px var(--clr));
+.sn-table thead {
+  background: #e5e7eb;
 }
 
-@keyframes animate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.sn-table th,
+.sn-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
 }
 
-@keyframes animate2 {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
+.sn-table tbody tr:nth-child(odd) {
+  background: #f9fafb;
 }
+
+.sn-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* Buttons */
+.sn-btn {
+  font-size: 0.85rem;
+  border-radius: 999px;
+  padding: 6px 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sn-btn-xs {
+  padding: 4px 10px;
+  font-size: 0.78rem;
+}
+
+.sn-btn-primary {
+  background-color: var(--sn-gold);
+  color: var(--sn-blue);
+}
+
+.sn-btn-primary:hover {
+  filter: brightness(0.95);
+}
+
+.sn-btn-outline {
+  background: white;
+  border: 1px solid var(--sn-blue);
+  color: var(--sn-blue);
+}
+
+.sn-btn-outline:hover {
+  background: rgba(0, 51, 102, 0.08);
+}
+
+.sn-btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.sn-btn-danger:hover {
+  background: #fecaca;
+}
+
+.sn-btn-ghost {
+  background: transparent;
+  color: var(--sn-muted);
+}
+
+.sn-btn-ghost:hover {
+  background: #f3f4f6;
+}
+
+/* Forms */
+.sn-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sn-form-inline label {
+  width: 100%;
+}
+
+.sn-form label {
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sn-form input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.9rem;
+}
+
+.sn-form input:focus {
+  outline: 2px solid var(--sn-gold);
+  outline-offset: 1px;
+}
+
+.sn-form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* Alerts */
+.sn-alert {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.sn-alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.sn-alert-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.sn-muted {
+  color: var(--sn-muted);
+}
+
+.sn-divider {
+  margin: 18px 0 12px;
+  border: none;
+  border-top: 1px dashed #e5e7eb;
+}
+
 
 /* ===== Centered Login Container (from user's CSS) ===== */
 .login {
@@ -99,6 +277,7 @@ h2 {
 }
 
 /* ===== Inputs (keep existing functionality, adapt to dark theme) ===== */
+input[type="email"],
 input[type="text"],
 input[type="password"] {
   width: 90%;
@@ -465,6 +644,84 @@ body:has(.home-page) {
   opacity: 1;
   pointer-events: auto;
 }
+.role-group {
+  margin-top: 15px;
+  border: none;
+  padding: 0;
+  text-align: left;
+}
+
+.role-legend {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #fff; /* adjust to match your form text color */
+}
+.role-chip {
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s ease;
+}
+
+.role-chip:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.role-options {
+  display: flex;
+  flex-direction: column; /* Stack vertically */
+  gap: 6px; /* space between each radio */
+  align-items: flex-start; /* left align */
+}
+
+.role-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: #fff; /* same color as inputs */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.role-chip input[type="radio"] {
+  accent-color: #ffb81c; /* CSULB gold look */
+  transform: scale(1.1);
+}
+.page h1 { margin: 0 0 16px; }
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.08);
+  margin: 12px 0;
+}
+.card input, .card button, .card select {
+  display:block; width:100%; padding:10px 12px; margin-top:8px;
+  border-radius:10px; border:1px solid #ddd;
+}
+.card button { cursor:pointer; border:none; background: linear-gradient(90deg,#ff4b8b,#ffd36b); }
+.note.error { color:#b00020; }
+table { width:100%; border-collapse: collapse; }
+th, td { text-align:left; padding:10px; border-bottom:1px solid #eee; }
+.page h1 { margin: 0 0 16px; }
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.08);
+  margin: 12px 0;
+}
+.card input, .card button, .card select {
+  display:block; width:100%; padding:10px 12px; margin-top:8px;
+  border-radius:10px; border:1px solid #ddd;
+}
+.card button { cursor:pointer; border:none; background: linear-gradient(90deg,#ff4b8b,#ffd36b); }
+.note.error { color:#b00020; }
+table { width:100%; border-collapse: collapse; }
+th, td { text-align:left; padding:10px; border-bottom:1px solid #eee; }
+
 
 .home-drawer {
   position: fixed;
@@ -541,4 +798,101 @@ body:has(.home-page) {
   margin-top: 16px;
   font-style: italic;
   color: var(--home-muted);
+}
+
+/* Auth pages (Login/Register/Success/Failure) use the background image */
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+
+  /* Nay's image, scoped to auth only */
+  background: url("./assets/homepage.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Keep the translucent card look for .login-box on top of the image */
+.auth-page .login-box {
+  background: rgba(15, 15, 15, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+/* Generic page shell (light theme, same as Home spacing) */
+.page-wrap {
+  width: 100%;
+  max-width: 1000px;
+  margin: 18px auto 48px;
+  padding: 0 24px;
+}
+
+/* Reusable card container */
+.page-card {
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 14px;
+  box-shadow: var(--home-shadow);
+  overflow: hidden;
+}
+
+/* Simple card header */
+.page-card-header {
+  padding: 14px 16px;
+  background: #fff8e6;
+  border-bottom: 1px solid var(--home-border);
+  font-weight: 700;
+}
+
+/* Card body */
+.page-card-body {
+  padding: 16px;
+}
+
+/* Simple form */
+.page-form {
+  display: grid;
+  gap: 12px;
+  max-width: 560px;
+}
+.page-form input,
+.page-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--home-border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--home-text);
+  font-size: 15px;
+}
+.page-form button {
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--csulb-gold);
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+}
+.page-form button:hover { filter: brightness(0.95); }
+
+/* Centered system page */
+.system-center {
+  min-height: calc(100vh - 64px);
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+}
+.system-box {
+  background: #fff;
+  border: 1px solid var(--home-border);
+  border-radius: 16px;
+  box-shadow: var(--home-shadow);
+  width: min(90%, 520px);
+  padding: 36px 28px;
+  text-align: center;
+}
+
+.page-form input::placeholder,
+.page-form textarea::placeholder {
+  color: #000;
 }
